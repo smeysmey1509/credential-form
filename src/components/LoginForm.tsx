@@ -1,38 +1,32 @@
 import React, { useState } from "react";
 import Group from "../assets/group.png";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const LoginForm = () => {
-  const [email, setEmail] = useState("");
-  const [username, setUsername] = useState("");
+  const [name, setName] = useState("");
   const [password, setPassword] = useState("");
-  const [login, setLogin] = useState(false);
+  const navigate = useNavigate();
 
   const handleAuthGoogle = () => {
     alert(123);
   };
 
-  const handleSubmitLogin = async (e: any) => {
-    const navigate = useNavigate();
+  const handleSubmitLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    try {
-      const response = await fetch("http://localhost:5000/api/v1/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      });
 
-      const res = await response.json();
-      if (res.status === "success") {
-        setLogin(true);
-        localStorage.setItem("token", res.token);
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/api/v1/auth/login",
+        { name, password }
+      );
+
+      const token = response.data.token;
+
+      if (token) {
+        localStorage.setItem("token", response.data.token);
         navigate("/dashboard");
-      } else {
-        alert(res.message);
       }
-      console.log(res);
     } catch (err) {
       console.log(err);
     }
@@ -89,12 +83,12 @@ const LoginForm = () => {
           >
             <div className="w-full">
               <label htmlFor="" className="text-[#828282] text-sm">
-                Email or username
+                Email
               </label>
               <input
                 type="text"
-                onChange={(e) => setEmail(e.target.value)}
-                value={email}
+                onChange={(e) => setName(e.target.value)}
+                value={name}
                 placeholder="mail@abc.com"
                 className="w-full border border-solid border-[#ded2d9] rounded placeholder:text-sm outline-none"
                 style={{ padding: "8px" }}
@@ -136,12 +130,13 @@ const LoginForm = () => {
                 </a>
               </div>
             </div>
-            <div
-              className="w-full bg-[#7f265b] rounded text-white text-center font-bold cursor-pointer"
+            <button
+              type="submit"
               style={{ padding: "8px", marginTop: "24px" }}
+              className="w-full bg-[#7f265b] rounded text-white text-center font-bold cursor-pointer"
             >
-              <button type="submit">Login</button>
-            </div>
+              Login
+            </button>
           </form>
         </div>
         <div

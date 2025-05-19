@@ -1,7 +1,37 @@
-import React from "react";
+import React, { useState } from "react";
 import Group from "../assets/group.png";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 export const RegisterForm = () => {
+  const [name, setName] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const navigate = useNavigate();
+
+  const handleRegister = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post(
+        `http://localhost:5000/api/v1/auth/register`,
+        {
+          name,
+          email,
+          password,
+        }
+      );
+
+      const token = response.data.token;
+      if (token) {
+        localStorage.setItem("token", token);
+        navigate("/dashboard");
+      }
+      
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   return (
     <div className="w-[45%] flex flex-col items-center justify-center">
       <div className="w-3/6 h-auto flex flex-start">
@@ -45,7 +75,7 @@ export const RegisterForm = () => {
           ------------
         </span>
         <div className="w-full h-auto">
-          <form action="" className="w-full" style={{ marginTop: "18px" }}>
+          <form action="" onSubmit={handleRegister} className="w-full" style={{ marginTop: "18px" }}>
             <div className="w-full">
               <label htmlFor="" className="text-[#828282] text-sm">
                 Email
@@ -53,36 +83,24 @@ export const RegisterForm = () => {
               <input
                 type="text"
                 placeholder="mail@abc.com"
+                onChange={(e) => setEmail(e.target.value)}
+                value={email}
                 className="w-full border border-solid border-[#ded2d9] rounded placeholder:text-sm outline-none "
                 style={{ padding: "8px" }}
               />
             </div>
-            <div
-              className="w-full flex items-center justify-between gap-2"
-              style={{ marginTop: "18px" }}
-            >
-              <div className="w-full">
-                <label htmlFor="" className="text-[#828282] text-sm">
-                  Username
-                </label>
-                <input
-                  type="text"
-                  placeholder="mail@abc.com"
-                  className="w-full border border-solid border-[#ded2d9] rounded placeholder:text-sm outline-none "
-                  style={{ padding: "8px" }}
-                />
-              </div>
-              <div className="w-full">
-                <label htmlFor="" className="text-[#828282] text-sm">
-                  Lastname
-                </label>
-                <input
-                  type="text"
-                  placeholder="mail@abc.com"
-                  className="w-full border border-solid border-[#ded2d9] rounded placeholder:text-sm outline-none "
-                  style={{ padding: "8px" }}
-                />
-              </div>
+            <div className="w-full" style={{ marginTop: "18px" }}>
+              <label htmlFor="" className="text-[#828282] text-sm">
+                Name
+              </label>
+              <input
+                type="text"
+                placeholder="Name"
+                onChange={(e) => setName(e.target.value)}
+                value={name}
+                className="w-full border border-solid border-[#ded2d9] rounded placeholder:text-sm outline-none "
+                style={{ padding: "8px" }}
+              />
             </div>
             <div className="w-full" style={{ marginTop: "18px" }}>
               <label
@@ -94,7 +112,9 @@ export const RegisterForm = () => {
               </label>
               <input
                 type="text"
-                placeholder="**************"
+                placeholder="*******"
+                onChange={(e) => setPassword(e.target.value)}
+                value={password}
                 className="w-full border border-solid border-[#ded2d9] rounded placeholder:text-sm outline-none"
                 style={{ padding: "8px" }}
               />
@@ -118,12 +138,13 @@ export const RegisterForm = () => {
                 </a>
               </div>
             </div>
-            <div
+            <button
+              type="submit"
               className="w-full bg-[#7f265b] rounded text-white text-center font-bold cursor-pointer"
               style={{ padding: "8px", marginTop: "24px" }}
             >
-              <button>Register</button>
-            </div>
+              Register
+            </button>
           </form>
         </div>
         <div
@@ -131,7 +152,10 @@ export const RegisterForm = () => {
           style={{ marginTop: "42px" }}
         >
           <p>Already have an account?</p>
-          <a href="http://localhost:5173/login?" className="text-[#7F265B] cursor-pointer underline font-bold">
+          <a
+            href="http://localhost:5173/login?"
+            className="text-[#7F265B] cursor-pointer underline font-bold"
+          >
             Log In
           </a>
         </div>

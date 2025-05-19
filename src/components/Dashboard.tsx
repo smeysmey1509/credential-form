@@ -1,9 +1,60 @@
-import React from 'react'
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
-  return (
-    <div>Dashboard</div>
-  )
-}
+  const [message, setMessage] = useState("");
+  const navigate = useNavigate();
 
-export default Dashboard
+  useEffect(() => {
+    const fetchDashboard = async () => {
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        console.error("No token found. Redirecting to login...");
+        window.location.href = "/login";
+        return;
+      }
+
+      try {
+        const res = await axios.get(
+          "http://localhost:5000/api/v1/auth/profile",
+          {
+            headers: {
+              "Authorization": `Bearer ${token}`,
+            },
+          }
+        );
+        setMessage(res.data.message);
+      } catch (err) {
+        console.error("Error fetching dashboard data:", err);
+        setMessage("Failed to fetch dashboard data. Please try again later.");
+        // Optionally, redirect to login if the token is invalid
+        window.location.href = "/login";
+        return;
+      }
+    };
+    fetchDashboard();
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/login");
+  }
+
+  return (
+    <div>
+      <h2>Dashboard</h2>
+      <p>{message}</p>
+      <button
+        onClick={handleLogout}
+        style={{ padding: "8px", marginTop: "24px" }}
+        className="w-full bg-[#7f265b] rounded text-white text-center font-bold cursor-pointer"
+      >
+        Logout
+      </button>
+    </div>
+  );
+};
+
+export default Dashboard;
