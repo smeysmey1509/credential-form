@@ -26,7 +26,7 @@ export const RegisterForm = () => {
         localStorage.setItem("token", token);
         navigate("/dashboard");
       }
-      
+
     } catch (err) {
       console.log(err);
     }

@@ -1,6 +1,10 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Header from "./Header/Header";
+import Sidebar from "./Sidebar/Sidebar";
+import Content from "./Content/Content";
+import Navbar from "./Navbar/Navbar";
 
 const Dashboard = () => {
   const [message, setMessage] = useState("");
@@ -21,7 +25,7 @@ const Dashboard = () => {
           "http://localhost:5000/api/v1/auth/profile",
           {
             headers: {
-              "Authorization": `Bearer ${token}`,
+              Authorization: `Bearer ${token}`,
             },
           }
         );
@@ -40,19 +44,15 @@ const Dashboard = () => {
   const handleLogout = () => {
     localStorage.removeItem("token");
     navigate("/login");
-  }
+  };
 
   return (
-    <div>
-      <h2>Dashboard</h2>
-      <p>{message}</p>
-      <button
-        onClick={handleLogout}
-        style={{ padding: "8px", marginTop: "24px" }}
-        className="w-full bg-[#7f265b] rounded text-white text-center font-bold cursor-pointer"
-      >
-        Logout
-      </button>
+    <div className="flex min-h-screen">
+      <Sidebar />
+      <div className="flex-1 flex flex-col">
+        <Header />
+        <Content />
+      </div>
     </div>
   );
 };
