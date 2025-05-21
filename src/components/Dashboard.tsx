@@ -8,6 +8,7 @@ import Navbar from "./Navbar/Navbar";
 
 const Dashboard = () => {
   const [message, setMessage] = useState("");
+  const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -41,6 +42,14 @@ const Dashboard = () => {
     fetchDashboard();
   }, []);
 
+  const handleSidebarToggle = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
   const handleLogout = () => {
     localStorage.removeItem("token");
     navigate("/login");
@@ -48,9 +57,13 @@ const Dashboard = () => {
 
   return (
     <div className="flex min-h-screen">
-      <Sidebar />
-      <div className="flex-1 flex flex-col">
-        <Header />
+      <Sidebar isSidebarOpen={isSidebarOpen} />
+      <div
+        className={`fixed ${
+          isSidebarOpen ? "w-full left-0" : "w-[85%] left-[15%] right-0"
+        } flex flex-col bg-[#f4f7fa] transition-all duration-300 ease-in-out`}
+      >
+        <Header toggleSidebar={toggleSidebar} />
         <Content />
       </div>
     </div>

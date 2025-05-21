@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "./Header.css";
 import { RiMenu2Line } from "react-icons/ri";
 import {
@@ -9,13 +9,25 @@ import {
 } from "react-icons/io5";
 import { MdDarkMode } from "react-icons/md";
 import { FaUserAlt } from "react-icons/fa";
+import { c } from "vite/dist/node/moduleRunnerTransport.d-DJ_mE5sf";
 
-const Header = () => {
+interface HeaderProps {
+  toggleSidebar: () => void;
+}
+
+const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
+  const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
+
+  const handleSidebarToggle = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+    toggleSidebar();
+  };
+
   return (
     <div className="header flex items-stretch justify-between pl-6 pr-6 shadow-custom bg-[#ffffff]">
       <div className="flex items-center gap-8 pt-5 pb-5">
         <button className="text-xl font-normal text-[#687b94]">
-          <RiMenu2Line />
+          <RiMenu2Line onClick={handleSidebarToggle} />
         </button>
         <div className="flex items-center rounded-md gap-2 bg-[#ffffff] border p-1 pl-4 pr-4">
           <IoSearchOutline className="text-sm text-[#687b94]" />
