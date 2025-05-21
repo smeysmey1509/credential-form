@@ -6,8 +6,34 @@ interface SidebarProps {
   isSidebarOpen: boolean;
 }
 
+interface SidebarTitleProp {
+  title?: string;
+  module?: string;
+  service?: string[];
+  feature?: string[];
+}
+
+const sidebarTitle: SidebarTitleProp[] = [
+  {
+    title: "MAIN",
+    module: "Dashboard",
+    service: ["Ecommerce", "Authentication"],
+    feature: ["Sales", "Analytics", "Ecommerce"],
+  },
+  {
+    title: "WEB APPS",
+    module: "Apps",
+    service: ["Ecommerce", "Authentication"],
+    feature: ["Sales", "Analytics", "Ecommerce"],
+  },
+];
+
 const Sidebar: React.FC<SidebarProps> = ({ isSidebarOpen }) => {
-  console.log(isSidebarOpen);
+  const [isSubmenuOpen, setIsSubmenuOpen] = useState<boolean>(false);
+
+  const handleSubmenuToggle = () => {
+    setIsSubmenuOpen(!isSubmenuOpen);
+  };
 
   return (
     <div
@@ -18,41 +44,77 @@ const Sidebar: React.FC<SidebarProps> = ({ isSidebarOpen }) => {
       <div className="w-full h-[4.6rem] flex items-center justify-center pt-3.5 pb-3.5 pl-4 pr-4 border-b ">
         Ur Logo Here
       </div>
-      <div className="flex items-center justify-center">
-        <ul className="flex flex-col gap-6 w-full h-full p-6">
-          <li className="text-[10px] font-normal text-[#b2b8c7] opacity-80">
-            <span>MAIN</span>
-          </li>
-          <li>
-            <div className="flex items-center gap-2 cursor-pointer opacity-60 hover:opacity-100">
-              <AiOutlineHome className="text-xl" />
-              <span>Dashboards</span>
-              <IoIosArrowDown className="ml-auto text-sm" />
+      <div className="flex flex-col justify-center p-6">
+        {sidebarTitle?.map((item, index) => (
+          <>
+            <p className="text-[10px] font-normal opacity-50">{item?.title}</p>
+            <ul className="mt-4" key={index}>
+              <li className="mb-4 relative">
+                <div
+                  onClick={handleSubmenuToggle}
+                  className="flex items-center gap-2 cursor-pointer opacity-60 hover:opacity-100 select-none"
+                >
+                  <AiOutlineHome className="text-xl font-bold" />
+                  <span className="font-bold">{item?.module}</span>
+                  <IoIosArrowDown
+                    className={`ml-auto text-sm font-bold transform transition-transform duration-200 ${
+                      isSubmenuOpen ? "rotate-90" : "rotate-0"
+                    }`}
+                  />
+                </div>
+                <div
+                  className={`overflow-hidden transition-all duration-300 ease-in-out ${
+                    isSubmenuOpen ? "max-h-40 opacity-100" : "max-h-0 opacity-0"
+                  } select-none`}
+                >
+                  <ul className="flex flex-col gap-4 ml-4 mt-4">
+                    {item?.feature?.map((featureItem, featureIndex) => (
+                      <li
+                        key={featureIndex}
+                        className="opacity-60 hover:opacity-100 cursor-pointer font-normal select-none"
+                      >
+                        {featureItem}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </li>
+            </ul>
+          </>
+        ))}
+        {/* <ul className="mt-6">
+          <li className="mb-2 relative">
+            <div
+              onClick={handleSubmenuToggle}
+              className="flex items-center gap-2 cursor-pointer opacity-60 hover:opacity-100 select-none"
+            >
+              <AiOutlineHome className="text-xl font-bold" />
+              <span className="font-bold">Dashboards</span>
+              <IoIosArrowDown
+                className={`ml-auto text-sm font-bold transform transition-transform duration-200 ${
+                  isSubmenuOpen ? "rotate-90" : "rotate-0"
+                }`}
+              />
             </div>
-            <ul className="flex flex-col gap-6 w-full h-full pt-6 pl-6">
-              <li className="opacity-60 hover:opacity-100 cursor-pointer">
-                - Sales
-              </li>
-              <li className="opacity-60 hover:opacity-100  cursor-pointer">
-                - Analytics
-              </li>
-              <li className="opacity-60 hover:opacity-100  cursor-pointer">
-                - Ecommerce
-              </li>
-            </ul>
+            <div
+              className={`overflow-hidden transition-all duration-300 ease-in-out ${
+                isSubmenuOpen ? "max-h-40 opacity-100" : "max-h-0 opacity-0"
+              } select-none`}
+            >
+              <ul className="flex flex-col gap-4 m-4">
+                <li className="opacity-60 hover:opacity-100 cursor-pointer font-bold select-none">
+                  - Sales
+                </li>
+                <li className="opacity-60 hover:opacity-100 cursor-pointer font-bold select-none">
+                  - Analytics
+                </li>
+                <li className="opacity-60 hover:opacity-100 cursor-pointer font-bold select-none">
+                  - Ecommerce
+                </li>
+              </ul>
+            </div>
           </li>
-          {/* <li className="text-[10px] font-normal text-[#b2b8c7] opacity-80">
-            <span>APP</span>
-          </li>
-          <li>
-            Web Apps{" "}
-            <ul className="flex flex-col gap-6 w-full h-full pt-6 pl-6">
-              <li>- Ecommerce</li>
-              <li>- Authentication</li>
-              <li>- Qoutation</li>
-            </ul>
-          </li> */}
-        </ul>
+        </ul> */}
       </div>
     </div>
   );
