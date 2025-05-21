@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { AiOutlineHome } from "react-icons/ai";
 import { IoIosArrowDown } from "react-icons/io";
+import { BsDash } from "react-icons/bs";
 
 interface SidebarProps {
   isSidebarOpen: boolean;
@@ -17,7 +18,7 @@ const sidebarTitle: SidebarTitleProp[] = [
   {
     title: "MAIN",
     module: "Dashboard",
-    service: ["Ecommerce", "Authentication"],
+    service: ["Product", "Authentication"],
     feature: ["Sales", "Analytics", "Ecommerce"],
   },
   {
@@ -29,10 +30,14 @@ const sidebarTitle: SidebarTitleProp[] = [
 ];
 
 const Sidebar: React.FC<SidebarProps> = ({ isSidebarOpen }) => {
-  const [isSubmenuOpen, setIsSubmenuOpen] = useState<boolean>(false);
+  const [openSubmenus, setOpenSubmenus] = useState<boolean[]>(
+    Array(sidebarTitle.length).fill(false)
+  );
 
-  const handleSubmenuToggle = () => {
-    setIsSubmenuOpen(!isSubmenuOpen);
+  const handleSubmenuToggle = (index: number) => {
+    setOpenSubmenus((prev) =>
+      prev.map((open, i) => (i === index ? !open : open))
+    );
   };
 
   return (
@@ -48,32 +53,34 @@ const Sidebar: React.FC<SidebarProps> = ({ isSidebarOpen }) => {
         {sidebarTitle?.map((item, index) => (
           <>
             <p className="text-[10px] font-normal opacity-50">{item?.title}</p>
-            <ul className="mt-4" key={index}>
+            <ul className="mt-4">
               <li className="mb-4 relative">
                 <div
-                  onClick={handleSubmenuToggle}
+                  onClick={() => handleSubmenuToggle(index)}
                   className="flex items-center gap-2 cursor-pointer opacity-60 hover:opacity-100 select-none"
                 >
                   <AiOutlineHome className="text-xl font-bold" />
                   <span className="font-bold">{item?.module}</span>
                   <IoIosArrowDown
                     className={`ml-auto text-sm font-bold transform transition-transform duration-200 ${
-                      isSubmenuOpen ? "rotate-90" : "rotate-0"
+                      openSubmenus[index] ? "rotate-90" : "rotate-0"
                     }`}
                   />
                 </div>
                 <div
                   className={`overflow-hidden transition-all duration-300 ease-in-out ${
-                    isSubmenuOpen ? "max-h-40 opacity-100" : "max-h-0 opacity-0"
+                    openSubmenus[index]
+                      ? "max-h-40 opacity-100"
+                      : "max-h-0 opacity-0"
                   } select-none`}
                 >
                   <ul className="flex flex-col gap-4 ml-4 mt-4">
-                    {item?.feature?.map((featureItem, featureIndex) => (
+                    {item?.service?.map((serviceItem, serviceIndex) => (
                       <li
-                        key={featureIndex}
-                        className="opacity-60 hover:opacity-100 cursor-pointer font-normal select-none"
+                        key={serviceIndex}
+                        className="flex items-center gap-1 opacity-60 hover:opacity-100 cursor-pointer font-bold text-[13px] select-none"
                       >
-                        {featureItem}
+                        <BsDash /> {serviceItem}
                       </li>
                     ))}
                   </ul>
@@ -82,39 +89,6 @@ const Sidebar: React.FC<SidebarProps> = ({ isSidebarOpen }) => {
             </ul>
           </>
         ))}
-        {/* <ul className="mt-6">
-          <li className="mb-2 relative">
-            <div
-              onClick={handleSubmenuToggle}
-              className="flex items-center gap-2 cursor-pointer opacity-60 hover:opacity-100 select-none"
-            >
-              <AiOutlineHome className="text-xl font-bold" />
-              <span className="font-bold">Dashboards</span>
-              <IoIosArrowDown
-                className={`ml-auto text-sm font-bold transform transition-transform duration-200 ${
-                  isSubmenuOpen ? "rotate-90" : "rotate-0"
-                }`}
-              />
-            </div>
-            <div
-              className={`overflow-hidden transition-all duration-300 ease-in-out ${
-                isSubmenuOpen ? "max-h-40 opacity-100" : "max-h-0 opacity-0"
-              } select-none`}
-            >
-              <ul className="flex flex-col gap-4 m-4">
-                <li className="opacity-60 hover:opacity-100 cursor-pointer font-bold select-none">
-                  - Sales
-                </li>
-                <li className="opacity-60 hover:opacity-100 cursor-pointer font-bold select-none">
-                  - Analytics
-                </li>
-                <li className="opacity-60 hover:opacity-100 cursor-pointer font-bold select-none">
-                  - Ecommerce
-                </li>
-              </ul>
-            </div>
-          </li>
-        </ul> */}
       </div>
     </div>
   );
