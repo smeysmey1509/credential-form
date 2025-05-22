@@ -1,0 +1,84 @@
+{
+  "button-primary": {
+    "scl-button-primary-md": {
+      "scl-button-color-primary-default-md": {
+        "$type": "color",
+        "$value": "#1890ff"
+      },
+      "scl-button-text-size-primary-default-md": {
+        "$type": "dimension",
+        "$value": "1rem"
+      },
+      "scl-button-weight-primary-default-md": {
+        "$type": "dimension",
+        "$value": "7.125rem"
+      },
+      "scl-button-height-primary-default-md": {
+        "$type": "dimension",
+        "$value": "2rem"
+      },
+      "scl-button-radius-primary-default-md": {
+        "$type": "dimension",
+        "$value": "0.125rem"
+      }
+    },
+    "scl-button-primary-sm": {
+      "scl-button-color-primary-default-sm": {
+        "$type": "color",
+        "$value": "#1890ff"
+      },
+      "scl-button-text-size-primary-default-sm": {
+        "$type": "dimension",
+        "$value": "0.875rem"
+      },
+      "scl-button-weight-primary-default-sm": {
+        "$type": "dimension",
+        "$value": "7.125rem"
+      },
+      "scl-button-height-primary-default-sm": {
+        "$type": "dimension",
+        "$value": "1.375rem"
+      },
+      "scl-button-radius-primary-default-sm": {
+        "$type": "dimension",
+        "$value": "0.125rem"
+      }
+    },
+    "scl-button-primary-lg": {
+      "scl-button-color-primary-default-xl": {
+        "$type": "color",
+        "$value": "#1890ff"
+      },
+      "scl-button-text-size-primary-default-xl": {
+        "$type": "dimension",
+        "$value": "0.875rem"
+      },
+      "scl-button-weight-primary-default-xl": {
+        "$type": "dimension",
+        "$value": "7.125rem"
+      },
+      "scl-button-height-primary-default-xl": {
+        "$type": "dimension",
+        "$value": "2.549999952316284rem"
+      },
+      "scl-button-radius-primary-default-xl": {
+        "$type": "dimension",
+        "$value": "0.125rem"
+      }
+    }
+  },
+  "button-radius": {
+    "button-raduis-lg": {
+      "$type": "dimension",
+      "$value": "1.25rem"
+    },
+    "button-radus-md": {
+      "$type": "dimension",
+      "$value": "1rem"
+    },
+    "button-radius-sm": {
+      "$type": "dimension",
+      "$value": "0.75rem"
+    }
+  }
+}

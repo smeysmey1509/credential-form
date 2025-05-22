@@ -1,0 +1,74 @@
+{
+  "scl-font-family": {
+    "scl-font-family-primary": {
+      "$type": "text",
+      "$value": "inter"
+    },
+    "font-family-secondary": {
+      "$type": "text",
+      "$value": "Roboto"
+    }
+  },
+  "scl-font size": {
+    "large(lg)": {
+      "$type": "dimension",
+      "$value": "2.125rem"
+    },
+    "medium(md)": {
+      "$type": "dimension",
+      "$value": "1.6875rem"
+    },
+    "small(sm)": {
+      "$type": "dimension",
+      "$value": "1.375rem"
+    },
+    "x-small(x-sm)": {
+      "$type": "dimension",
+      "$value": "1rem"
+    },
+    "xx-samll(xx-sm)": {
+      "$type": "dimension",
+      "$value": "0.875rem"
+    },
+    "xxx-small(xxx-sm)": {
+      "$type": "dimension",
+      "$value": "0.75rem"
+    }
+  },
+  "scl-font-weight": {
+    "regular": {
+      "$type": "dimension",
+      "$value": "25rem"
+    },
+    "medium": {
+      "$type": "dimension",
+      "$value": "37.5rem"
+    },
+    "semibold": {
+      "$type": "dimension",
+      "$value": "43.75rem"
+    },
+    "bold": {
+      "$type": "dimension",
+      "$value": "56.25rem"
+    }
+  },
+  "scl-line-height": {
+    "regular": {
+      "$type": "dimension",
+      "$value": "25rem"
+    },
+    "medium": {
+      "$type": "dimension",
+      "$value": "37.5rem"
+    },
+    "semibold": {
+      "$type": "dimension",
+      "$value": "43.75rem"
+    },
+    "bold": {
+      "$type": "dimension",
+      "$value": "56.25rem"
+    }
+  }
+}

@@ -1,0 +1,74 @@
+{
+  "button-primary": {
+    "scl-button-secondary-sm": {
+      "scl-button-color-primary-default-sm": {
+        "$type": "color",
+        "$value": "#1890ff"
+      },
+      "scl-button-weight-primary-default-sm": {
+        "$type": "dimension",
+        "$value": "7.125rem"
+      },
+      "scl-button-text-size-primary-default-sm": {
+        "$type": "dimension",
+        "$value": "0.875rem"
+      },
+      "scl-button-radius-primary-default-sm": {
+        "$type": "dimension",
+        "$value": "0.125rem"
+      },
+      "scl-button-height-primary-default-sm": {
+        "$type": "dimension",
+        "$value": "1.375rem"
+      }
+    },
+    "scl-button-secondary-md": {
+      "scl-button-color-primary-default-md": {
+        "$type": "color",
+        "$value": "#1890ff"
+      },
+      "scl-button-radius-primary-default-md": {
+        "$type": "dimension",
+        "$value": "0.125rem"
+      },
+      "scl-button-text-size-primary-default-md": {
+        "$type": "dimension",
+        "$value": "1rem"
+      },
+      "scl-button-height-primary-default-md": {
+        "$type": "dimension",
+        "$value": "2rem"
+      },
+      "scl-button-weight-primary-default-md": {
+        "$type": "dimension",
+        "$value": "7.125rem"
+      }
+    },
+    "scl-button-secondary-lg": {
+      "scl-button-bg-color-secondary-default-xl": {
+        "$type": "color",
+        "$value": "#ffffff"
+      },
+      "scl-button-border-color-secondary-default-xl": {
+        "$type": "color",
+        "$value": "#d9d9d9"
+      },
+      "scl-button-radius-secondary-default-xl": {
+        "$type": "dimension",
+        "$value": "0.125rem"
+      },
+      "scl-button-weight-secondary-default-xl": {
+        "$type": "dimension",
+        "$value": "7.125rem"
+      },
+      "scl-button-height-secondary-default-xl": {
+        "$type": "dimension",
+        "$value": "2.549999952316284rem"
+      },
+      "scl-button-text-size-secondary-default-xl": {
+        "$type": "dimension",
+        "$value": "0.875rem"
+      }
+    }
+  }
+}

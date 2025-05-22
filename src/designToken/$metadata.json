@@ -1,0 +1,19 @@
+{
+  "tokenSetOrder": [
+    "Color-Token/Mode 1",
+    "1.Style-light-Colors/Mode 1",
+    "Button-Component/Mode 1",
+    "From alert component/Mode 1",
+    "Form Field/Mode 1",
+    "Typography/Mode 1",
+    "Typography Token/Mode 1",
+    "Breakpoint/Mode 1",
+    "shadow/Mode 1",
+    "spacing/Mode 1",
+    "Button-Primary/Mode 1",
+    "Button-Hover-press-Primary/Mode 1",
+    "Button-disable-Primary/Mode 1",
+    "Button-primary-active/Mode 1",
+    "Button-secondary-defual/Mode 1"
+  ]
+}

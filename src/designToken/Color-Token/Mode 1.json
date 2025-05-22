@@ -1,0 +1,274 @@
+{
+  "Primary color": {
+    "scl-color-primary-default": {
+      "$type": "color",
+      "$value": "{Dark-color.color-dark-red-600}"
+    },
+    "scl-color-primary-light": {
+      "$type": "color",
+      "$value": "{Light-color-alpha-900}"
+    }
+  },
+  "Background color": {
+    "scl-bg-color": {
+      "scl-color-background-primary-default": {
+        "$type": "color",
+        "$value": "{Neutal color.scl-color-neutral-light}"
+      },
+      "scl-color-background-primary-light": {
+        "$type": "color",
+        "$value": "#ffffff"
+      },
+      "scl-color-background-primary-dark": {
+        "$type": "color",
+        "$value": "{Dark-color.color-dark-metal-600}"
+      },
+      "scl-color-background-card-primary": {
+        "$type": "color",
+        "$value": "{Dark-color.color-dark-gray-50}"
+      },
+      "scl-color-background-card-light": {
+        "$type": "color",
+        "$value": "{Dark-color.color-dark-gray-50}"
+      },
+      "scl-color-background-card-dark": {
+        "$type": "color",
+        "$value": "{Dark-color.color-dark-metal-600}"
+      },
+      "scl-color-background-hover-transparency": {
+        "$type": "color",
+        "$value": "{Dark-color.color-dark-bronze-200}"
+      },
+      "scl-color-background-disable": {
+        "$type": "color",
+        "$value": "{Dark-color.color-dark-bronze-200}"
+      }
+    },
+    "scl-semantic-bg-color": {
+      "scl-color-bg-semantic-success-light": {
+        "$type": "color",
+        "$value": "{Light-color.Light-lime.color-light-lime-300}"
+      },
+      "scl-color-bg-semantic-success-dark": {
+        "$type": "color",
+        "$value": "{Dark-color.color-dark-lime-700}"
+      },
+      "scl-color-bg-semantic-success-default": {
+        "$type": "color",
+        "$value": "{Dark-color.color-dark-lime-500}"
+      },
+      "scl-color-bg-semantic-warning-light": {
+        "$type": "color",
+        "$value": "{Light-color.Light-yellow.color-light-yellow-300}"
+      },
+      "scl-color-bg-semantic-warning-dark": {
+        "$type": "color",
+        "$value": "{Dark-color.color-dark-yellow-600}"
+      },
+      "scl-color-bg-semantic-warning-default": {
+        "$type": "color",
+        "$value": "{Dark-color.color-dark-yellow-400}"
+      },
+      "scl-color-bg-semantic-info-default": {
+        "$type": "color",
+        "$value": "{Dark-color.color-dark-skyblue-400}"
+      },
+      "scl-color-bg-semantic-info-light": {
+        "$type": "color",
+        "$value": "{Light-color.Light-skyblue.color-light-skyblue-300}"
+      },
+      "scl-color-bg-semantic-info-dark": {
+        "$type": "color",
+        "$value": "{Dark-color.color-dark-skyblue-700}"
+      },
+      "scl-color-bg-semantic-error-default": {
+        "$type": "color",
+        "$value": "{Dark-color.color-dark-red-500}"
+      },
+      "scl-color-bg-semantic-error-light": {
+        "$type": "color",
+        "$value": "{Dark-color.color-dark-red-300}"
+      },
+      "scl-color-bg-semantic-error-dark": {
+        "$type": "color",
+        "$value": "{Dark-color.color-dark-red-700}"
+      }
+    }
+  },
+  "Secondary color": {
+    "scl-color-background-secondary-default": {
+      "$type": "color",
+      "$value": "{Dark-color.color-dark-skyblue-500}"
+    },
+    "scl-color-background-secondary-light": {
+      "$type": "color",
+      "$value": "{Light-color-alpha-900}"
+    },
+    "scl-color-background-secondary-dark": {
+      "$type": "color",
+      "$value": "{Dark-color.color-dark-metal-900}"
+    }
+  },
+  "Text color": {
+    "scl-color-text-primary-default": {
+      "$type": "color",
+      "$value": "{Dark-color.color-dark-bluegray-800}"
+    },
+    "scl-color-text-succes-default": {
+      "$type": "color",
+      "$value": "{Dark-color.color-dark-green-600}"
+    },
+    "scl-color-text-success-dark": {
+      "$type": "color",
+      "$value": "{Dark-color.color-dark-green-800}"
+    },
+    "scl-color-text-success-light": {
+      "$type": "color",
+      "$value": "{Dark-color.color-dark-green-500}"
+    },
+    "scl-color-text-error-default": {
+      "$type": "color",
+      "$value": "{Light-color.Light-red.color-light-red-600}"
+    },
+    "scl-color-text-error-light": {
+      "$type": "color",
+      "$value": "{Dark-color.color-dark-red-300}"
+    },
+    "scl-color-text-error-dark": {
+      "$type": "color",
+      "$value": "{Dark-color.color-dark-red-700}"
+    },
+    "scl-color-text-disable-default": {
+      "$type": "color",
+      "$value": "{Dark-color.color-dark-bronze-900}"
+    },
+    "scl-color-text-secondary-default": {
+      "$type": "color",
+      "$value": "{Dark-color.color-dark-red-700}"
+    },
+    "scl-color-text-hover-transparency-light": {
+      "$type": "color",
+      "$value": "{Dark-color.color-dark-metal-900}"
+    },
+    "scl-color-text-primary-on-light": {
+      "$type": "color",
+      "$value": "{Dark-color.color-dark-bluegray-50}"
+    },
+    "scl-color-text-primary-on-dark": {
+      "$type": "color",
+      "$value": "{Dark-color.color-dark-bluegray-800}"
+    },
+    "scl-color-text-secondary-on-light": {
+      "$type": "color",
+      "$value": "{Dark-color.color-dark-bluegray-50}"
+    },
+    "scl-color-text-secondary-on-dark": {
+      "$type": "color",
+      "$value": "{Dark-color.color-dark-bluegray-800}"
+    },
+    "scl-color-text-link-default": {
+      "$type": "color",
+      "$value": "{Dark-color.color-dark-skyblue-600}"
+    },
+    "scl-color-text-link-on-light": {
+      "$type": "color",
+      "$value": "{Dark-color.color-dark-skyblue-600}"
+    },
+    "scl-color-text-link-on-dark": {
+      "$type": "color",
+      "$value": "{Dark-color.color-dark-bluegray-50}"
+    },
+    "scl-color-text-disable-light": {
+      "$type": "color",
+      "$value": "{Dark-color.color-dark-bronze-900}"
+    },
+    "scl-color-text-disable-dark": {
+      "$type": "color",
+      "$value": "{Light-color-alpha-900}"
+    },
+    "scl-color-text-hover-transparency-dark": {
+      "$type": "color",
+      "$value": "{Dark-color.color-dark-gray-50}"
+    },
+    "scl-color-text-hover-transparency-default": {
+      "$type": "color",
+      "$value": "{Dark-color.color-dark-blue-500}"
+    },
+    "scl-color-text-on-light": {
+      "$type": "color",
+      "$value": "{Dark-color.color-dark-metal-900}"
+    },
+    "scl-color-text-on-dark": {
+      "$type": "color",
+      "$value": "{Dark-color.color-dark-gray-50}"
+    },
+    "scl-color-text-on-default": {
+      "$type": "color",
+      "$value": "{Dark-color.color-dark-metal-900}"
+    }
+  },
+  "Button-color-primary": {
+    "scl-color-button-primary-default": {
+      "$type": "color",
+      "$value": "#1890ff"
+    },
+    "scl-color-button-primary-hover": {
+      "$type": "color",
+      "$value": "#40a9ff"
+    },
+    "scl-color-button-primary-active": {
+      "$type": "color",
+      "$value": "#096dd9"
+    },
+    "scl-color-button-primary-disable": {
+      "$type": "color",
+      "$value": "#f5f5f5"
+    },
+    "scl-color-button-primary-animation": {
+      "$type": "color",
+      "$value": "#0f9ee1"
+    }
+  },
+  "Border Color": {
+    "scl-color-border-primary-default": {
+      "$type": "color",
+      "$value": "#fcfcfc"
+    },
+    "scl-color-border-primary-light": {
+      "$type": "color",
+      "$value": "#f8fafc"
+    },
+    "scl-color-border-primary-dark": {
+      "$type": "color",
+      "$value": "#151b28"
+    }
+  },
+  "Hover and Active States": {
+    "scl-color-button-hover-bg-light": {
+      "$type": "color",
+      "$value": "{Dark-color.color-dark-skyblue-300}"
+    },
+    "scl-color-button-hover-bg-dark": {
+      "$type": "color",
+      "$value": "{Dark-color.color-dark-skyblue-700}"
+    },
+    "scl-color-button-hover-bg-default": {
+      "$type": "color",
+      "$value": "{Dark-color.color-dark-skyblue-500}"
+    }
+  },
+  "Neutal color": {
+    "scl-color-neutral-light": {
+      "$type": "color",
+      "$value": "{Dark-color.color-dark-bluegray-50}"
+    },
+    "scl-color-neutral-dark": {
+      "$type": "color",
+      "$value": "{Dark-color.color-dark-bluegray-200}"
+    },
+    "scl-color-neutral-default-gray": {
+      "$type": "color",
+      "$value": "{Dark-color.color-dark-bluegray-100}"
+    }
+  }
+}
