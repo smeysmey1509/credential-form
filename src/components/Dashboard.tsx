@@ -5,10 +5,12 @@ import Header from "./Header/Header";
 import Sidebar from "./Sidebar/Sidebar";
 import Content from "./Content/Content";
 import Navbar from "./Navbar/Navbar";
+import { useSidebarTitle } from "../context/SidebarTitleContext";
 
 const Dashboard = () => {
   const [message, setMessage] = useState("");
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
+  const { sidebarTitle } = useSidebarTitle();
   const navigate = useNavigate();
 
   useEffect(() => {

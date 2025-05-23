@@ -6,13 +6,12 @@ import RegisterPage from "./pages/RegisterPage";
 import Dashboard from "./components/Dashboard";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import PublicRoute from "./routes/PublicRoute";
-import { AuthProvider } from "./context/AuthContext";
 import Button from "./components/Button/Button";
 
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<HomePage />} />
+      <Route index path="/" element={<HomePage />} />
       <Route
         path="/login"
         element={
@@ -37,7 +36,7 @@ function App() {
           </ProtectedRoute>
         }
       />
-      <Route path="/button" element={<Button />}/>
+      <Route path="/button" element={<Button />} />
       <Route
         path="*"
         element={

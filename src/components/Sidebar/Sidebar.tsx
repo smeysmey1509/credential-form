@@ -2,34 +2,22 @@ import React, { useState } from "react";
 import { AiOutlineHome } from "react-icons/ai";
 import { IoIosArrowDown } from "react-icons/io";
 import { BsDash } from "react-icons/bs";
+import { useSidebarTitle } from "../../context/SidebarTitleContext";
 
 interface SidebarProps {
   isSidebarOpen: boolean;
 }
 
-interface SidebarTitleProp {
-  title?: string;
-  module?: string;
-  service?: string[];
-  feature?: string[];
-}
-
-const sidebarTitle: SidebarTitleProp[] = [
-  {
-    title: "MAIN",
-    module: "Dashboard",
-    service: ["Product", "Authentication"],
-    feature: ["Sales", "Analytics", "Ecommerce"],
-  },
-  {
-    title: "WEB APPS",
-    module: "Apps",
-    service: ["Ecommerce", "Authentication"],
-    feature: ["Sales", "Analytics", "Ecommerce"],
-  },
-];
-
 const Sidebar: React.FC<SidebarProps> = ({ isSidebarOpen }) => {
+  const { sidebarTitle } = useSidebarTitle();
+
+  // Track active menu and submenu
+  const [activeMenu, setActiveMenu] = useState<number | null>(null);
+  const [activeSubmenu, setActiveSubmenu] = useState<{
+    menu: number;
+    submenu: number;
+  } | null>(null);
+
   const [openSubmenus, setOpenSubmenus] = useState<boolean[]>(
     Array(sidebarTitle.length).fill(false)
   );
@@ -38,6 +26,12 @@ const Sidebar: React.FC<SidebarProps> = ({ isSidebarOpen }) => {
     setOpenSubmenus((prev) =>
       prev.map((open, i) => (i === index ? !open : open))
     );
+    setActiveMenu(index);
+  };
+
+  const handleSubmenuClick = (menuIndex: number, submenuIndex: number) => {
+    setActiveSubmenu({ menu: menuIndex, submenu: submenuIndex });
+    setActiveMenu(menuIndex); // Optionally set active menu as well
   };
 
   return (
@@ -51,13 +45,16 @@ const Sidebar: React.FC<SidebarProps> = ({ isSidebarOpen }) => {
       </div>
       <div className="flex flex-col justify-center p-6">
         {sidebarTitle?.map((item, index) => (
-          <>
+          <React.Fragment key={index}>
             <p className="text-[10px] font-normal opacity-50">{item?.title}</p>
             <ul className="mt-4">
               <li className="mb-4 relative">
                 <div
                   onClick={() => handleSubmenuToggle(index)}
-                  className="flex items-center gap-2 cursor-pointer opacity-60 hover:opacity-100 select-none"
+                  className={`flex items-center gap-2 cursor-pointer select-none
+                    opacity-60 hover:opacity-100
+                    ${activeMenu === index ? "opacity-100 rounded" : ""}
+                  `}
                 >
                   <AiOutlineHome className="text-xl font-bold" />
                   <span className="font-bold">{item?.module}</span>
@@ -78,7 +75,17 @@ const Sidebar: React.FC<SidebarProps> = ({ isSidebarOpen }) => {
                     {item?.service?.map((serviceItem, serviceIndex) => (
                       <li
                         key={serviceIndex}
-                        className="flex items-center gap-1 opacity-60 hover:opacity-100 cursor-pointer font-bold text-[13px] select-none"
+                        className={`flex items-center gap-1 cursor-pointer font-bold text-[13px] select-none
+                          opacity-60 hover:opacity-100
+                          ${
+                            activeSubmenu &&
+                            activeSubmenu.menu === index &&
+                            activeSubmenu.submenu === serviceIndex
+                              ? "opacity-100 rounded"
+                              : ""
+                          }
+                        `}
+                        onClick={() => handleSubmenuClick(index, serviceIndex)}
                       >
                         <BsDash /> {serviceItem}
                       </li>
@@ -87,7 +94,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isSidebarOpen }) => {
                 </div>
               </li>
             </ul>
-          </>
+          </React.Fragment>
         ))}
       </div>
     </div>

@@ -63,7 +63,7 @@
       },
       "scl-button-radius-primary-default-xl": {
         "$type": "dimension",
-        "$value": "0.125rem"
+        "$value": "0.126rem"
       }
     }
   },

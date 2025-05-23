@@ -20,6 +20,7 @@
   --button-primary-color-primary: #1890ff;
   --button-primary-weight-primary: 7.125rem;
   --button-primary-radius-primary: 0.125rem;
+  --button-primary-radius-primary: 0.126rem;
 }
 
 .button--primary-md-default {
@@ -43,5 +44,5 @@
   font-size: 0.875rem;
   width: 7.125rem;
   line-height: 2.549999952316284rem;
-  border-radius: 0.125rem;
+  border-radius: 0.126rem;
 }
