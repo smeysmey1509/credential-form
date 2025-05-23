@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import Header from "./Header/Header";
 import Sidebar from "./Sidebar/Sidebar";
 import Content from "./Content/Content";
-import Navbar from "./Navbar/Navbar";
 import { useSidebarTitle } from "../context/SidebarTitleContext";
 
 const Dashboard = () => {
@@ -43,10 +42,6 @@ const Dashboard = () => {
     };
     fetchDashboard();
   }, []);
-
-  const handleSidebarToggle = () => {
-    setIsSidebarOpen(!isSidebarOpen);
-  };
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);

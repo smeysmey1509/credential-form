@@ -3,7 +3,10 @@ import "./Button.css";
 
 const Button = () => {
   return (
-    <div className="flex items-center justify-center bg-gray-500">
+    <div className="flex flex-col gap-5 items-center justify-center p-10">
+      <button className="button--primary-sm-default">Button</button>
+      <button className="button--primary-md-default">Button</button>
+      
       <button className="button--primary-lg-default">Button</button>
     </div>
   );

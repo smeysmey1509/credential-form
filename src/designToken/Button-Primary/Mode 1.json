@@ -47,7 +47,7 @@
     "scl-button-primary-lg": {
       "scl-button-color-primary-default-xl": {
         "$type": "color",
-        "$value": "#1890ff"
+        "$value": "red"
       },
       "scl-button-text-size-primary-default-xl": {
         "$type": "dimension",

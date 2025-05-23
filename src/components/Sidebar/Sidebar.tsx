@@ -31,7 +31,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isSidebarOpen }) => {
 
   const handleSubmenuClick = (menuIndex: number, submenuIndex: number) => {
     setActiveSubmenu({ menu: menuIndex, submenu: submenuIndex });
-    setActiveMenu(menuIndex); // Optionally set active menu as well
+    setActiveMenu(menuIndex);
   };
 
   return (
@@ -53,7 +53,12 @@ const Sidebar: React.FC<SidebarProps> = ({ isSidebarOpen }) => {
                   onClick={() => handleSubmenuToggle(index)}
                   className={`flex items-center gap-2 cursor-pointer select-none
                     opacity-60 hover:opacity-100
-                    ${activeMenu === index ? "opacity-100 rounded" : ""}
+                        ${
+                          activeMenu === index ||
+                          (activeSubmenu && activeSubmenu.menu === index)
+                            ? "opacity-100 rounded"
+                            : ""
+                        }
                   `}
                 >
                   <AiOutlineHome className="text-xl font-bold" />
