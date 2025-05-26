@@ -26,7 +26,6 @@ const Sidebar: React.FC<SidebarProps> = ({ isSidebarOpen }) => {
     setOpenSubmenus((prev) =>
       prev.map((open, i) => (i === index ? !open : open))
     );
-    setActiveMenu(index);
   };
 
   const handleSubmenuClick = (menuIndex: number, submenuIndex: number) => {
@@ -50,7 +49,9 @@ const Sidebar: React.FC<SidebarProps> = ({ isSidebarOpen }) => {
             <ul className="mt-4">
               <li className="mb-4 relative">
                 <div
-                  onClick={() => handleSubmenuToggle(index)}
+                  onClick={() => {
+                    handleSubmenuToggle(index);
+                  }}
                   className={`flex items-center gap-2 cursor-pointer select-none
                     opacity-60 hover:opacity-100
                         ${

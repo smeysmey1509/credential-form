@@ -6,7 +6,6 @@ import RegisterPage from "./pages/RegisterPage";
 import Dashboard from "./components/Dashboard";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import PublicRoute from "./routes/PublicRoute";
-import Button from "./components/Button/Button";
 
 function App() {
   return (
@@ -36,7 +35,6 @@ function App() {
           </ProtectedRoute>
         }
       />
-      <Route path="/button" element={<Button />} />
       <Route
         path="*"
         element={
