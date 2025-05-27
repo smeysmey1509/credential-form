@@ -3,6 +3,7 @@ import { AiOutlineHome } from "react-icons/ai";
 import { IoIosArrowDown } from "react-icons/io";
 import { BsDash } from "react-icons/bs";
 import { useSidebarTitle } from "../../context/SidebarTitleContext";
+import { NavLink } from "react-router-dom";
 
 interface SidebarProps {
   isSidebarOpen: boolean;
@@ -78,24 +79,23 @@ const Sidebar: React.FC<SidebarProps> = ({ isSidebarOpen }) => {
                   } select-none`}
                 >
                   <ul className="flex flex-col gap-4 ml-4 mt-4">
-                    {item?.service?.map((serviceItem, serviceIndex) => (
-                      <li
-                        key={serviceIndex}
-                        className={`flex items-center gap-1 cursor-pointer font-bold text-[13px] select-none
-                          opacity-60 hover:opacity-100
-                          ${
-                            activeSubmenu &&
-                            activeSubmenu.menu === index &&
-                            activeSubmenu.submenu === serviceIndex
-                              ? "opacity-100 rounded"
-                              : ""
+                    {item?.service?.map((serviceItem, serviceIndex) => {
+                      return (
+                        <NavLink
+                          key={serviceIndex}
+                          to={`/dashboard${item?.path?.[serviceIndex] ?? ""}`}
+                          className={({ isActive }) =>
+                            `flex items-center gap-1 font-medium text-[13px] cursor-pointer
+     ${isActive ? "opacity-100 font-bold" : "opacity-60 hover:opacity-100"}`
                           }
-                        `}
-                        onClick={() => handleSubmenuClick(index, serviceIndex)}
-                      >
-                        <BsDash /> {serviceItem}
-                      </li>
-                    ))}
+                          onClick={() =>
+                            handleSubmenuClick(index, serviceIndex)
+                          }
+                        >
+                          <BsDash /> {serviceItem}
+                        </NavLink>
+                      );
+                    })}
                   </ul>
                 </div>
               </li>
