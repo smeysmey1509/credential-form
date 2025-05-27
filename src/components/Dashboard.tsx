@@ -23,14 +23,11 @@ const Dashboard = () => {
       }
 
       try {
-        const res = await axios.get(
-          "http://localhost:5000/api/v1/profile",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const res = await axios.get("http://localhost:5000/api/v1/profile", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         setMessage(res.data.message);
       } catch (err) {
         console.error("Error fetching dashboard data:", err);
@@ -56,7 +53,7 @@ const Dashboard = () => {
     <div className="flex min-h-screen">
       <Sidebar isSidebarOpen={isSidebarOpen} />
       <div
-        className={`fixed ${
+        className={`fixed h-full ${
           isSidebarOpen ? "w-full left-0" : "w-[85%] left-[15%] right-0"
         } flex flex-col bg-[#f4f7fa] transition-all duration-300 ease-in-out`}
       >

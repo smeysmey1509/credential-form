@@ -7,9 +7,8 @@ import {
   IoCartOutline,
   IoNotificationsOutline,
 } from "react-icons/io5";
-import { MdDarkMode } from "react-icons/md";
+import { MdDarkMode, MdOutlineLogout } from "react-icons/md";
 import { FaUserAlt } from "react-icons/fa";
-import { c } from "vite/dist/node/moduleRunnerTransport.d-DJ_mE5sf";
 
 interface HeaderProps {
   toggleSidebar: () => void;
@@ -21,6 +20,15 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
   const handleSidebarToggle = () => {
     setIsSidebarOpen(!isSidebarOpen);
     toggleSidebar();
+  };
+
+  const handleLogout = () => {
+    const confirmLogout = window.confirm("Are you sure you want to logout?");
+    if (confirmLogout) {
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      window.location.href = "/login";
+    }
   };
 
   return (
@@ -53,6 +61,12 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
         </li>
         <li className="cursor-pointer p-1 border rounded">
           <FaUserAlt />
+        </li>
+        <li
+          className="cursor-pointer p-1 border rounded"
+          onClick={() => handleLogout()}
+        >
+          <MdOutlineLogout />
         </li>
       </ul>
     </div>

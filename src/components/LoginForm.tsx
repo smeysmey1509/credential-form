@@ -16,15 +16,16 @@ const LoginForm = () => {
     e.preventDefault();
 
     try {
-      const response = await axios.post(
-        "http://localhost:5000/api/v1/login",
-        { name, password }
-      );
+      const response = await axios.post("http://localhost:5000/api/v1/login", {
+        name,
+        password,
+      });
 
       const token = response.data.token;
 
       if (token) {
         localStorage.setItem("token", response.data.token);
+        localStorage.setItem("user", JSON.stringify(response.data.user));
         navigate("/dashboard");
       }
     } catch (err) {
