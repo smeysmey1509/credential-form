@@ -14,7 +14,7 @@ const Permission = () => {
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        const token = localStorage.getItem("token");
+        const token = localStorage.getItem("accessToken");
 
         if (!token) {
             setError("Unauthorized");

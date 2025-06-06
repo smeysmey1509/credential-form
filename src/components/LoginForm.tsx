@@ -17,9 +17,12 @@ const LoginForm = () => {
 
         try {
             const response = await axios.post("http://localhost:5002/api/v1/login", {
-                name,
-                password,
-            });
+                    name,
+                    password,
+                },
+                {
+                    withCredentials: true,
+                });
 
             const accessToken = response.data.accessToken;
 

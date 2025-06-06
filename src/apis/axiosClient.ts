@@ -1,16 +1,15 @@
-import axios from "axios";
+import axios from 'axios';
 
 const axiosClient = axios.create({
-    baseURL: "http://localhost:5002/api/v1",
-    // withCredentials: true
+    baseURL: 'http://localhost:5002/api/v1',
+    withCredentials: true, // Required to send cookies like refreshToken
 });
 
-// Attach access token to request
+// Add the access token to headers on every request
 axiosClient.interceptors.request.use(
     (config) => {
-        const token = localStorage.getItem("accessToken");
-        console.log(token);
-        if (token && config.headers) {
+        const token = localStorage.getItem('accessToken');
+        if (token) {
             config.headers.Authorization = `Bearer ${token}`;
         }
         return config;
@@ -18,41 +17,37 @@ axiosClient.interceptors.request.use(
     (error) => Promise.reject(error)
 );
 
-// Refresh token logic on 401 errors
+// Handle expired token (401)
 axiosClient.interceptors.response.use(
     (response) => response,
     async (error) => {
         const originalRequest = error.config;
 
-        // Avoid infinite loop
-        if (
-            error.response?.status === 401 &&
-            !originalRequest._retry
-        ) {
+        // If token expired and we haven't already retried this request
+        if (error.response?.status === 403 && !originalRequest._retry) {
             originalRequest._retry = true;
 
             try {
-                // Call refresh token endpoint
+                // Try to get a new access token
                 const res = await axios.post(
-                    "http://localhost:5002/api/v1/refresh",
+                    'http://localhost:5002/api/v1/refresh',
                     {},
                     {withCredentials: true}
                 );
 
                 const newAccessToken = res.data.accessToken;
-                localStorage.setItem("accessToken", newAccessToken);
+                localStorage.setItem('accessToken', newAccessToken);
 
-                // Update Authorization header and retry original request
+                // Add new token to header and retry original request
                 originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
                 return axiosClient(originalRequest);
-            } catch (refreshError) {
-                // Refresh token failed - log out user or redirect to login
-                localStorage.removeItem("accessToken");
-                localStorage.removeItem("user");
-                window.location.href = "/login";
-                return Promise.reject(refreshError);
+            } catch (refreshErr) {
+                console.error('Refresh failed:', refreshErr);
+                // Optional: redirect to login if refresh fails
+                window.location.href = '/login';
             }
         }
+
         return Promise.reject(error);
     }
 );
