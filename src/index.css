@@ -1,8 +1,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap');
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 html {
-    transition: background-color 0.3s, color 0.3s;
+    transition: background-color 5s ease, color 5s ease;
 }
 
 body {
@@ -12,5 +14,5 @@ body {
     font-family: "Nunito", sans-serif;
     font-style: normal;
     user-select: none;
+    transition: background-color 0.5s ease, color 0.5s ease;
 }
-

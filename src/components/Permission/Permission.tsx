@@ -45,7 +45,7 @@ const Permission = () => {
         <div className="flex flex-col align-items-center gap-5">
             <h2>Permission</h2>
             <div className="w-full h-full">
-                <table className="w-full text-left table-auto min-w-max">
+                <table className="w-full text-left table-auto min-w-max bg-transparent">
                     <thead>
                     <tr>
                         <th className="p-4 border-b border-slate-300 bg-slate-50">

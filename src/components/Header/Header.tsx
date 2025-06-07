@@ -11,6 +11,7 @@ import {MdDarkMode, MdOutlineLogout} from "react-icons/md";
 import {FaUserAlt} from "react-icons/fa";
 import {useNavigate} from "react-router-dom";
 import axios from "axios";
+import {useTheme} from "../../hook/useTheme";
 
 interface HeaderProps {
     toggleSidebar: () => void;
@@ -18,25 +19,9 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({toggleSidebar}) => {
     const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
-    const [isDark, setIsDark] = useState(() => {
-        return localStorage.getItem("theme") === "dark";
-    });
+    const {theme, toggleTheme} = useTheme();
+
     const navigate = useNavigate();
-
-    useEffect(() => {
-        const html = document.documentElement;
-        if (isDark) {
-            html.classList.add('dark');
-            localStorage.setItem('theme', 'dark');
-        } else {
-            html.classList.remove('dark');
-            localStorage.setItem('theme', 'light');
-        }
-    }, [isDark]);
-
-    const handleToggleDarmode = () => {
-        setIsDark(!isDark);
-    }
 
     const handleSidebarToggle = () => {
         setIsSidebarOpen(!isSidebarOpen);
@@ -51,13 +36,14 @@ const Header: React.FC<HeaderProps> = ({toggleSidebar}) => {
     };
 
     return (
-        <div className="header flex items-stretch justify-between pl-6 pr-6 shadow-custom bg-[#ffffff]">
-            <div className="flex items-center gap-8 pt-5 pb-5">
-                <button className="text-xl font-normal text-[#687b94]">
+        <div
+            className="w-full h-content flex items-stretch justify-between px-6 bg-[#ffffff] dark:bg-[#19191C]">
+            <div className="w-full flex items-center gap-8">
+                <button className="text-xl font-normal text-[#687b94] cursor-pointer ">
                     <RiMenu2Line onClick={handleSidebarToggle}/>
                 </button>
                 <div
-                    className="flex items-center rounded-md gap-2 bg-[#ffffff] border border-[#eff2ff] p-1 pl-4 pr-4">
+                    className="min-w-[20rem] flex items-center rounded-md gap-2 bg-[#ffffff] dark:bg-[#28282B] dark:border-none dark:text-[#FFFFFF] border border-[#eff2ff] p-1 pl-4 pr-4">
                     <IoSearchOutline className="text-sm text-[#687b94]"/>
                     <input
                         type="text"
@@ -66,11 +52,11 @@ const Header: React.FC<HeaderProps> = ({toggleSidebar}) => {
                     />
                 </div>
             </div>
-            <ul className="flex items-center gap-5 pt-5 pb-5 text-xl text-[#687b94]">
+            <ul className="flex items-center gap-5 pt-5 pb-5 text-xl text-[#687b94] dark:color-[rgba(255, 255, 255, 0.6)]">
                 <li className="cursor-pointer p-1 border rounded">
                     <IoLanguageSharp/>
                 </li>
-                <li className="cursor-pointer p-1 border rounded" onClick={handleToggleDarmode}>
+                <li className="cursor-pointer p-1 border rounded" onClick={toggleTheme}>
                     <MdDarkMode/>
                 </li>
                 <li className="cursor-pointer p-1 border rounded">
