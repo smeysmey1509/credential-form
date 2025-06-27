@@ -1,19 +1,21 @@
 import "./App.css";
-import {Routes, Route} from "react-router-dom";
+import {Routes, Route, Navigate} from "react-router-dom";
 import {lazy, Suspense} from "react";
+import ProductTable from "./pages/dashboard/ProductTable";
 
-const Ecommerce = lazy(() => import("./components/Ecommerce/Ecommerce"));
-const LoginPage = lazy(() => import("./pages/LoginPage"));
-const HomePage = lazy(() => import("./pages/HomePage"));
-const RegisterPage = lazy(() => import("./pages/RegisterPage"));
-const Dashboard = lazy(() => import("./pages/Dashboard"));
+const Ecommerce = lazy(() => import("./pages/dashboard/Ecommerce"));
+const LoginPage = lazy(() => import("./pages/auth/LoginPage"));
+const HomePage = lazy(() => import("./pages/dashboard/HomePage"));
+const RegisterPage = lazy(() => import("./pages/auth/RegisterPage"));
+const Dashboard = lazy(() => import("./components/feature/dashboard/Layout"));
 const ProtectedRoute = lazy(() => import("./routes/ProtectedRoute"));
 const PublicRoute = lazy(() => import("./routes/PublicRoute"));
-const Product = lazy(() => import("./components/Product/Product"));
+const Product = lazy(() => import("./pages/dashboard/Product"));
 const Authentication = lazy(
-    () => import("./components/Authentication/Authentication")
+    () => import("./pages/dashboard/Authentication")
 );
-const Permission = lazy(() => import("./components/Permission/Permission"));
+const Permission = lazy(() => import("./pages/dashboard/Permission"));
+const ActivityLog = lazy(() => import("./pages/dashboard/ActivityLog"));
 
 function App() {
     return (
@@ -50,10 +52,8 @@ function App() {
                         </ProtectedRoute>
                     }
                 >
-                    <Route path="product" element={<Product/>}/>
-                    <Route path="authentication" element={<Authentication/>}/>
-                    <Route path="permission" element={<Permission/>}/>
-                    <Route path="ecommerce" element={<Ecommerce/>}/>
+                    <Route index element={<Navigate to="product" replace/>}/>
+                    <Route index path="product" element={<Product/>}/>
                 </Route>
                 <Route
                     path="*"

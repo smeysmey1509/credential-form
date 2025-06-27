@@ -13,6 +13,15 @@ body {
     box-sizing: border-box;
     font-family: "Nunito", sans-serif;
     font-style: normal;
-    user-select: none;
-    transition: background-color 0.5s ease, color 0.5s ease;
+    /*user-select: none;*/
+}
+
+/* Applies to all scrollbars */
+.scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+    background-color: #444;
+    border-radius: 6px;
 }
