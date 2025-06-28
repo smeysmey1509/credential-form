@@ -31,18 +31,18 @@ const Layout = () => {
     };
 
     return (
-        <div className="flex h-screen max-h-full">
+        <main className="flex max-h-full">
             <Sidebar isSidebarOpen={isSidebarOpen}/>
             <div
-                className={`fixed h-full overflow-y-auto ${
-                    isSidebarOpen ? "w-full h-screen left-0" : "w-[85%] left-[15%] right-0"
+                className={`fixed max-h-full overflow-y-auto ${
+                    isSidebarOpen ? "w-full h-screen max-h-full left-0" : "w-[85%] left-[15%] right-0"
                 } flex flex-col bg-[#fff] transition-all duration-300 ease-in-out`}
             >
                 <Header toggleSidebar={toggleSidebar}/>
                 <Content/>
                 <Footer/>
             </div>
-        </div>
+        </main>
     );
 };
 

@@ -1,21 +1,16 @@
 import "./App.css";
 import {Routes, Route, Navigate} from "react-router-dom";
 import {lazy, Suspense} from "react";
-import ProductTable from "./pages/dashboard/ProductTable";
 
-const Ecommerce = lazy(() => import("./pages/dashboard/Ecommerce"));
 const LoginPage = lazy(() => import("./pages/auth/LoginPage"));
-const HomePage = lazy(() => import("./pages/dashboard/HomePage"));
+const HomePage = lazy(() => import("./pages/auth/HomePage"));
 const RegisterPage = lazy(() => import("./pages/auth/RegisterPage"));
 const Dashboard = lazy(() => import("./components/feature/dashboard/Layout"));
 const ProtectedRoute = lazy(() => import("./routes/ProtectedRoute"));
 const PublicRoute = lazy(() => import("./routes/PublicRoute"));
-const Product = lazy(() => import("./pages/dashboard/Product"));
-const Authentication = lazy(
-    () => import("./pages/dashboard/Authentication")
-);
-const Permission = lazy(() => import("./pages/dashboard/Permission"));
-const ActivityLog = lazy(() => import("./pages/dashboard/ActivityLog"));
+const Product = lazy(() => import("./components/feature/dashboard/product/ListProduct"));
+const CreateProduct = lazy(() => import("./components/feature/dashboard/product/CreateProduct"))
+const ListProduct = lazy(() => import("./components/feature/dashboard/product/ListProduct"))
 
 function App() {
     return (
@@ -53,7 +48,11 @@ function App() {
                     }
                 >
                     <Route index element={<Navigate to="product" replace/>}/>
-                    <Route index path="product" element={<Product/>}/>
+
+                    //ProductRoute
+                    <Route path="product" element={<Product/>}/>
+                    <Route path="product/create" element={<CreateProduct/>}/>
+                    <Route path="product/listproduct" element={<ListProduct/>}/>
                 </Route>
                 <Route
                     path="*"

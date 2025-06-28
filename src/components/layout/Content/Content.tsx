@@ -9,12 +9,12 @@ const Content = () => {
     const pathnames = location.pathname.split("/").filter((x) => x);
 
     const user = getCookie("user");
-    const userName = user ? JSON.parse(user).name : "Guest";
+    // const userName = user ? JSON.parse(user).name : "Guest";
 
     return (
         <div
-            className="w-full max-h-full flex flex-col gap-4 p-6 dark:bg-[#2D2D30] dark:text-[#ffffff]">
-            <div className="w-full flex items-center justify-between max-h-1/2">
+            className="w-full max-h-full h-fit flex flex-col gap-4 p-6 dark:bg-[#2D2D30] dark:text-[#ffffff]">
+            <div className="w-full h-fit flex items-center justify-between max-h-1/2">
                 <div>
                     <ol className="breadcrumb flex list-none p-0 items-center gap-2 text-sm font-bold">
                         {pathnames?.map((value, index) => {
@@ -33,11 +33,11 @@ const Content = () => {
                             );
                         })}
                     </ol>
-                    <h2 className="text-xl font-bold">Hello, {userName || "null"}</h2>
+                    <h2 className="text-xl font-bold">Hello, {user || "null"}</h2>
                 </div>
                 <div>B</div>
             </div>
-            <div className="w-full h-full relative bg-white dark:bg-[#19191C] rounded-lg shadow-lg p-6">
+            <div className="flex w-full relative bg-white dark:bg-[#19191C] rounded-lg shadow p-6 ">
                 <Outlet/>
             </div>
         </div>

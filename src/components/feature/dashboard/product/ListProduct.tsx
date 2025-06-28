@@ -1,12 +1,12 @@
 import React, {useEffect, useState, useRef} from "react";
-import Logo from '../../assets/react.svg'
+import Logo from '../../../../assets/react.svg'
 import {CiEdit} from "react-icons/ci";
 import {MdOutlineKeyboardArrowDown} from "react-icons/md";
 import {RiDeleteBinLine} from "react-icons/ri";
-import ProductService from "../../services/common/ProductService/ProductService";
-import {ProductType} from "../../types/ProductType";
+import ProductService from "../../../../services/common/ProductService/ProductService";
+import {ProductType} from "../../../../types/ProductType";
 import {motion, AnimatePresence} from "framer-motion";
-import socket from '../../services/socket/socket'
+import socket from '../../../../services/socket/socket'
 
 const toolbarVariants = {
     hidden: {
@@ -56,7 +56,7 @@ const dropdownVariants = {
     },
 };
 
-const Product: React.FC = () => {
+const ListProduct: React.FC = () => {
     const [products, setProducts] = useState<ProductType[]>([]);
     const [selectedProductIds, setSelectedProductIds] = useState<string[]>([]);
     const [currentPage, setCurrentPage] = useState<number>(1);
@@ -71,6 +71,8 @@ const Product: React.FC = () => {
     const debounceTimeout = useRef<NodeJS.Timeout | null>(null);
 
     useEffect(() => {
+
+        handleFetchProducts();
 
         const handleCreated = (newProduct: ProductType) => {
             if (!newProduct || !newProduct._id || !newProduct.name) return; // Validate
@@ -112,10 +114,6 @@ const Product: React.FC = () => {
             socket.off("product:edit", handleProductUpdated);
             socket.off("product:deleted", handleDeleted);
         };
-    }, [currentPage, itemsPerPage]);
-
-    useEffect(() => {
-        handleFetchProducts();
     }, [currentPage, itemsPerPage]);
 
     const handleFoundProduct = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -415,4 +413,4 @@ const Product: React.FC = () => {
     );
 };
 
-export default Product;
+export default ListProduct;

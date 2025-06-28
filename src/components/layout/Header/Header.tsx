@@ -1,4 +1,4 @@
-import React, {lazy, useState} from "react";
+import React, {lazy, useState, useRef, useEffect} from "react";
 import "./Header.css";
 import {RiMenu2Line} from "react-icons/ri";
 import {
@@ -25,8 +25,23 @@ const Header: React.FC<HeaderProps> = ({toggleSidebar}) => {
     const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
     const [showNotification, setShowNotification] = useState<boolean>(false);
     const {toggleTheme} = useTheme();
+    const containerRef = useRef<HTMLDivElement>(null);
 
     const navigate = useNavigate();
+
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+                setShowNotification(false);
+            }
+        };
+
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, []);
+
 
     const handleSidebarToggle = () => {
         setIsSidebarOpen(!isSidebarOpen);
@@ -46,7 +61,7 @@ const Header: React.FC<HeaderProps> = ({toggleSidebar}) => {
 
     return (
         <div
-            className="sticky top-0 z-11 w-full h-content flex items-stretch justify-between px-6 bg-[#ffffff] dark:bg-[#19191C]">
+            className="sticky top-0 z-11 w-full h-content flex items-stretch justify-between px-6 bg-[#ffffff] dark:bg-[#19191C] shadow-md">
             <div className="w-full flex items-center gap-8">
                 <button className="text-xl font-normal text-[#687b94] cursor-pointer ">
                     <RiMenu2Line onClick={handleSidebarToggle}/>
@@ -62,28 +77,29 @@ const Header: React.FC<HeaderProps> = ({toggleSidebar}) => {
                 </div>
             </div>
             <ul className="flex items-center gap-5 pt-5 pb-5 text-xl text-[#687b94] dark:color-[rgba(255, 255, 255, 0.6)]">
-                <li className="cursor-pointer p-1 border rounded">
+                <li className="cursor-pointer p-1 border rounded dark:border-gray-600">
                     <IoLanguageSharp/>
                 </li>
-                <li className="cursor-pointer p-1 border rounded" onClick={toggleTheme}>
+                <li className="cursor-pointer p-1 border rounded dark:border-gray-600" onClick={toggleTheme}>
                     <MdDarkMode/>
                 </li>
-                <li className="cursor-pointer p-1 border rounded">
+                <li className="cursor-pointer p-1 border rounded dark:border-gray-600">
                     <IoCartOutline/>
                 </li>
-                <li className="cursor-pointer p-1 border rounded relative" onClick={hanldeNotification}>
-                    <IoNotificationsOutline/>
+                <li className="cursor-pointer p-1 border rounded relative dark:border-gray-600"
+                    onClick={hanldeNotification}>
+                    <IoNotificationsOutline ref={containerRef}/>
                     <AnimatePresence>
                         {showNotification && (
                             <Notification/>
                         )}
                     </AnimatePresence>
                 </li>
-                <li className="cursor-pointer p-1 border rounded">
+                <li className="cursor-pointer p-1 border rounded dark:border-gray-600">
                     <FaUserAlt/>
                 </li>
                 <li
-                    className="cursor-pointer p-1 border rounded"
+                    className="cursor-pointer p-1 border rounded dark:border-gray-600"
                     onClick={() => handleLogout()}
                 >
                     <MdOutlineLogout/>

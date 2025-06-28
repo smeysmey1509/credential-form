@@ -10,7 +10,9 @@ export default {
     ],
     theme: {
         extend: {
-
+            boxShadow: {
+                'custom-shadow': '0px 6px 16px 2px rgba(0, 0, 0, 0.05)',
+            },
             colors: {
                 dark: {
                     DEFAULT: '#19191C', // now you can use `bg-dark` and `dark:bg-dark`
