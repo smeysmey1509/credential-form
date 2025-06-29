@@ -189,7 +189,7 @@ const ListProduct: React.FC = () => {
 
     return (
         <>
-            <div>
+            <div className="w-full h-full flex ">
                 <input
                     className="w-3/10 bg-transparent placeholder:text-slate-400 text-white text-sm border border-slate-200 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow"
                     type='text' placeholder="Serach ur product" value={searchInput.query}
@@ -249,8 +249,9 @@ const ListProduct: React.FC = () => {
                             </td>
                             <td className='px-6 py-4' scope="row">
                                 <div className='w-full flex items-center gap-2'>
-                                    <span className={'w-[40px] h-[40px] bg-[#F9F9FA] dark:bg-[#2A2F31] rounded-sm'}>
-                                      <img src={Logo} alt='product-img' className="p-2"/>
+                                    <span className={'w-[40px] h-[40px] bg-[#F9F9FA] dark:bg-[#2A2F31]'}>
+                                      <img src={product?.image} alt='product-img'
+                                           className="p-1 w-full h-full object-cover rounded-[50%]"/>
                                     </span>
                                     <div>
                                         <p className={"text-[#000000] dark:text-white text-[14px] font-bold flex items-center"}>{product?.name}</p>

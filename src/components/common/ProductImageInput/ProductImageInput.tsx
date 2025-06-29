@@ -1,7 +1,14 @@
-import React, {useRef} from "react";
+import React, {useRef, useState} from "react";
 
-const ProductImageInput = () => {
+interface ProductImageInputProps {
+    label?: string;
+    value?: File[];
+    onChange?: (files: File[]) => void;
+}
+
+const ProductImageInput: React.FC<ProductImageInputProps> = ({label, onChange, value}) => {
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const [selectedImages, setSelectedImages] = useState<string[]>([]);
 
     const handleClick = () => {
         fileInputRef.current?.click();
@@ -10,18 +17,31 @@ const ProductImageInput = () => {
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const files = event.target.files;
         if (files) {
+            const fileArray = Array.from(files);
+
+            // Call the parent's onChange with File[]
+            if (onChange) {
+                onChange(fileArray);
+            }
+
+            const imageUrls = fileArray.map((file) =>
+                URL.createObjectURL(file)
+            );
+            setSelectedImages(imageUrls);
+
             console.log("Selected files:", files);
-            // Handle file uploads here
+            // Handle file uploads here if needed
         }
     };
 
     return (
         <div className="w-full flex flex-col gap-2">
             <label className="text-[14px] font-medium text-[#212b37] dark:text-white">
-                Product Images
+                {label}
             </label>
+
             <div
-                className="border border-dashed border-[#dee7f1] rounded-lg p-4 flex flex-col items-center justify-center cursor-pointer hover:border-[#5c67f7] transition"
+                className="h-[80px] border border-dashed border-[#dee7f1] dark:border-gray-700 rounded-lg p-4 flex flex-col items-center justify-center cursor-pointer hover:border-[#5c67f7] transition"
                 onClick={handleClick}
             >
                 <p className="text-sm text-gray-500">
@@ -31,16 +51,31 @@ const ProductImageInput = () => {
                 <input
                     type="file"
                     multiple
+                    accept="image/*"
                     ref={fileInputRef}
                     onChange={handleFileChange}
                     className="hidden"
                 />
             </div>
+
+            {selectedImages.length > 0 && (
+                <div className="grid grid-cols-3 gap-2 mt-2">
+                    {selectedImages.map((src, index) => (
+                        <img
+                            key={index}
+                            src={src}
+                            alt={`Selected ${index}`}
+                            className="w-full h-[100px] object-cover rounded border"
+                        />
+                    ))}
+                </div>
+            )}
+
             <label
                 htmlFor="product-description-add"
                 className="text-[12px] font-normal text-[#6e829f] mt-1"
             >
-                * Minimum of 6 images are need to be uploaded, all images should be uniformly maintained, width and
+                * Minimum of 6 images need to be uploaded, all images should be uniformly maintained, width and
                 height to the container.
             </label>
         </div>

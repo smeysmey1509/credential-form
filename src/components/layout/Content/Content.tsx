@@ -13,7 +13,7 @@ const Content = () => {
 
     return (
         <div
-            className="w-full max-h-full h-fit flex flex-col gap-4 p-6 dark:bg-[#2D2D30] dark:text-[#ffffff]">
+            className="w-full max-h-full h-fit flex flex-col gap-4 p-6 bg-[#f9fafc] dark:bg-[#2D2D30] dark:text-[#ffffff]">
             <div className="w-full h-fit flex items-center justify-between max-h-1/2">
                 <div>
                     <ol className="breadcrumb flex list-none p-0 items-center gap-2 text-sm font-bold">
@@ -37,7 +37,7 @@ const Content = () => {
                 </div>
                 <div>B</div>
             </div>
-            <div className="flex w-full relative bg-white dark:bg-[#19191C] rounded-lg shadow p-6 ">
+            <div className="flex flex-col w-full relative bg-white dark:bg-[#19191C] rounded-lg shadow p-6 ">
                 <Outlet/>
             </div>
         </div>

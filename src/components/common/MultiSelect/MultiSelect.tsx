@@ -1,14 +1,21 @@
 import React, {useState, useRef, useEffect} from "react";
-import {RiArrowDownSFill} from "react-icons/ri";
 
 interface MultiSelectProps {
     label: string;
     options: string[];
     placeholder?: string;
+    value?: string[];
+    onChange?: (selected: string[]) => void;
 }
 
-const MultiSelect: React.FC<MultiSelectProps> = ({options, placeholder = "Select options", label}) => {
-    const [selected, setSelected] = useState<string[]>([]);
+const MultiSelect: React.FC<MultiSelectProps> = ({
+                                                     options,
+                                                     placeholder = "Select options",
+                                                     label,
+                                                     value,
+                                                     onChange,
+                                                 }) => {
+    const [selected, setSelected] = useState<string[]>(value || []);
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const [search, setSearch] = useState<string>("");
 
@@ -18,6 +25,7 @@ const MultiSelect: React.FC<MultiSelectProps> = ({options, placeholder = "Select
         const handleClickOutside = (event: MouseEvent) => {
             if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
                 setIsOpen(false);
+                setSearch("");
             }
         };
 
@@ -27,16 +35,36 @@ const MultiSelect: React.FC<MultiSelectProps> = ({options, placeholder = "Select
 
     const toggleDropdown = () => setIsOpen((prev) => !prev);
 
+    const updateSelected = (newSelected: string[]) => {
+        setSelected(newSelected);
+        onChange?.(newSelected);
+    };
+
     const handleSelect = (option: string) => {
         if (selected.includes(option)) {
-            setSelected(selected.filter((item) => item !== option));
+            updateSelected(selected.filter((item) => item !== option));
         } else {
-            setSelected([...selected, option]);
+            updateSelected([...selected, option]);
         }
+        setSearch("");
     };
 
     const handleRemove = (option: string) => {
-        setSelected(selected.filter((item) => item !== option));
+        updateSelected(selected.filter((item) => item !== option));
+    };
+
+    const handleAddCustom = () => {
+        if (search.trim() && !selected.includes(search.trim())) {
+            updateSelected([...selected, search.trim()]);
+        }
+        setSearch("");
+    };
+
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            handleAddCustom();
+        }
     };
 
     const filteredOptions = options.filter((opt) =>
@@ -45,10 +73,12 @@ const MultiSelect: React.FC<MultiSelectProps> = ({options, placeholder = "Select
 
     return (
         <div ref={containerRef} className="relative">
-            <label className="block text-sm font-medium text-gray-700 dark:text-white">{label}</label>
+            <label className="block text-sm font-medium text-[#212b37] dark:text-white">
+                {label}
+            </label>
             <div
                 onClick={toggleDropdown}
-                className="flex flex-wrap items-center text-center gap-2 mt-2 border border-[#dee7f1] rounded font-normal text-[13px] px-[0.75rem] py-[0.375rem] bg-white cursor-pointer focus-within:border-gray-500 transition"
+                className="flex flex-wrap items-center text-center gap-2 mt-2 border border-[#dee7f1] dark:border-gray-700 rounded font-normal text-[13px] px-[0.75rem] py-[0.375rem] bg-white dark:bg-[#19191C] cursor-pointer focus-within:border-gray-500 transition"
             >
                 {selected.length === 0 ? (
                     <span className="text-gray-400 text-sm">{placeholder}</span>
@@ -56,16 +86,16 @@ const MultiSelect: React.FC<MultiSelectProps> = ({options, placeholder = "Select
                     selected.map((item, index) => (
                         <div
                             key={index}
-                            className="flex items-center justify-center text-center bg-[#5c67f7] rounded px-3 text-sm font-medium text-white"
+                            className="flex items-center bg-[#5c67f7] rounded px-2 py-1 text-sm font-medium text-white"
                         >
                             {item}
-                            <span className="mx-1">|</span>
                             <button
+                                type="button"
                                 onClick={(e) => {
                                     e.stopPropagation();
                                     handleRemove(item);
                                 }}
-                                className="ml-1 text-white opacity-75 hover:opacity-100 cursor-pointer"
+                                className="ml-2 text-white opacity-75 hover:opacity-100 cursor-pointer"
                             >
                                 ×
                             </button>
@@ -73,23 +103,24 @@ const MultiSelect: React.FC<MultiSelectProps> = ({options, placeholder = "Select
                     ))
                 )}
             </div>
-
             {isOpen && (
-                <div className="absolute z-10 w-full bg-white border border-gray-300 rounded shadow-lg">
+                <div
+                    className="absolute z-10 w-full border bg-white border-gray-300 dark:bg-[#19191C] dark:border-gray-700 rounded shadow-lg">
                     <input
                         type="text"
-                        placeholder="Search"
+                        placeholder="Type or search..."
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
-                        className="w-full px-[0.75rem] py-[0.375rem] border-b border-gray-200 text-sm outline-none"
+                        onKeyDown={handleKeyDown}
+                        className="w-full px-[0.75rem] py-[0.375rem] border-b dark:border-b-gray-700 border-gray-200 dark:bg-[#19191C] text-sm outline-none"
                     />
-                    <ul className="overflow-y-auto">
+                    <ul className="max-h-60 overflow-y-auto">
                         {filteredOptions.map((option, index) => (
                             <li
                                 key={index}
                                 onClick={() => handleSelect(option)}
-                                className={`px-[0.75rem] py-[0.375rem] text-sm hover:bg-gray-100 cursor-pointer ${
-                                    selected.includes(option) ? "bg-gray-100" : ""
+                                className={`px-[0.75rem] py-[0.375rem] text-sm hover:bg-gray-100 dark:hover:bg-[#5c67f7] cursor-pointer ${
+                                    selected.includes(option) ? "bg-gray-100 dark:bg-[#5c67f7]" : ""
                                 }`}
                                 role="option"
                                 aria-selected={selected.includes(option)}
@@ -97,6 +128,14 @@ const MultiSelect: React.FC<MultiSelectProps> = ({options, placeholder = "Select
                                 {option}
                             </li>
                         ))}
+                        {filteredOptions.length === 0 && search.trim() && (
+                            <li
+                                onClick={handleAddCustom}
+                                className="px-[0.75rem] py-[0.375rem] text-sm text-blue-600 hover:bg-gray-100 dark:hover:bg-[#5c67f7] cursor-pointer"
+                            >
+                                Add "{search.trim()}"
+                            </li>
+                        )}
                     </ul>
                 </div>
             )}
