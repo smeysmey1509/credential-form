@@ -1,6 +1,6 @@
 .scl--table-container {
     background-color: #fff;
-    border-radius: 8px;
+    border-radius: 4px;
     padding: 16px;
     overflow-x: auto;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
@@ -18,7 +18,7 @@
     padding: 12px 16px;
     text-align: left;
     font-size: 14px;
-    color: #374151;
+    color: #8A92A6;
 }
 
 /* Set header width */

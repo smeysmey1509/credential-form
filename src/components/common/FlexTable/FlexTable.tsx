@@ -47,7 +47,7 @@ const FlexTable: React.FC<UserTableProps> = ({
                                              }) => {
     const [actionCellId, setActionCellId] = useState<string | number | null>(null);
 
-    const actionRef = useRef(null);
+    const actionRef = useRef<HTMLInputElement>(null);
 
     // Outside click handler
     useEffect(() => {
