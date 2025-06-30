@@ -1,0 +1,136 @@
+.scl--table-container {
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 16px;
+    overflow-x: auto;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.scl--flex-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 800px;
+}
+
+.scl--flex-table th,
+.scl--flex-table td {
+    border-bottom: 1px solid #e5e7eb;
+    padding: 12px 16px;
+    text-align: left;
+    font-size: 14px;
+    color: #374151;
+}
+
+/* Set header width */
+.scl--flex-table th.username,
+.scl--flex-table td.username {
+    min-width: 200px;
+    max-width: 400px;
+    width: 300px;
+    word-break: break-word;
+}
+
+.scl--flex-table th.description,
+.scl--flex-table td.description {
+    min-width: 250px;
+    max-width: 500px;
+    width: 350px;
+    word-break: break-word;
+}
+
+.scl--flex-table th {
+    background-color: #f9fafb;
+    font-weight: 600;
+    color: #6b7280;
+}
+
+.scl--flex-table tr:hover {
+    background-color: #f9f9f9;
+}
+
+.scl--avatar-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.scl--avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.scl--status-badge {
+    display: flex;
+    text-align: center;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    color: #fff;
+    font-size: 12px;
+    text-transform: capitalize;
+    font-family: sans-serif;
+    font-weight: 500;
+    line-height: 18px;
+    letter-spacing: 0;
+}
+
+.scl--action-cell {
+    cursor: pointer;
+    text-align: center;
+    position: relative;
+}
+
+.scl--popup-menu {
+    position: absolute;
+    top: 62%;
+    right: 60%;
+    background-color: #fff;
+    width: 103px;
+    height: fit-content;
+    z-index: 10;
+    border-radius: 4px;
+}
+
+.scl--popup-menu.up {
+    bottom: 100%;
+}
+
+.scl--popup-menu.down {
+    top: 100%;
+}
+
+.scl--popup-menu ul {
+    list-style: none;
+    padding: 8px;
+    background: #FFFFFF;
+    box-shadow: 4px 8px 32px 0 #0000003D;
+    border-radius: 4px;
+}
+
+.scl--popup-menu ul li {
+    width: 86px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background-color: #fff;
+    padding: 4px 0;
+    padding-left: 8px;
+    border-radius: 4px;
+}
+
+.scl--popup-text-color {
+    color: #17171799;
+    border-radius: 4px;
+    font-family: "Nunito", sans-serif;
+    font-weight: 400;
+    font-size: 10px;
+    line-height: 20px;
+    letter-spacing: 0;
+}
+
+.scl--popup-menu ul li:hover {
+    background-color: #f9f9f9;
+}

@@ -7,6 +7,8 @@ import ProductService from "../../../../services/common/ProductService/ProductSe
 import {ProductType} from "../../../../types/ProductType";
 import {motion, AnimatePresence} from "framer-motion";
 import socket from '../../../../services/socket/socket'
+import FlexTable, {UserData, UserTableColumns} from "../../../common/FlexTable/FlexTable";
+import axios from "axios";
 
 const toolbarVariants = {
     hidden: {
@@ -55,6 +57,79 @@ const dropdownVariants = {
         transition: {duration: 0.15, ease: 'easeIn'},
     },
 };
+
+const columns: UserTableColumns[] = [
+    {key: 'id', label: 'ID', show: true},
+    {key: 'username', label: 'Username', show: true},
+    {key: 'email', label: 'Email', show: true},
+    {key: 'createdAt', label: 'Create at', show: true},
+    {key: 'updatedAt', label: 'Update at', show: true},
+    {key: 'isActive', label: 'Status', show: true},
+];
+
+const columnsFour: UserTableColumns[] = [
+    {key: 'id', label: 'ID', show: true},
+    {key: 'username', label: 'Username', show: true},
+    {key: 'description', label: 'Description', show: true},
+    {key: 'isActive', label: 'Status', show: true},
+]
+
+const data: UserData[] = [
+    {
+        id: 1,
+        username: 'User1',
+        email: 'email@example.com',
+        createdAt: '19-01-2025',
+        updatedAt: '19-01-2025',
+        isActive: 'ACTIVE',
+        profile: 'https://i.pravatar.cc/100?img=1',
+    },
+    {
+        id: 2,
+        username: 'User2',
+        email: 'email@example.com',
+        createdAt: '19-01-2025',
+        updatedAt: '19-01-2025',
+        isActive: 'ONHOLD',
+        profile: 'https://i.pravatar.cc/100?img=2',
+    },
+    {
+        id: 3,
+        username: 'User3',
+        email: 'email@example.com',
+        createdAt: '19-01-2025',
+        updatedAt: '19-01-2025',
+        isActive: 'DEACTIVATE',
+        profile: 'https://i.pravatar.cc/100?img=3',
+    },
+];
+
+const dataFour: UserData[] = [
+    {
+        id: 1,
+        username: 'User1',
+        description: 'Has login sucessfully.',
+        isActive: 'ACTIVE',
+    },
+    {
+        id: 2,
+        username: 'User1',
+        description: 'Has login sucessfully.',
+        isActive: 'DEACTIVATE',
+    },
+    {
+        id: 3,
+        username: 'User1',
+        description: 'Has login sucessfully.',
+        isActive: 'ONHOLD',
+    },
+    {
+        id: 3,
+        username: 'User1',
+        description: 'Has login sucessfully.',
+        isActive: 'PENDING',
+    },
+]
 
 const ListProduct: React.FC = () => {
     const [products, setProducts] = useState<ProductType[]>([]);
@@ -410,6 +485,12 @@ const ListProduct: React.FC = () => {
                     )
                 }
             </AnimatePresence>
+            <div className="p-4 bg-[#D9D9D933] min-h-screen flex flex-col gap-10">
+                <FlexTable columns={columns} data={data} showAvatar showCheckbox={true}
+                           showAction={true}/>
+                <FlexTable columns={columnsFour} data={dataFour} showCheckbox={false}
+                           showAction={false}/>
+            </div>
         </>
     );
 };
