@@ -8,7 +8,6 @@ import {ProductType} from "../../../../types/ProductType";
 import {motion, AnimatePresence} from "framer-motion";
 import socket from '../../../../services/socket/socket'
 import FlexTable, {UserData, UserTableColumns} from "../../../common/FlexTable/FlexTable";
-import axios from "axios";
 
 const toolbarVariants = {
     hidden: {
@@ -102,6 +101,87 @@ const data: UserData[] = [
         isActive: 'DEACTIVATE',
         profile: 'https://i.pravatar.cc/100?img=3',
     },
+    {
+        id: 3,
+        username: 'User3',
+        email: 'email@example.com',
+        createdAt: '19-01-2025',
+        updatedAt: '19-01-2025',
+        isActive: 'DEACTIVATE',
+        profile: 'https://i.pravatar.cc/100?img=3',
+    },
+    {
+        id: 3,
+        username: 'User3',
+        email: 'email@example.com',
+        createdAt: '19-01-2025',
+        updatedAt: '19-01-2025',
+        isActive: 'DEACTIVATE',
+        profile: 'https://i.pravatar.cc/100?img=3',
+    },
+    {
+        id: 3,
+        username: 'User3',
+        email: 'email@example.com',
+        createdAt: '19-01-2025',
+        updatedAt: '19-01-2025',
+        isActive: 'DEACTIVATE',
+        profile: 'https://i.pravatar.cc/100?img=3',
+    },
+    {
+        id: 3,
+        username: 'User3',
+        email: 'email@example.com',
+        createdAt: '19-01-2025',
+        updatedAt: '19-01-2025',
+        isActive: 'DEACTIVATE',
+        profile: 'https://i.pravatar.cc/100?img=3',
+    },
+    {
+        id: 3,
+        username: 'User3',
+        email: 'email@example.com',
+        createdAt: '19-01-2025',
+        updatedAt: '19-01-2025',
+        isActive: 'DEACTIVATE',
+        profile: 'https://i.pravatar.cc/100?img=3',
+    },
+    {
+        id: 3,
+        username: 'User3',
+        email: 'email@example.com',
+        createdAt: '19-01-2025',
+        updatedAt: '19-01-2025',
+        isActive: 'DEACTIVATE',
+        profile: 'https://i.pravatar.cc/100?img=3',
+    },
+    {
+        id: 3,
+        username: 'User3',
+        email: 'email@example.com',
+        createdAt: '19-01-2025',
+        updatedAt: '19-01-2025',
+        isActive: 'DEACTIVATE',
+        profile: 'https://i.pravatar.cc/100?img=3',
+    },
+    {
+        id: 3,
+        username: 'User3',
+        email: 'email@example.com',
+        createdAt: '19-01-2025',
+        updatedAt: '19-01-2025',
+        isActive: 'DEACTIVATE',
+        profile: 'https://i.pravatar.cc/100?img=3',
+    },
+    {
+        id: 3,
+        username: 'User3',
+        email: 'email@example.com',
+        createdAt: '19-01-2025',
+        updatedAt: '19-01-2025',
+        isActive: 'DEACTIVATE',
+        profile: 'https://i.pravatar.cc/100?img=3',
+    },
 ];
 
 const dataFour: UserData[] = [
@@ -122,6 +202,12 @@ const dataFour: UserData[] = [
         username: 'User1',
         description: 'Has login sucessfully.',
         isActive: 'ONHOLD',
+    },
+    {
+        id: 3,
+        username: 'User1',
+        description: 'Has login sucessfully.',
+        isActive: 'PENDING',
     },
     {
         id: 3,
@@ -488,8 +574,6 @@ const ListProduct: React.FC = () => {
             <div className="p-4 bg-[#D9D9D933] min-h-screen flex flex-col gap-10">
                 <FlexTable columns={columns} data={data} showAvatar showCheckbox={true}
                            showAction={true}/>
-                <FlexTable columns={columnsFour} data={dataFour} showCheckbox={false}
-                           showAction={false}/>
             </div>
         </>
     );

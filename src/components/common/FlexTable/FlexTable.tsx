@@ -46,6 +46,8 @@ const FlexTable: React.FC<UserTableProps> = ({
                                                  showAction = true,
                                              }) => {
     const [actionCellId, setActionCellId] = useState<string | number | null>(null);
+    const [currentPage, setCurrentPage] = useState<number>(1);
+    const [rowsPerPage, setRowsPerPage] = useState<number>(5);
 
     const actionRef = useRef<HTMLInputElement>(null);
 
@@ -70,6 +72,32 @@ const FlexTable: React.FC<UserTableProps> = ({
         setActionCellId(prev => (prev === id ? null : id));
     };
 
+    // Pagination
+    const totalPages = Math.ceil(data.length / rowsPerPage);
+    const paginatedData = data.slice(
+        (currentPage - 1) * rowsPerPage,
+        currentPage * rowsPerPage
+    );
+
+    console.log('totalPages', totalPages)
+
+    const handlePrevPage = () => {
+        setCurrentPage(prev => Math.max(prev - 1, 1));
+    };
+
+    const handleNextPage = () => {
+        setCurrentPage(prev => Math.min(prev + 1, totalPages));
+    };
+
+    const handlePageClick = (page: number) => {
+        setCurrentPage(page);
+    };
+
+    const handleRowsPerPageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setRowsPerPage(Number(e.target.value));
+        setCurrentPage(1); // Reset to page 1 when changing rows per page
+    };
+
     return (
         <div className="scl--table-container">
             <table className="scl--flex-table">
@@ -83,7 +111,7 @@ const FlexTable: React.FC<UserTableProps> = ({
                 </tr>
                 </thead>
                 <tbody>
-                {data.map((row, index) => (
+                {paginatedData.map((row, index) => (
                     <tr key={row.uuid || index}>
                         {showCheckbox && <td><input type="checkbox"/></td>}
                         {columns.filter(col => col.show).map(col => {
@@ -177,6 +205,38 @@ const FlexTable: React.FC<UserTableProps> = ({
                 ))}
                 </tbody>
             </table>
+            <div className="scl--flex-table-footer">
+                <div className="scl--flex-table-perpage">
+                    <label className="scl--flex-table-perpage-label">Rows per page:</label>
+                    <div className="scl--flex-table-perpage-select-page">
+                        <select className="scl--flex-table-selectpage" value={rowsPerPage}
+                                onChange={handleRowsPerPageChange}>
+                            <option value={5}>5</option>
+                            <option value={10}>10</option>
+                            <option value={25}>25</option>
+                            <option value={50}>50</option>
+                        </select>
+                    </div>
+                    <span className="scl--flex-table-number">1 - 3 of 3</span>
+                </div>
+                <div className="scl--flex-table-numberpage">
+                    <button onClick={handlePrevPage} disabled={currentPage === 1}>
+                        Prev
+                    </button>
+                    {Array.from({length: totalPages}, (_, i) => i + 1).map(page => (
+                        <button
+                            key={page}
+                            onClick={() => handlePageClick(page)}
+                            className={currentPage === page ? 'active' : ''}
+                        >
+                            {page}
+                        </button>
+                    ))}
+                    <button onClick={handleNextPage} disabled={currentPage === totalPages}>
+                        Next
+                    </button>
+                </div>
+            </div>
         </div>
     );
 };
