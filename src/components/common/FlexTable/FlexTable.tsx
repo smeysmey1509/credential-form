@@ -79,7 +79,8 @@ const FlexTable: React.FC<UserTableProps> = ({
         currentPage * rowsPerPage
     );
 
-    console.log('totalPages', totalPages)
+    const start = (currentPage - 1) * rowsPerPage + 1;
+    const end = Math.min(start + rowsPerPage - 1, data.length);
 
     const handlePrevPage = () => {
         setCurrentPage(prev => Math.max(prev - 1, 1));
@@ -217,7 +218,7 @@ const FlexTable: React.FC<UserTableProps> = ({
                             <option value={50}>50</option>
                         </select>
                     </div>
-                    <span className="scl--flex-table-number">1 - 3 of 3</span>
+                    <span className="scl--flex-table-number">{start} - {end} of {data.length}</span>
                 </div>
                 <div className="scl--flex-table-numberpage">
                     <button onClick={handlePrevPage} disabled={currentPage === 1}>
