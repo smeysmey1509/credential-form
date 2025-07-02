@@ -1,6 +1,7 @@
 import "./App.css";
 import {Routes, Route, Navigate} from "react-router-dom";
 import {lazy, Suspense} from "react";
+import Work from "./Work/Work";
 
 const LoginPage = lazy(() => import("./pages/auth/LoginPage"));
 const HomePage = lazy(() => import("./pages/auth/HomePage"));
@@ -54,6 +55,7 @@ function App() {
                     <Route path="product/create" element={<CreateProduct/>}/>
                     <Route path="product/listproduct" element={<ListProduct/>}/>
                 </Route>
+                <Route path="work" element={<Work/>}/>
                 <Route
                     path="*"
                     element={

@@ -1,0 +1,37 @@
+.scl--gray-button {
+    box-sizing: border-box;
+
+    /* Layout */
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+
+    padding: 10px 24px;
+    gap: 10px;
+
+    width: 70px;
+    height: 31px;
+
+    /* Border */
+    border: 1px solid rgba(155, 152, 152, 0.6);
+    border-radius: 4px;
+
+    /* Background */
+    background-color: white;
+    color: #9B989899;
+
+    /* Cursor */
+    cursor: pointer;
+
+    /* Optional Hover/Active */
+    transition: background-color 0.2s;
+}
+
+.scl--gray-button:hover {
+    background-color: #f2f2f2;
+}
+
+.scl--gray-button:active {
+    background-color: #e6e6e6;
+}

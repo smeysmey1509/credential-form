@@ -8,7 +8,6 @@ import PublishDateInput from "../../../common/DateForm/DateForm";
 import PublishDateTimeInput from "../../../common/TimeForm/TimeForm";
 import axiosClient from "../../../../services/api/axiosClient";
 import {OptionType} from "../../../common/SelectItemField/SelectItemField";
-import {ProductType} from "../../../../types/ProductType";
 import ProductService from "../../../../services/common/ProductService/ProductService";
 
 const CreateProduct = () => {

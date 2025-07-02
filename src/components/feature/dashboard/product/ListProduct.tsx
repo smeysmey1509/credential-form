@@ -8,54 +8,8 @@ import {ProductType} from "../../../../types/ProductType";
 import {motion, AnimatePresence} from "framer-motion";
 import socket from '../../../../services/socket/socket'
 import FlexTable, {UserData, UserTableColumns} from "../../../common/FlexTable/FlexTable";
-
-const toolbarVariants = {
-    hidden: {
-        opacity: 0,
-        y: 50, // start below the screen
-        transition: {
-            duration: 0.3,
-            ease: 'easeOut',
-        },
-    },
-    visible: {
-        opacity: 1,
-        y: 0,
-        transition: {
-            duration: 0.3,
-            ease: 'easeOut',
-        },
-    },
-    exit: {
-        opacity: 0,
-        y: 50,
-        transition: {
-            duration: 0.2,
-            ease: 'easeIn',
-        },
-    },
-};
-
-const dropdownVariants = {
-    hidden: {
-        opacity: 0,
-        y: 8,
-        scale: 0.98,
-        transition: {duration: 0.2, ease: 'easeOut'},
-    },
-    visible: {
-        opacity: 1,
-        y: 0,
-        scale: 1,
-        transition: {duration: 0.25, ease: 'easeOut'},
-    },
-    exit: {
-        opacity: 0,
-        y: 8,
-        scale: 0.98,
-        transition: {duration: 0.15, ease: 'easeIn'},
-    },
-};
+import {toolbarVariants, dropdownVariants} from '../../../../animation/animation'
+import GrayButton from "../../../../Work/Button/GrayButton/GrayButton";
 
 const columns: UserTableColumns[] = [
     {key: 'id', label: 'ID', show: true},
@@ -65,13 +19,6 @@ const columns: UserTableColumns[] = [
     {key: 'updatedAt', label: 'Update at', show: true},
     {key: 'isActive', label: 'Status', show: true},
 ];
-
-const columnsFour: UserTableColumns[] = [
-    {key: 'id', label: 'ID', show: true},
-    {key: 'username', label: 'Username', show: true},
-    {key: 'description', label: 'Description', show: true},
-    {key: 'isActive', label: 'Status', show: true},
-]
 
 const data: UserData[] = [
     {
@@ -183,39 +130,6 @@ const data: UserData[] = [
         profile: 'https://i.pravatar.cc/100?img=3',
     },
 ];
-
-const dataFour: UserData[] = [
-    {
-        id: 1,
-        username: 'User1',
-        description: 'Has login sucessfully.',
-        isActive: 'ACTIVE',
-    },
-    {
-        id: 2,
-        username: 'User1',
-        description: 'Has login sucessfully.',
-        isActive: 'DEACTIVATE',
-    },
-    {
-        id: 3,
-        username: 'User1',
-        description: 'Has login sucessfully.',
-        isActive: 'ONHOLD',
-    },
-    {
-        id: 3,
-        username: 'User1',
-        description: 'Has login sucessfully.',
-        isActive: 'PENDING',
-    },
-    {
-        id: 3,
-        username: 'User1',
-        description: 'Has login sucessfully.',
-        isActive: 'PENDING',
-    },
-]
 
 const ListProduct: React.FC = () => {
     const [products, setProducts] = useState<ProductType[]>([]);
@@ -575,6 +489,7 @@ const ListProduct: React.FC = () => {
                 <FlexTable columns={columns} data={data} showAvatar showCheckbox={true}
                            showAction={true}/>
             </div>
+            <GrayButton label="Cancel"/>
         </>
     );
 };
