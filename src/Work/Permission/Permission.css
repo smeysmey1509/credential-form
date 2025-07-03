@@ -1,0 +1,103 @@
+.permission-matrix {
+    background-color: dimgray;
+    color: white;
+    padding: 1.5rem;
+    border-radius: 4px;
+    font-family: sans-serif;
+}
+
+.permission-table {
+    width: 100%;
+    text-align: left;
+    border-collapse: collapse;
+    table-layout: fixed;
+    transition: 0.5s ease;
+}
+
+.permission-header {
+    background-color: #FCFCFD;
+    border-top: 1px solid #EAECF0;
+    border-bottom: 1px solid #EAECF0;
+    color: #667085;
+    font-family: "Inter", sans-serif;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 18px;
+    letter-spacing: 0;
+}
+
+.permission-header th {
+    padding: 12px 24px;
+}
+
+.permission-header-title {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.section-row {
+    background-color: #FFFFFF;
+    cursor: pointer;
+    border-bottom: 1px solid #EAECF0;
+    transition: background-color 0.2s;
+}
+
+.section-row:hover {
+    background-color: gainsboro;
+}
+
+.section-title {
+    font-family: "Inter", sans-serif;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 20px;
+    letter-spacing: 0;
+    color: #2B73FF;
+    padding: 5px 24px;
+}
+
+.permission-row td {
+    background-color: #FFFFFF;
+    font-family: "Inter", sans-serif;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 20px;
+    letter-spacing: 0;
+    color: #667085;
+    padding: 12px 24px;
+    border-bottom: 1px solid #EAECF0;
+}
+
+.permission-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.btn {
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    border: none;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.btn.cancel {
+    background-color: #374151; /* gray-700 */
+    color: white;
+}
+
+.btn.cancel:hover {
+    background-color: #4b5563; /* gray-600 */
+}
+
+.btn.save {
+    background-color: #2563eb; /* blue-600 */
+    color: white;
+}
+
+.btn.save:hover {
+    background-color: #3b82f6; /* blue-500 */
+}
