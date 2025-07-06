@@ -89,6 +89,8 @@ const Header: React.FC<HeaderProps> = ({toggleSidebar}) => {
                 <li className="cursor-pointer p-1 border rounded relative dark:border-gray-600"
                     onClick={hanldeNotification}>
                     <IoNotificationsOutline ref={containerRef}/>
+                    <span
+                        className="absolute top-1 right-1 w-[5px] h-[5px] border border-[#6067F7] rounded bg-[#6067F7]"></span>
                     <AnimatePresence>
                         {showNotification && (
                             <Notification/>

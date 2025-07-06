@@ -2,12 +2,29 @@ import axios from 'axios';
 import {getCookie, setCookie} from "../../utils/cookie";
 
 const axiosClient = axios.create({
-    baseURL: 'http://localhost:5002/api/v1',
-    withCredentials: true, // Required to send cookies like refreshToken
+    baseURL: import.meta.env.VITE_API_URL,
+    withCredentials: true,
 });
+
+export const axiosClientWorker = axios.create({
+    baseURL: import.meta.env.VITE_API_URL_WORKER,
+    withCredentials: true,
+})
 
 // Add the access token to headers on every request
 axiosClient.interceptors.request.use(
+    (config) => {
+        const token = getCookie('accessToken');
+        if (token) {
+            config.headers.Authorization = `Bearer ${token}`;
+        }
+        return config;
+    },
+    (error) => Promise.reject(error)
+);
+
+// Add the access token to headers on every request for worker
+axiosClientWorker.interceptors.request.use(
     (config) => {
         const token = getCookie('accessToken');
         if (token) {
@@ -31,8 +48,7 @@ axiosClient.interceptors.response.use(
             try {
                 // Try to get a new access token
                 const res = await axios.post(
-                    'http://localhost:5002/api/v1/refresh',
-                    {},
+                    `${import.meta.env.VITE_API_URL}/refresh`,
                     {withCredentials: true}
                 );
 

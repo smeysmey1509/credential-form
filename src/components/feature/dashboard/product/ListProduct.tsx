@@ -7,129 +7,7 @@ import ProductService from "../../../../services/common/ProductService/ProductSe
 import {ProductType} from "../../../../types/ProductType";
 import {motion, AnimatePresence} from "framer-motion";
 import socket from '../../../../services/socket/socket'
-import FlexTable, {UserData, UserTableColumns} from "../../../common/FlexTable/FlexTable";
 import {toolbarVariants, dropdownVariants} from '../../../../animation/animation'
-import GrayButton from "../../../../Work/Button/GrayButton/GrayButton";
-
-const columns: UserTableColumns[] = [
-    {key: 'id', label: 'ID', show: true},
-    {key: 'username', label: 'Username', show: true},
-    {key: 'email', label: 'Email', show: true},
-    {key: 'createdAt', label: 'Create at', show: true},
-    {key: 'updatedAt', label: 'Update at', show: true},
-    {key: 'isActive', label: 'Status', show: true},
-];
-
-const data: UserData[] = [
-    {
-        id: 1,
-        username: 'User1',
-        email: 'email@example.com',
-        createdAt: '19-01-2025',
-        updatedAt: '19-01-2025',
-        isActive: 'ACTIVE',
-        profile: 'https://i.pravatar.cc/100?img=1',
-    },
-    {
-        id: 2,
-        username: 'User2',
-        email: 'email@example.com',
-        createdAt: '19-01-2025',
-        updatedAt: '19-01-2025',
-        isActive: 'ONHOLD',
-        profile: 'https://i.pravatar.cc/100?img=2',
-    },
-    {
-        id: 3,
-        username: 'User3',
-        email: 'email@example.com',
-        createdAt: '19-01-2025',
-        updatedAt: '19-01-2025',
-        isActive: 'DEACTIVATE',
-        profile: 'https://i.pravatar.cc/100?img=3',
-    },
-    {
-        id: 3,
-        username: 'User3',
-        email: 'email@example.com',
-        createdAt: '19-01-2025',
-        updatedAt: '19-01-2025',
-        isActive: 'DEACTIVATE',
-        profile: 'https://i.pravatar.cc/100?img=3',
-    },
-    {
-        id: 3,
-        username: 'User3',
-        email: 'email@example.com',
-        createdAt: '19-01-2025',
-        updatedAt: '19-01-2025',
-        isActive: 'DEACTIVATE',
-        profile: 'https://i.pravatar.cc/100?img=3',
-    },
-    {
-        id: 3,
-        username: 'User3',
-        email: 'email@example.com',
-        createdAt: '19-01-2025',
-        updatedAt: '19-01-2025',
-        isActive: 'DEACTIVATE',
-        profile: 'https://i.pravatar.cc/100?img=3',
-    },
-    {
-        id: 3,
-        username: 'User3',
-        email: 'email@example.com',
-        createdAt: '19-01-2025',
-        updatedAt: '19-01-2025',
-        isActive: 'DEACTIVATE',
-        profile: 'https://i.pravatar.cc/100?img=3',
-    },
-    {
-        id: 3,
-        username: 'User3',
-        email: 'email@example.com',
-        createdAt: '19-01-2025',
-        updatedAt: '19-01-2025',
-        isActive: 'DEACTIVATE',
-        profile: 'https://i.pravatar.cc/100?img=3',
-    },
-    {
-        id: 3,
-        username: 'User3',
-        email: 'email@example.com',
-        createdAt: '19-01-2025',
-        updatedAt: '19-01-2025',
-        isActive: 'DEACTIVATE',
-        profile: 'https://i.pravatar.cc/100?img=3',
-    },
-    {
-        id: 3,
-        username: 'User3',
-        email: 'email@example.com',
-        createdAt: '19-01-2025',
-        updatedAt: '19-01-2025',
-        isActive: 'DEACTIVATE',
-        profile: 'https://i.pravatar.cc/100?img=3',
-    },
-    {
-        id: 3,
-        username: 'User3',
-        email: 'email@example.com',
-        createdAt: '19-01-2025',
-        updatedAt: '19-01-2025',
-        isActive: 'DEACTIVATE',
-        profile: 'https://i.pravatar.cc/100?img=3',
-    },
-    {
-        id: 3,
-        username: 'User3',
-        email: 'email@example.com',
-        createdAt: '19-01-2025',
-        updatedAt: '19-01-2025',
-        isActive: 'DEACTIVATE',
-        profile: 'https://i.pravatar.cc/100?img=3',
-    },
-];
 
 const ListProduct: React.FC = () => {
     const [products, setProducts] = useState<ProductType[]>([]);
@@ -181,12 +59,12 @@ const ListProduct: React.FC = () => {
         };
 
         socket.on("product:created", handleCreated);
-        socket.on("product:edit", handleProductUpdated);
+        socket.on("product:edited", handleProductUpdated);
         socket.on("product:deleted", handleDeleted);
 
         return () => {
             socket.off("product:created", handleCreated);
-            socket.off("product:edit", handleProductUpdated);
+            socket.off("product:edited", handleProductUpdated);
             socket.off("product:deleted", handleDeleted);
         };
     }, [currentPage, itemsPerPage]);
@@ -264,7 +142,7 @@ const ListProduct: React.FC = () => {
 
     return (
         <>
-            <div className="w-full h-full flex ">
+            <div className="w-full h-fit flex ">
                 <input
                     className="w-3/10 bg-transparent placeholder:text-slate-400 text-white text-sm border border-slate-200 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow"
                     type='text' placeholder="Serach ur product" value={searchInput.query}
@@ -324,8 +202,9 @@ const ListProduct: React.FC = () => {
                             </td>
                             <td className='px-6 py-4' scope="row">
                                 <div className='w-full flex items-center gap-2'>
-                                    <span className={'w-[40px] h-[40px] bg-[#F9F9FA] dark:bg-[#2A2F31]'}>
-                                      <img src={product?.image} alt='product-img'
+                                    <span className={'w-[40px] h-[40px] bg-[#F9F9FA] dark:bg-[#2A2F31] rounded'}>
+                                      <img src={`http://localhost:5002${product?.image?.[0]}`}
+                                           alt='product-img'
                                            className="p-1 w-full h-full object-cover rounded-[50%]"/>
                                     </span>
                                     <div>
@@ -485,11 +364,6 @@ const ListProduct: React.FC = () => {
                     )
                 }
             </AnimatePresence>
-            <div className="p-4 bg-[#D9D9D933] min-h-screen flex flex-col gap-10">
-                <FlexTable columns={columns} data={data} showAvatar showCheckbox={true}
-                           showAction={true}/>
-            </div>
-            <GrayButton label="Cancel"/>
         </>
     );
 };
