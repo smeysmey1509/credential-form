@@ -2,7 +2,6 @@
     background-color: dimgray;
     color: white;
     padding: 18px;
-    border-radius: 4px;
     font-family: sans-serif;
 }
 
@@ -11,7 +10,8 @@
     text-align: left;
     border-collapse: collapse;
     table-layout: fixed;
-    transition: 0.5s ease;
+    border-radius: 4px;
+    transition: 0.5s;
 }
 
 .permission-header {
@@ -31,6 +31,7 @@
 }
 
 .permission-header-title {
+    width: 100%;
     display: flex;
     align-items: center;
     gap: 16px;
@@ -57,6 +58,15 @@
     padding: 5px 24px;
 }
 
+.section-title-row {
+    display: flex;
+    align-items: center;
+}
+
+.title {
+    width: 13%;
+}
+
 .permission-row td {
     background-color: #FFFFFF;
     font-family: "Inter", sans-serif;
@@ -67,6 +77,13 @@
     color: #667085;
     padding: 12px 24px;
     border-bottom: 1px solid #EAECF0;
+}
+
+.title-permission-row {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 16px;
 }
 
 .permission-actions {
