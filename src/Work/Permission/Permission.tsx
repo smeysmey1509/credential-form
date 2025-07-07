@@ -94,33 +94,7 @@ const mockData: Section[] = [
                     update: false,
                     delete: false
                 },
-            },
-            {
-                id: "03",
-                name: "NoAccessLogin",
-                action: "Read",
-                permissions: {
-                    view: false
-                },
-            },
-            {
-                id: "04",
-                name: "AccessMFA",
-                action: "Write",
-                permissions: {
-                    create: false,
-                    update: false,
-                    delete: false
-                },
-            },
-            {
-                id: "05",
-                name: "NoAccessMFA",
-                action: "Read",
-                permissions: {
-                    view: false
-                },
-            },
+            }
         ],
     },
 ];
