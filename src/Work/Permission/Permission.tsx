@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import './Permission.css'
 
 type ActionType = 'Full Access' | 'Write' | 'Read';
@@ -101,10 +101,20 @@ const mockData: Section[] = [
 
 export const PermissionMatrix: React.FC = () => {
     const [sections, setSections] = useState(mockData);
-    const [expanded, setExpanded] = useState<{ [key: string]: boolean }>({});
+    const [expanded, setExpanded] = useState<string | null>(null);
+    const [darkMode, setDarkMode] = useState<boolean>(false)
 
+    useEffect(() => {
+        document.body.classList.toggle('dark', darkMode);
+    }, [darkMode]);
+
+    const toggleDarkMode = () => {
+        setDarkMode(prev => !prev);
+    };
+
+    // Only one section can be expanded at a time
     const toggleExpand = (title: string) => {
-        setExpanded((prev) => ({...prev, [title]: !prev[title]}));
+        setExpanded((prev) => (prev === title ? null : title));
     };
 
     const togglePermission = (sectionIndex: number, permIndex: number, key: keyof Permission['permissions']) => {
@@ -118,20 +128,20 @@ export const PermissionMatrix: React.FC = () => {
         <div className="permission-matrix">
             <table className="permission-table">
                 <thead>
-                <tr className="permission-header">
-                    <th>ID</th>
-                    <th className="permission-header-title">
-                        <input type="checkbox"/>
+                    <tr className="permission-header">
+                        <th className="col-id">ID</th>
+                        <th className="col-name permission-header-title">
+                        <input type="checkbox" />
                         Permission name
-                    </th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                    <th>Action</th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                </tr>
+                        </th>
+                        <th className="col-placeholder"></th>
+                        <th className="col-placeholder"></th>
+                        <th className="col-placeholder"></th>
+                        <th className="col-action">Action</th>
+                        <th className="col-perm"></th>
+                        <th className="col-perm"></th>
+                        <th className="col-perm"></th>
+                    </tr>
                 </thead>
                 <tbody>
                 {sections.map((section, sectionIndex) => (
@@ -143,7 +153,7 @@ export const PermissionMatrix: React.FC = () => {
                             <td colSpan={9} className="section-title">
                                 <div className="section-title-row">
                                     <span className="title">{section.title}</span>
-                                    {expanded[section.title] ? (
+                                    {expanded === section.title ? (
                                         <svg width="9" height="5" viewBox="0 0 9 5" fill="none"
                                              xmlns="http://www.w3.org/2000/svg">
                                             <path d="M0.5 0.500765L4.50038 4.50038L8.5 0.5" stroke="#3B82F6"
@@ -160,14 +170,14 @@ export const PermissionMatrix: React.FC = () => {
                             </td>
                         </tr>
 
-                        {expanded[section.title] &&
+                        {expanded === section.title &&
                             section.permissions.map((perm, permIndex) => {
                                 const permissionEntries = Object.entries(perm.permissions);
                                 const emptyCells = 9 - (6 + permissionEntries.length); // ID, Name, 3 placeholders, Action + dynamic perms
 
                                 return (
                                     <tr key={perm.id} className="permission-row">
-                                        <td>{perm.id}</td>
+                                        <td className="row-cell-width">{perm.id}</td>
                                         <td>
                                             <div className="title-permission-row">
                                                 <input type="checkbox"/>
@@ -207,6 +217,9 @@ export const PermissionMatrix: React.FC = () => {
             <div className="permission-actions">
                 <button className="btn cancel">Cancel</button>
                 <button className="btn save">Save</button>
+                <button className="btn toggle" onClick={toggleDarkMode}>
+                {darkMode ? 'Light Mode' : 'Dark Mode'}
+            </button>
             </div>
         </div>
     );

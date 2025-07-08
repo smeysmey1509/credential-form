@@ -3,3 +3,25 @@ input[type=number]::-webkit-inner-spin-button {
     -webkit-appearance: none;
     margin: 0;
 }
+
+:root {
+  --background-color: #ffffff;
+  --background-content-color: #F8F8F8;
+  --background-grid-color: #D9D9D933;
+  --background-hover-color: #E2E7EB33;
+  --text-color: #171717;
+  --title-color: #171717CC;
+  --section-title-color: #2B73FF;
+  --border-color: 1px solid #EAECF0;
+}
+
+.dark {
+    --background-color: #252728;
+    --background-content-color: #1c1c1d;
+    --background-grid-color: #1B1B1B;
+    --background-hover-color: #E2E7EB1A;
+    --text-color: #FFFFFF;
+    --title-color: #FFFFFF;
+    --section-title-color: #FFFFFF;
+    --border-color: 1px solid #EAECF01A;
+  }
