@@ -13,7 +13,7 @@ body {
     box-sizing: border-box;
     font-family: "Nunito", sans-serif;
     font-style: normal;
-    user-select: none;
+    /* user-select: none; */
 }
 
 /* Applies to all scrollbars */

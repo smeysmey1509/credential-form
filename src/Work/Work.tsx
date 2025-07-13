@@ -1,5 +1,5 @@
 import CardItems from "./cardItems/cardItems";
-import PermissionMatrix from "./Permission/Permission";
+import PieChart from "./pieChart/pieChart";
 
 const cardData = [
   {
@@ -100,9 +100,16 @@ const cardData = [
   },
 ];
 
+const pieData = [
+  { label: "All users   ", value: 40, color: "#2F80ED", bgColor: '#2F80ED' },
+  { label: "Active user", value: 30, color: "#4CB592", bgColor: '#4CB592' },
+  { label: "Deactivated user", value: 20, color: "#DC2626", bgColor: '#DC2626' },
+  { label: "Onhold user ", value: 10, color: "#E58A00",  bgColor: '#E58A00' },
+];
+
 const Work: React.FC = () => {
     return (
-        <div style={{
+        <div style={{   
             width: '100%',
             height: "100%",
             display: "grid",
@@ -110,6 +117,7 @@ const Work: React.FC = () => {
             padding: '10px'
         }}>
             <CardItems data={cardData}/>
+            <PieChart data={pieData} size={162.58} />
         </div>
     )
 }
