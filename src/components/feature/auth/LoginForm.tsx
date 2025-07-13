@@ -88,13 +88,13 @@ const LoginForm = () => {
                     >
                         <div className="w-full">
                             <label htmlFor="" className="text-[#828282] text-sm">
-                                Email
+                                Username
                             </label>
                             <input
                                 type="text"
                                 onChange={(e) => setName(e.target.value)}
                                 value={name}
-                                placeholder="mail@abc.com"
+                                placeholder="Username"
                                 className="w-full border border-solid border-[#ded2d9] rounded placeholder:text-sm outline-none"
                                 style={{padding: "8px"}}
                             />
@@ -109,7 +109,7 @@ const LoginForm = () => {
                             </label>
                             <input
                                 type="text"
-                                placeholder="**************"
+                                placeholder="Password"
                                 onChange={(e) => setPassword(e.target.value)}
                                 value={password}
                                 className="w-full border border-solid border-[#ded2d9] rounded placeholder:text-sm outline-none"
