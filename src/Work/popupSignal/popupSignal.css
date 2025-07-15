@@ -1,0 +1,81 @@
+.scl--popup-signal-container{
+    width: 544px;
+    height: 185px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    opacity: 1;
+    border-radius: 4px;
+    background-color: #fff;
+    box-shadow: 0 0 0 0.4px;
+    margin: 10px;
+}
+
+.scl--popup-signal-header{
+    width: 100%;
+    height: fit-content;
+    display: flex;
+    justify-content: space-between;
+    padding: 18px;
+}
+
+.scl--popup-signal-header-message{
+    width: 100%;
+    height: fit-content;
+    display: flex;
+    margin-top: 8px;
+    margin-left: 8px;
+    gap: 16px;
+}
+
+.scl--popup-signal-header-message-icon{
+    width: 36px;
+    height: 36px;
+    display: grid;
+    place-items: center;
+    background-color: #FEF2F2;
+    border-radius: 4px;
+}
+
+.scl--popup-signal-header-message-label{
+    width: 80%;
+}
+
+.scl--popup-signal-header-message-label h4{
+    font-weight: 700;
+    font-style: Bold;
+    font-size: 18px;
+    line-height: 114.99999999999999%;
+    letter-spacing: 0;
+    color: #667085;
+}
+
+.scl--popup-signal-header-message-label span{
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 150%;
+    letter-spacing: 0;
+    color: #8A92A6;
+    margin-top: 10px;
+}
+
+.scl--popup-signal-close{
+    width: 62px;
+    height: 62px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.scl--popup-signal-close svg:hover{
+    cursor: pointer;
+}
+
+.scl--popup-signal-footer{
+    width: 100%;
+    height: fit-content;
+    display: flex;
+    justify-content: flex-end;
+    gap: 18px;
+    border-top: 1px solid #F1F2F9;
+    padding: 13px 20px;
+}

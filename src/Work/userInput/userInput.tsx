@@ -46,6 +46,7 @@ const UserInputForm: React.FC<UserInputFormProp> = ({
           onChange={onChangeData}
           required={required}
           className={hasError ? "scl--user-input-error" : ""}
+          autoComplete="off"
         />
 
         {isPasswordField && (

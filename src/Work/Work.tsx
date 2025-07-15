@@ -1,6 +1,7 @@
 import { useState } from "react";
 import CreateUserContext from "./createUser/createUserContext";
 import ViewUserContext from "./viewUser/viewUserContext";
+import { PopupSignal } from "./popupSignal/popupSignal";
 
 const Work: React.FC = () => {
   const [showCreateUser, setShowCreateUser] = useState<boolean>(false)
@@ -45,6 +46,7 @@ const Work: React.FC = () => {
       </button>
       <CreateUserContext onClose={handleCloseCreateUser} show={showCreateUser} />
       <ViewUserContext onClose={handleClsoeViewUser} show={showViewUser} />
+      <PopupSignal />
     </div>
   );
 };
