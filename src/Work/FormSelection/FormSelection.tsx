@@ -69,13 +69,13 @@ const FormSelection: React.FC<FormSelectionProps> = ({
 
             {isOpen && (
                 <div className="form-selection-dropdown">
-                    <input
+                    {/* <input
                         type="text"
                         placeholder="Search"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                         className="form-selection-search"
-                    />
+                    /> */}
                     <ul className="form-selection-list">
                         {filteredOptions.length > 0 ? (
                             filteredOptions.map((option, index) => (

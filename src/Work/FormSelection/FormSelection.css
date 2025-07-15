@@ -23,6 +23,8 @@
 
 /* Control Box */
 .form-selection-control {
+    width: 100%;
+    height: 40px;
     margin-top: 8px;
     display: flex;
     justify-content: space-between;
@@ -30,11 +32,21 @@
 
     background-color: white;
     color: #17171799;
-    border: 1px solid #9CA3AF;
+    box-shadow: inset 0 0 0 1px #9B989833;
     border-radius: 4px;
     padding: 0 12px;
+    margin: 8px 4px;
     cursor: pointer;
-    transition: background-color 0.2s ease;
+    transition: box-shadow 0.35s ease-in-out;
+}
+
+.form-selection-control:hover{
+    box-shadow: inset 0 0 0 1px hsl(217, 91%, 60%), 0 0 0 2px #1890FF33;
+}
+
+.form-selection-control:focus{
+    box-shadow: inset 0 0 0 2px #17171799, 0 0 0 2px #fff, 0 0 0 4px #3B82F6;
+    outline: none;
 }
 
 /* Placeholder Text */
