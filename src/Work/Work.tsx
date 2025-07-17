@@ -56,7 +56,7 @@ const fullData: UserData[] = [
     email: "alice@example.com",
     createdAt: "2024-07-02 11:15",
     updatedAt: "2024-07-17 09:45",
-    isActive: "ONHOLD",
+    isActive: "ACTIVE",
     profile: "https://i.pravatar.cc/100?u=alice",
   },
   {
