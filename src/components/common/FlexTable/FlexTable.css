@@ -1,7 +1,6 @@
 .scl--table-container {
     background-color: #fff;
     border-radius: 4px;
-    padding: 16px;
     overflow-x: auto;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
@@ -14,8 +13,10 @@
 
 .scl--flex-table th,
 .scl--flex-table td {
+    height: 45px;
+    border-top: 1px solid #e5e7eb;
     border-bottom: 1px solid #e5e7eb;
-    padding: 12px 16px;
+    padding: 0px 18px;
     text-align: left;
     font-size: 14px;
     color: #8A92A6;
@@ -39,7 +40,7 @@
 }
 
 .scl--flex-table th {
-    background-color: #f9fafb;
+    background-color: #fff;
     font-weight: 600;
     color: #6b7280;
 }
