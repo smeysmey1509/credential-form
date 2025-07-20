@@ -3,6 +3,7 @@ import {Routes, Route, Navigate} from "react-router-dom";
 import {lazy, Suspense} from "react";
 import Work from "./Work/Work";
 import ProtectedRoute from "./routes/ProtectedRoute";
+import Cart from "./components/feature/dashboard/product/Cart";
 
 const LoginPage = lazy(() => import("./pages/auth/LoginPage"));
 const HomePage = lazy(() => import("./pages/auth/HomePage"));
@@ -48,11 +49,12 @@ function App() {
                         </ProtectedRoute>
                     }
                 >
-                    <Route index element={<Navigate to="product" replace/>}/>
+                    <Route index element={<Navigate to="/dashboard/product/listproduct" replace/>}/>
 
                     <Route path="product" element={<Product/>}/>
                     <Route path="product/create" element={<CreateProduct/>}/>
                     <Route path="product/listproduct" element={<ListProduct/>}/>
+                    <Route path="product/cart" element={<Cart />} />
                 </Route>
                 <Route path="work" element={<Work/>}/>
                 <Route

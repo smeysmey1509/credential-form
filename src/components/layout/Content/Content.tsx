@@ -37,7 +37,7 @@ const Content = () => {
                 </div>
                 <div>B</div>
             </div>
-            <div className="flex flex-col w-full relative bg-white dark:bg-[#19191C] rounded-lg shadow p-6 ">
+            <div className="flex flex-col w-full relative dark:bg-[#19191C] rounded-lg">
                 <Outlet/>
             </div>
         </div>
