@@ -1,4 +1,3 @@
-// src/types/ProductType.ts
 export interface ProductType {
     _id?: string;
     name: string;

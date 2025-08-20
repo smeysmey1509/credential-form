@@ -4,9 +4,9 @@ import { FaRegTrashAlt, FaRegHeart } from "react-icons/fa";
 interface Column {
   header: string;
   accessor: string;
-  width?: string; // e.g. '200px' or '20%'
-  color?: string; // e.g. 'text-red-500'
-  render?: (value: any, row: any) => React.ReactNode; // custom cell render
+  width?: string;
+  color?: string;
+  render?: (value: any, row: any) => React.ReactNode;
 }
 
 interface DynamicTableProps {
@@ -42,7 +42,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({ columns, data = [] }) => {
                         <div className="flex items-center gap-2 py-2">
                           <div className="w-[80px] h-[80px] rounded-sm bg-[#F9F9FA] leading-[5rem] p-2">
                             <img
-                              src={row?.image}
+                              src={row?.image || 'https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg'}
                               alt={row?.image}
                               className="w-full h-full object-cover rounded"
                             />
@@ -129,7 +129,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({ columns, data = [] }) => {
           ) : (
             <tr>
               <td colSpan={columns.length} className="text-center py-4">
-                No data available.
+                No data.
               </td>
             </tr>
           )}

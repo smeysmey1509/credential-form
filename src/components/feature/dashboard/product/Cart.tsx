@@ -4,16 +4,20 @@ import QuantityInput from "../../../common/QuantityInput/QuantityInput";
 import CartService from "../../../../services/common/CartService/CartService";
 import PrimaryButton from "../../../Button/PrimaryButton/PrimaryButton";
 import FormField from "../../../common/FormField/FormField";
+import PromoCodeService from "../../../../services/common/PromoCode/PromoCode";
 import { BsFillExclamationCircleFill } from "react-icons/bs";
+import { AnimatePresence, motion } from "framer-motion";
 
 const Cart = () => {
   const [cart, setCart] = useState<any[] | null>(null);
   const [promoCode, setPromoCode] = useState<string>("");
+  const [discountType, setDiscountType] = useState<string>("");
   const [deliveryMethod, setDeliveryMethod] = useState<string>("Free Shipping");
   const [calSubTotal, setCalSubTotal] = useState<number>(0);
+  const [discountAmount, setDiscountAmount] = useState<number>(0);
   const [discount, setDiscount] = useState<number>(0);
   const [serviceTax, setServiceTax] = useState<number>(0);
-  const [deliveryCharge, setDeliveryCharge] = useState<number>(0);
+  const [deliveryFee, setDeliveryFee] = useState<number>(0);
   const [total, setTotal] = useState<number>(0);
 
   useEffect(() => {
@@ -25,7 +29,12 @@ const Cart = () => {
       const updatedSubTotal = cart.reduce((acc, curr) => acc + curr.total, 0);
       setCalSubTotal(updatedSubTotal);
     }
-  }, [calSubTotal]);
+  }, [cart]);
+
+  useEffect(() => {
+    const calculatedTotal = calSubTotal - discount + serviceTax - deliveryFee;
+    setTotal(calculatedTotal);
+  }, [calSubTotal, discount, serviceTax, deliveryFee]);
 
   const columns = [
     {
@@ -92,15 +101,20 @@ const Cart = () => {
           return {
             productId: item?.product?._id,
             name: item?.product?.name,
-            image: `http://localhost:5002${item?.product?.image?.[0]}`,
+            image: item?.product?.image
+              ? `http://localhost:5002${item?.product?.image?.[0]}`
+              : "https://1.vikiplatform.com/pr/21277pr/28a7fcb34a.jpg?x=b",
             price: pricePerUnit,
             quantity: quantityAdded,
             total: pricePerUnit * quantityAdded,
           };
         }) || [];
 
+      setDeliveryFee(response?.data?.summary?.deliveryFee || 0);
+      setServiceTax(response?.data?.summary?.serviceTax || 0);
+      setCalSubTotal(response?.data?.summary?.subTotal || 0);
+      setDiscount(response?.data?.summary?.discount || 0);
       setCart(cartItems);
-      setCalSubTotal(response?.data?.subTotal || 0);
     } catch (err) {
       console.error("Error fetching cart:", err);
     }
@@ -108,6 +122,45 @@ const Cart = () => {
 
   const handleSwitchDeliveryMethod = (method: string) => {
     setDeliveryMethod(method);
+  };
+
+  const getButtonClass = (method: string) => {
+    const isActive = deliveryMethod === method;
+    return `
+      !relative overflow-hidden !w-full !rounded !text-[0.85rem] !px-4 !py-2 font-semibold 
+      !bg-[#F7F7FE] transition-colors duration-300 ease-in-out
+      ${
+        isActive
+          ? "!text-[#5F6AF7]"
+          : "!text-[#000] hover:bg-[#5C67FC] hover:!text-[#5F6AF7]"
+      }
+      before:content-[''] before:absolute before:bottom-0 before:left-1/2 before:h-[2px] 
+      before:bg-[#5F6AF7] before:transition-all before:duration-300 before:ease-in-out
+      before:-translate-x-1/2 ${isActive ? "before:w-full" : "before:w-0"}
+    `;
+  };
+
+  const handleApplyPromoCode = async (promoCode: string) => {
+    try {
+      const { data } = await PromoCodeService.apply(promoCode);
+      setDiscountType(data.promo?.discountType);
+      setDiscount(Number(data.promo?.discountValue) || 0);
+      setDiscountAmount(Number(data.promo?.discountAmount) || 0);
+
+      await handleFetchCart();
+    } catch (error: string | any) {
+      console.error("Failed to apply promo code:", error);
+      setDiscountType("");
+      setDiscount(0);
+      setDiscountAmount(0);
+
+      const message =
+        error.response?.data?.error ||
+        error.message ||
+        "Something went wrong. Please try again.";
+
+      alert(message);
+    }
   };
 
   return (
@@ -132,7 +185,7 @@ const Cart = () => {
             onChange={(e) => setPromoCode(e.target.value)}
           />
           <PrimaryButton
-            onClick={() => alert(`Promo code applied: ${promoCode}`)}
+            onClick={() => handleApplyPromoCode(promoCode)}
             label="Apply"
             className="!bg-[#5C67FC] !rounded-r-sm !rounded-l-none !p-2 !text-[0.85rem]"
           />
@@ -142,12 +195,12 @@ const Cart = () => {
           <div className="w-full flex items-center justify-between gap-2 mt-2">
             <PrimaryButton
               label="Free Shipping"
-              className="!w-full !bg-[#F7F7FE] !text-[#5F6AF7] !rounded !border-b-2 !border-b-[#5F6AF7] !text-[0.85rem] !px-4 !py-2"
+              className={getButtonClass("Free Shipping")}
               onClick={() => handleSwitchDeliveryMethod("Free Shipping")}
             />
             <PrimaryButton
               label="Express Shipping"
-              className="!w-full !bg-[#F7F7FE] !text-[#000] font-semibold !rounded !text-[0.85rem] !px-4 !py-2 hover:bg-[#5C67FC] hover:!text-[#5F6AF7] transition-colors duration-300 ease-in-out"
+              className={getButtonClass("Express Shipping")}
               onClick={() => handleSwitchDeliveryMethod("Express Shipping")}
             />
           </div>
@@ -155,47 +208,100 @@ const Cart = () => {
         <div className="flex flex-col mt-4">
           <div className="flex items-center gap-1 font-medium text-[#6e829f] font-sans text-[0.75rem]">
             <BsFillExclamationCircleFill />
-            <span>Delivered Within 7 Days</span>
+            <span>
+              {deliveryMethod === "Express Shipping"
+                ? "Delivered By Tomorrow"
+                : "Delivered Within 7 Days"}
+            </span>
           </div>
           <div className="w-full h-auto flex items-center justify-between mt-4">
             <span className="font-medium text-[#6e829f] font-sans text-[0.75rem]">
               Sub Total
             </span>
-            <span className="font-medium text-[#000] font-sans text-[0.875rem]">
-              ${calSubTotal}
-            </span>
+            <AnimatePresence mode="wait">
+              <motion.span
+                key={calSubTotal}
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                transition={{ duration: 0.25, ease: "easeOut" }}
+                className="font-medium text-[#000] font-sans text-[0.875rem]"
+              >
+                ${calSubTotal}
+              </motion.span>
+            </AnimatePresence>
           </div>
           <div className="w-full h-auto flex items-center justify-between mt-4">
             <span className="font-medium text-[#6e829f] font-sans text-[0.75rem]">
               Discount
             </span>
-            <span className="font-medium text-[#000] font-sans text-[0.875rem]">
-              $2,030
-            </span>
+            <AnimatePresence mode="wait">
+              <motion.span
+                key={discountAmount}
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                transition={{ duration: 0.25, ease: "easeOut" }}
+                className="font-medium text-[#38D0A2] font-sans text-[0.875rem]"
+              >
+                {discountType === "percentage"
+                  ? `${discount}% - $${discountAmount}`
+                  : discountType === "fixed"
+                  ? `$${discount}`
+                  : `$${discount}`}
+              </motion.span>
+            </AnimatePresence>
           </div>
           <div className="w-full h-auto flex items-center justify-between mt-4">
             <span className="font-medium text-[#6e829f] font-sans text-[0.75rem]">
-              Discount Charge
+              Delivery Charge
             </span>
-            <span className="font-medium text-[#000] font-sans text-[0.875rem]">
-              $2,030
-            </span>
+            <AnimatePresence mode="wait">
+              <motion.span
+                key={deliveryFee}
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                transition={{ duration: 0.25, ease: "easeOut" }}
+                className="text-[#FB4242] font-semibold font-sans text-[16px]"
+              >
+                - ${deliveryFee}
+              </motion.span>
+            </AnimatePresence>
           </div>
           <div className="w-full h-auto flex items-center justify-between mt-4">
             <span className="font-medium text-[#6e829f] font-sans text-[0.75rem]">
-              Service Tax (18%)
+              Service Tax (10%)
             </span>
-            <span className="font-medium text-[#000] font-sans text-[0.875rem]">
-              $2,030
-            </span>
+            <AnimatePresence mode="wait">
+              <motion.span
+                key={serviceTax}
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                transition={{ duration: 0.25, ease: "easeOut" }}
+                className="text-[#000] font-semibold font-sans text-[16px]"
+              >
+                - ${serviceTax}
+              </motion.span>
+            </AnimatePresence>
           </div>
           <div className="w-full h-auto flex items-center justify-between mt-4">
             <span className="font-medium text-[#212B37] font-sans text-[1rem]">
               Total :
             </span>
-            <span className=" text-[#000] font-semibold font-sans text-[16px]">
-              $2,030
-            </span>
+            <AnimatePresence mode="wait">
+              <motion.span
+                key={total}
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                transition={{ duration: 0.25, ease: "easeOut" }}
+                className="text-[#000] font-semibold font-sans text-[16px]"
+              >
+                ${total}
+              </motion.span>
+            </AnimatePresence>
           </div>
           <div className="flex flex-col">
             <PrimaryButton
