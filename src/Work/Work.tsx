@@ -5,7 +5,7 @@ import { PopupSignal } from "./popupSignal/popupSignal";
 import FlexTable, {
   UserTableColumns,
   UserData,
-} from "../components/common/FlexTable/FlexTable";
+} from "../components/common/flexTable/FlexTable";
 
 const columns: UserTableColumns[] = [
   { key: "uuid", label: "ID", show: true },

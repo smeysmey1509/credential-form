@@ -11,7 +11,7 @@ interface Column {
 
 interface DynamicTableProps {
   columns: Column[];
-  data: any[];
+  data: any[] | null;
 }
 
 const DynamicTable: React.FC<DynamicTableProps> = ({ columns, data = [] }) => {

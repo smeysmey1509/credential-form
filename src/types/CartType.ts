@@ -6,9 +6,10 @@ export interface CartItem {
 }
 
 export interface ICart {
-  _id: string;
-  user: string;
-  items: CartItem[];
-  createdAt: string;
-  updatedAt: string;
+  _id?: string;
+  user?: string;
+  items?: CartItem[];
+  createdAt?: string;
+  updatedAt?: string;
+  subTotal?: number;
 }
