@@ -6,6 +6,7 @@ export interface ProductType {
     category?: string;
     stock?: number;
     status: string;
-    image: File[];
+    images: File[];
+    primaryImageIndex: number;
     tag: string[];
 }

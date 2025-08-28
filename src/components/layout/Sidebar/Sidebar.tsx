@@ -22,10 +22,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isSidebarOpen }) => {
     menu: number;
     submenu: number;
   } | null>(null);
-
-  const [openSubmenus, setOpenSubmenus] = useState<boolean[]>(
-    Array(sidebarTitle.length).fill(false)
-  );
+  const [openSubmenus, setOpenSubmenus] = useState<boolean[]>([]);
 
   const handleSubmenuToggle = (index: number) => {
     setOpenSubmenus((prev) =>
@@ -75,9 +72,9 @@ const Sidebar: React.FC<SidebarProps> = ({ isSidebarOpen }) => {
       <div className="w-full h-[4.6rem] flex items-center justify-center pt-3.5 pb-3.5 pl-4 pr-4">
         Ur Logo Here
       </div>
-      <div className="flex flex-col justify-center p-6">
+      <div className="w-full h-full flex flex-col p-6">
         {sidebarItems?.map((module, index) => (
-          <React.Fragment key={index}>
+          <React.Fragment key={module._id}>
             <p className="text-[10px] font-normal opacity-50">{module?.name}</p>
             <ul className="mt-4">
               <li className="mb-4 relative">
@@ -106,7 +103,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isSidebarOpen }) => {
                 <div
                   className={`overflow-hidden transition-all duration-300 ease-in-out ${
                     openSubmenus[index]
-                      ? "max-h-40 opacity-100"
+                      ? "max-h-[9999px] opacity-100"
                       : "max-h-0 opacity-0"
                   } select-none`}
                 >
@@ -114,7 +111,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isSidebarOpen }) => {
                     {module.children?.map((service, serviceIndex) => {
                       return (
                         <NavLink
-                          key={serviceIndex}
+                          key={service._id}
                           to={`/dashboard${service?.path ?? ""}`}
                           className={({ isActive }) =>
                             `flex items-center gap-1 font-medium text-[13px] cursor-pointer

@@ -13,7 +13,10 @@ const CartService = {
     axiosClient.put<ICart>(`/cart/${productId}`, { quantity }),
 
   removeCartItem: (productId: string) =>
-    axiosClient.delete<ICart>(`/cart/${productId}`),
+    axiosClient.post<ICart>(`/cart/remove`, { productId }),
+
+  selectDeliveryMethod: (method: string) =>
+    axiosClient.post(`/cart/select-delivery`, { method }),
 
   clearCart: () => axiosClient.delete("/cart"),
 };

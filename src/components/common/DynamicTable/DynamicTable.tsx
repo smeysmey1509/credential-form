@@ -12,9 +12,17 @@ interface Column {
 interface DynamicTableProps {
   columns: Column[];
   data: any[] | null;
+  actions?: {
+    wishlist?: (row: any) => void;
+    delete?: (row: any) => void;
+  };
 }
 
-const DynamicTable: React.FC<DynamicTableProps> = ({ columns, data = [] }) => {
+const DynamicTable: React.FC<DynamicTableProps> = ({
+  columns,
+  data = [],
+  actions = {},
+}) => {
   return (
     <div className="overflow-x-auto">
       <table className="min-w-full text-sm text-left">
@@ -38,12 +46,15 @@ const DynamicTable: React.FC<DynamicTableProps> = ({ columns, data = [] }) => {
                 {columns.map((col, ci) => {
                   if (col.accessor === "name") {
                     return (
-                      <td className="px-4 py-2">
+                      <td key={ci} className="px-4 py-2">
                         <div className="flex items-center gap-2 py-2">
                           <div className="w-[80px] h-[80px] rounded-sm bg-[#F9F9FA] leading-[5rem] p-2">
                             <img
-                              src={row?.image || 'https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg'}
-                              alt={row?.image}
+                              src={
+                                row?.image ||
+                                "https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg"
+                              }
+                              alt={row?.image || "No image available"}
                               className="w-full h-full object-cover rounded"
                             />
                           </div>
@@ -92,26 +103,27 @@ const DynamicTable: React.FC<DynamicTableProps> = ({ columns, data = [] }) => {
                         className={`px-4 py-2 ${col.color || ""}`}
                         style={{ width: col.width }}
                       >
-                        {/* Replace below with your real action buttons or handlers */}
-                        <button
-                          className="mr-2 p-2 bg-[#5C67FC] text-white cursor-pointer rounded"
-                          onClick={() => alert(`Edit ${row.name}`)}
-                        >
-                          <FaRegHeart />
-                        </button>
-                        <button
-                          className="p-2 bg-[#FF5D9F] text-white cursor-pointer font-bold rounded"
-                          onClick={() => alert(`Delete ${row.name}`)}
-                        >
-                          <FaRegTrashAlt />
-                        </button>
+                        {actions.wishlist && (
+                          <button
+                            className="p-2 bg-blue-500 text-white rounded cursor-pointer"
+                            onClick={() => actions.wishlist?.(row)}
+                          >
+                            <FaRegHeart />
+                          </button>
+                        )}
+                        {actions.delete && (
+                          <button
+                            className="p-2 bg-pink-500 text-white rounded ml-1 cursor-pointer"
+                            onClick={() => actions.delete?.(row)}
+                          >
+                            <FaRegTrashAlt />
+                          </button>
+                        )}
                       </td>
                     );
                   }
 
-                  // Normal data cell
                   const value = row[col.accessor];
-
                   return (
                     <td
                       key={ci}

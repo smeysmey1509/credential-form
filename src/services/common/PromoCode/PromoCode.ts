@@ -28,6 +28,8 @@ const PromoCodeService = {
         deliveryFee?: number;
       };
     }>("/cart/apply-promo", { code }),
+
+    removePromoCode: () => axiosClient.post("/cart/remove-promocode"),
 };
 
 export default PromoCodeService;

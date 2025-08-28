@@ -269,8 +269,8 @@ const ListProduct: React.FC = () => {
                     >
                       <img
                         src={
-                          product?.image?.[0]
-                            ? `http://localhost:5002${product.image[0]}`
+                          product?.images?.[0]
+                            ? `http://localhost:5002${product.images[0]}`
                             : "https://upload.wikimedia.org/wikipedia/commons/f/fd/Jisoo_of_Blackpink_at_a_Dior_event%2C_April_18%2C_2025_%283%29.png"
                         }
                         alt="product-img"

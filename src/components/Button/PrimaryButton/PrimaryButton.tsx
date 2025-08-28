@@ -20,7 +20,7 @@ const PrimaryButton: React.FC<PrimaryButtonProp> = ({
     <button
       onClick={onClick}
       type={type}
-      className={`${baseStyles} ${className}`} // ✅ merge default with custom
+      className={`${baseStyles} ${className}`}
     >
       {label}
     </button>

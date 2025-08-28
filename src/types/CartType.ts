@@ -1,4 +1,5 @@
 // ProductType already defined separately
+import { DeliveryType } from "./DeliveryType";
 import { ProductType } from "./ProductType";
 import { PromoCodeType } from "./PromoCode";
 
@@ -21,6 +22,7 @@ export interface ICart {
   user?: string;
   items: CartItem[];
   summary: CartSummary;
+  delivery?: DeliveryType;
   promoCode?: PromoCodeType;
   createdAt?: string;
   updatedAt?: string;

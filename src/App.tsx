@@ -4,6 +4,8 @@ import {lazy, Suspense} from "react";
 import Work from "./Work/Work";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import Cart from "./components/feature/dashboard/product/Cart";
+import Wishlist from "./components/feature/dashboard/product/Wishlist";
+import Products from "./components/feature/dashboard/product/Products";
 
 const LoginPage = lazy(() => import("./pages/auth/LoginPage"));
 const HomePage = lazy(() => import("./pages/auth/HomePage"));
@@ -55,6 +57,9 @@ function App() {
                     <Route path="product/create" element={<CreateProduct/>}/>
                     <Route path="product/listproduct" element={<ListProduct/>}/>
                     <Route path="product/cart" element={<Cart />} />
+                    <Route path="product/edit/:id" element={<Products />} />
+                    <Route path="product/wishlist" element={<Wishlist />} />
+                    <Route path="product/products" element={<Products />} />
                 </Route>
                 <Route path="work" element={<Work/>}/>
                 <Route
