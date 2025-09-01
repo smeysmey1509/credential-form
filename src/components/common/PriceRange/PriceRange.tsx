@@ -49,7 +49,7 @@ const PriceRange: React.FC<PriceRangeProps> = ({
   );
 
   return (
-    <div className={`w-full flex flex-col gap-3 ${className}`}>
+    <div className={`w-full flex flex-col gap-4 p-[16px] border-b border-b-gray-200 ${className}`}>
       {label && (
         <h6 className="w-full text-[16px] text-[#212B37] font-semibold font-sans">
           {label}

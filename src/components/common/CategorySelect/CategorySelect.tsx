@@ -29,7 +29,7 @@ const CategorySelect: React.FC<CategorySelectProps> = ({
   const displayedData = showAll ? data : data.slice(0, 5);
 
   return (
-    <div className="w-full flex flex-col">
+    <div className="w-full flex flex-col p-[16px] border-b border-b-gray-200">
       {label && (
         <h6 className="w-full text-[16px] text-[#212B37] font-semibold font-sans">
           {label}
@@ -52,7 +52,7 @@ const CategorySelect: React.FC<CategorySelectProps> = ({
               onClick={() => toggleCategory(item.id)}
             >
               {item.name}
-              <span className="text-[#6e829f] text-[0.6875rem] ml-1 font-normal">
+              <span className="text-[#6e829f] text-[0.6875rem] ml-1 font-semibold font-sans">
                 (2,712)
               </span>
             </p>

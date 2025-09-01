@@ -1,17 +1,17 @@
 import axiosClient from "../../api/axiosClient";
-import {ProductType} from "../../../types/ProductType"
+import {ProductVariant, Product, Inventory, Dimensions} from "../../../types/ProductType"
 
 const ProductService = {
-    getAllProducts: () => axiosClient.get<ProductType[]>("/product"),
-    getProduct: (page = 1, limit = 10) => axiosClient.get<ProductType[]>(`/products?page=${page}&limit=${limit}`),
-    getProductById: (id: string) => axiosClient.get<ProductType>(`/product/${id}`),
+    getAllProducts: () => axiosClient.get<ProductVariant[] | Product[] | Inventory[] | Dimensions[]>("/product"),
+    getProduct: (page = 1, limit = 10) => axiosClient.get<ProductVariant[] | Product[] | Inventory[] | Dimensions[]>(`/products?page=${page}&limit=${limit}`),
+    getProductById: (id: string) => axiosClient.get<ProductVariant | Product | Inventory | Dimensions>(`/product/${id}`),
     createProduct: (productData: FormData) =>
-        axiosClient.post<ProductType>("/product", productData, {
+        axiosClient.post<Product | ProductVariant | Inventory | Dimensions>("/product", productData, {
             headers: {
                 "Content-Type": "multipart/form-data",
             },
         }),
-    updateProduct: (id: string, updateData: Partial<ProductType>) => axiosClient.put<ProductType>(`/product/delete/${id}`, updateData),
+    updateProduct: (id: string, updateData: Partial<Product | ProductVariant | Inventory | Dimensions>) => axiosClient.put<Product | ProductVariant | Inventory | Dimensions>(`/product/delete/${id}`, updateData),
     deleteProduct: (id: string) => axiosClient.delete(`/product/delete/${id}`),
     multiDeleteProduct: (ids: string[]) => axiosClient.post(`/product/delete`, {ids}),
     searchProduct: (query: string) => axiosClient.get("/products/search", {params: {query}})

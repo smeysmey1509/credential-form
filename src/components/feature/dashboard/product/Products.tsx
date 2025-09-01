@@ -1,10 +1,27 @@
-import React, { use, useState } from "react";
-import Card from "../../../common/Card/ProductCard";
+import React, { use, useEffect, useState } from "react";
 import CategorySelect from "../../../common/CategorySelect/CategorySelect";
 import PriceRange from "../../../common/PriceRange/PriceRange";
+import {
+  ProductVariant,
+  Product,
+  Inventory,
+  Dimensions,
+} from "../../../../types/ProductType";
+import ProductService from "../../../../services/common/ProductService/ProductService";
+import ProductCard from "../../../common/Card/ProductCard";
 
 const Products = () => {
+  const [products, setProducts] = useState<Product[]>([]);
   const [selected, setSelected] = useState<string[]>([]);
+
+  useEffect(() => {
+    (async () => {
+      const res = await ProductService.getAllProducts();
+      setProducts(res.data as Product[]);
+    })();
+  }, []);
+
+  console.log("products", products);
 
   const categories = [
     { id: "c1", name: "Electronics" },
@@ -59,31 +76,18 @@ const Products = () => {
       </div>
       <div className="flex justify-between gap-6">
         <div className="w-[75%] h-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          <Card />
-          <Card />
-          <Card />
-          <Card />
-          <Card />
-          <Card />
-          <Card />
-          <Card />
-          <Card />
-          <Card />
-          <Card />
-          <Card />
-          <Card />
-          <Card />
-          <Card />
-          <Card />
+          {products.map((product, index) => (
+            <ProductCard key={index ?? product.productId} product={product} />
+          ))}
         </div>
-        <div className="w-[25%] h-full grid bg-white shadow p-[16px] rounded-lg">
-          <div className="flex justify-between pb-2 mb-4">
+        <div className="w-[25%] h-full grid bg-white shadow rounded-lg">
+          <div className="flex justify-between px-[16px] pt-[16px]">
             <h6 className="text-[16px] text-[#212B37] font-semibold">Filter</h6>
             <p className="text-[#FF5D9F] text-[13px] font-sans font-normal cursor-pointer underline">
               Clear All
             </p>
           </div>
-          <div className="w-full flex flex-col gap-6 justify-between">
+          <div className="w-full flex flex-col justify-between">
             <CategorySelect
               label="Categories"
               data={categories}
