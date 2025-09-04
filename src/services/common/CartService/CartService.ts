@@ -4,7 +4,7 @@ const CartService = {
   getCart: () => axiosClient.get<ICart>("/cart"),
 
   addToCart: (productId: string, quantity: number = 1) =>
-    axiosClient.post<ICart>("/cart", { productId, quantity }),
+    axiosClient.post<ICart>("/cart/add", { productId, quantity }),
 
   updateQuantity: (productId: string, quantity: number) =>
     axiosClient.put<ICart>(`/cart/update/${productId}`, { quantity }),

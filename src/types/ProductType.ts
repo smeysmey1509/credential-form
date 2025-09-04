@@ -67,6 +67,9 @@ export interface Product {
   primaryImage?: string | null;
   discountPercent?: number;
   availableTotal?: number;
+  priceMin?: number;
+  priceMax?: number;
+  defaultPrice?: number;
 }
 
 export type FormImage = File | string;

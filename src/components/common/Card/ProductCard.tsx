@@ -11,6 +11,12 @@ import { Product, ProductVariant } from "../../../types/ProductType";
 interface ProductCardProps {
   product: Product;
   productVariant?: ProductVariant;
+  userClick?: {
+    addToCart: () => void;
+    quickView: () => void;
+    addToWishlist: () => void;
+    compare: () => void;
+  };
 }
 
 const fmt = (n?: number) =>
@@ -34,12 +40,8 @@ function getPrimaryImageURL(p: Product, v?: ProductVariant): string {
   return prodImg || varImg || "";
 }
 
-export default function ProductCard({ product, productVariant }: ProductCardProps) {
+export default function ProductCard({ product, productVariant, userClick }: ProductCardProps) {
   const imgSrc = getPrimaryImageURL(product, productVariant);
-  const price =
-    typeof productVariant?.price === "number"
-      ? productVariant.price
-      : product.price;
 
   return (
     <div className="group/card flex flex-col shadow rounded">
@@ -69,7 +71,7 @@ export default function ProductCard({ product, productVariant }: ProductCardProp
             <CardButton
               label={<BiSolidCartAdd className="text-[18px]" />}
               tooltip="Add to Cart"
-              onClick={() => alert("Added to cart")}
+              onClick={userClick?.addToCart}
             />
           </div>
 
@@ -79,7 +81,7 @@ export default function ProductCard({ product, productVariant }: ProductCardProp
                 label={<LuSearch className="text-[14px]" />}
                 tooltip="Quick View"
                 classname="!bg-[#6D71EC]"
-                onClick={() => alert("Quick View")}
+                onClick={userClick?.quickView}
               />
             </div>
             <div className="opacity-0 translate-y-3 transition-all duration-300 ease-out group-hover/card:opacity-100 group-hover/card:translate-y-0 delay-200">
@@ -87,7 +89,7 @@ export default function ProductCard({ product, productVariant }: ProductCardProp
                 label={<FaRegHeart className="text-[14px]" />}
                 tooltip="Add to Wishlist"
                 classname="!bg-[#E056CD]"
-                onClick={() => alert("Added to Wishlist")}
+                onClick={userClick?.addToWishlist}
               />
             </div>
             <div className="opacity-0 translate-y-3 transition-all duration-300 ease-out group-hover/card:opacity-100 group-hover/card:translate-y-0 delay-300">
@@ -95,7 +97,7 @@ export default function ProductCard({ product, productVariant }: ProductCardProp
                 label={<ImContrast className="text-[14px]" />}
                 tooltip="Compare"
                 classname="!bg-[#0D99DB]"
-                onClick={() => alert("Compare")}
+                onClick={userClick?.compare}
               />
             </div>
           </div>
@@ -110,9 +112,9 @@ export default function ProductCard({ product, productVariant }: ProductCardProp
         </h6>
 
         <div className="flex justify-between items-center mt-1">
-          <Rate rating={2.5} />
+          <Rate rating={product?.ratingAvg} ratingCount={product?.ratingCount} />
           <p className="font-bold text-[#5C67F7] text-[20px]">
-            {fmt(price) || "$0.00"}
+            {fmt(product?.defaultPrice) || "$0.00"}
           </p>
         </div>
 
@@ -121,7 +123,7 @@ export default function ProductCard({ product, productVariant }: ProductCardProp
             {product.brand ?? ""}
           </p>
           <p className="font-bold text-[#6e829f] text-[0.8125rem] line-through">
-            {fmt(product.compareAtPrice)}
+            {fmt(product?.compareAtPrice)}
           </p>
         </div>
       </div>

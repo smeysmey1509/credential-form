@@ -8,11 +8,14 @@ import {
   Dimensions,
 } from "../../../../types/ProductType";
 import ProductService from "../../../../services/common/ProductService/ProductService";
+import CartService from "../../../../services/common/CartService/CartService";
 import ProductCard from "../../../common/Card/ProductCard";
+import { useNavigate } from "react-router-dom";
 
 const Products = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [selected, setSelected] = useState<string[]>([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     (async () => {
@@ -60,6 +63,16 @@ const Products = () => {
     { id: "s7", name: "XXXX-Large" },
   ];
 
+  const handleAddToCart = async (productId: string) => {
+    try{
+      const responseAddToCart = await CartService.addToCart(productId);
+      console.log("Add to cart response:", responseAddToCart);
+      navigate("/dashboard/product/cart");
+    }catch(err) {
+      console.log(err)
+    }
+  }
+
   return (
     <div className="w-full h-full flex flex-col justify-between gap-6">
       <div className="flex justify-between bg-white p-[16px] shadow rounded-lg">
@@ -75,12 +88,17 @@ const Products = () => {
         <div className="flex justify-between">B</div>
       </div>
       <div className="flex justify-between gap-6">
-        <div className="w-[75%] h-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        <div className="w-[75%] h-fit grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {products.map((product, index) => (
-            <ProductCard key={index ?? product.productId} product={product} />
+            <ProductCard key={index ?? product._id} product={product} userClick={{
+              addToCart: () => handleAddToCart(product?._id || ""),
+              quickView: () => alert(product.productId + " quick view"),
+              addToWishlist: () => alert(product.productId + " added to wishlist"),
+              compare: () => alert(product.productId + " compare"),
+            }} />
           ))}
         </div>
-        <div className="w-[25%] h-full grid bg-white shadow rounded-lg">
+        <div className="w-[25%] h-fit grid bg-white shadow rounded-lg">
           <div className="flex justify-between px-[16px] pt-[16px]">
             <h6 className="text-[16px] text-[#212B37] font-semibold">Filter</h6>
             <p className="text-[#FF5D9F] text-[13px] font-sans font-normal cursor-pointer underline">
