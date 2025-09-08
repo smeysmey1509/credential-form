@@ -1,3 +1,5 @@
+import { CategoryType } from "./Category";
+
 export type PublishStatus = "Published" | "Unpublished";
 
 export interface Dimensions {
@@ -42,7 +44,7 @@ export interface Product {
   compareAtPrice?: number;
   currency?: string;
   stock?: number;
-  category: string;
+  category: CategoryType;
   seller: string;
   status: PublishStatus;
   tag: string[];

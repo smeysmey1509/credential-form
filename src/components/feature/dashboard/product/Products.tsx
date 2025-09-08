@@ -61,17 +61,6 @@ const Products = () => {
     })();
   }, []);
 
-  const categoriess = [
-    { id: "c1", name: "Electronics" },
-    { id: "c2", name: "Clothing" },
-    { id: "c3", name: "Kitchen" },
-    { id: "c4", name: "Books" },
-    { id: "c5", name: "Toys" },
-    { id: "c6", name: "Sports" },
-    { id: "c7", name: "Beauty" },
-    { id: "c8", name: "Health" },
-  ];
-
   const discount = [
     { id: "d1", name: "10% off", value: 10 },
     { id: "d2", name: "20% off", value: 20 },
@@ -114,7 +103,14 @@ const Products = () => {
     }
   };
 
-  console.log("products", products);
+  const handleFilterCategory = async (categoryId: string[]) => {
+    try {
+      const response = await ProductService.sortByCategory(categoryId);
+      setProducts((response?.data as Product[]) || []);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   return (
     <div className="w-full h-full flex flex-col justify-between gap-6">
@@ -151,16 +147,19 @@ const Products = () => {
         <div className="w-[25%] h-fit grid bg-white shadow rounded-lg">
           <div className="flex justify-between px-[16px] pt-[16px]">
             <h6 className="text-[16px] text-[#212B37] font-semibold">Filter</h6>
-            <p className="text-[#FF5D9F] text-[13px] font-sans font-normal cursor-pointer underline">
+            <button className="text-[#FF5D9F] text-[13px] font-sans font-normal cursor-pointer underline" onClick={() => alert("Clear all filters")}>
               Clear All
-            </p>
+            </button>
           </div>
           <div className="w-full flex flex-col justify-between">
             <CategorySelect
               label="Categories"
               data={categories}
               selected={selected}
-              onChange={setSelected}
+              onChange={(selectedCategories) => {
+                setSelected(selectedCategories);
+                handleFilterCategory(selectedCategories);
+              }}
             />
             <PriceRange
               label="Price Range"

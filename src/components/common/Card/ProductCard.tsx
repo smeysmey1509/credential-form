@@ -48,7 +48,7 @@ export default function ProductCard({ product, productVariant, userClick }: Prod
       <div className="w-full h-full p-2 border-b border-b-gray-200 border-dashed">
         <div className="relative w-full h-full rounded bg-[#E9EAF7] transition-colors duration-300 ease-out group-hover/card:bg-[#DBDCF7]">
           {imgSrc ? (
-            <img src={`http://localhost:5002${imgSrc}`} alt={product.name} className="w-full h-[250px] object-contain" />
+            <img src={`http://localhost:5002${imgSrc}`} alt={product?.name} className="w-full h-[250px] object-contain" />
           ) : (
             <div className="w-full h-[250px] flex items-center justify-center text-gray-400">
               No image
@@ -60,9 +60,9 @@ export default function ProductCard({ product, productVariant, userClick }: Prod
               <BsLightningCharge className="text-white text-[11px]" />
               <p className="text-[11px] font-bold text-white">New Arrival</p>
             </div>
-            {product.discountPercent && product.discountPercent > 0 ? (
+            {product?.discountPercent && product?.discountPercent > 0 ? (
               <div className="w-fit bg-[#ff8e6f] font-bold text-white text-[11px] px-2 py-[1px] rounded">
-                {product.discountPercent}% Off
+                {product?.discountPercent}% Off
               </div>
             ) : null}
           </div>
@@ -107,7 +107,7 @@ export default function ProductCard({ product, productVariant, userClick }: Prod
       <div className="w-full bg-white p-4 rounded">
         <h6 className="font-bold text-[1.1rem] text-[#0A0A0A]">
           <a href="#" className="decoration-none">
-            {product.name || "Product Name"}
+            {product?.name || "Product Name"}
           </a>
         </h6>
 
@@ -120,7 +120,7 @@ export default function ProductCard({ product, productVariant, userClick }: Prod
 
         <div className="flex justify-between items-center">
           <p className="text-[#E354D4] text-[0.8125rem] font-semibold">
-            {product.brand ?? ""}
+            {product?.brand ?? ""}
           </p>
           <p className="font-bold text-[#6e829f] text-[0.8125rem] line-through">
             {fmt(product?.compareAtPrice)}

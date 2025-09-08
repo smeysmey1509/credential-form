@@ -19,6 +19,7 @@ const ProductService = {
     priceLowToHigh: () => axiosClient.get<ProductVariant[] | Product[] | Inventory[] | Dimensions[]>("/products?sort=price_asc"),
     //Sort price high to low
     priceHighToLow: () => axiosClient.get<ProductVariant[] | Product[] | Inventory[] | Dimensions[]>("/products?sort=price_desc"),
+    sortByCategory: (categoryId: string[]) => axiosClient.get<ProductVariant[] | Product[] | Inventory[] | Dimensions[]>(`/products?category=${categoryId}`),
 }
 
 export default ProductService;
