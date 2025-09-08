@@ -10,23 +10,58 @@ import {
 import ProductService from "../../../../services/common/ProductService/ProductService";
 import CartService from "../../../../services/common/CartService/CartService";
 import ProductCard from "../../../common/Card/ProductCard";
+import CategoryService from "../../../../services/common/Category/CategoryService";
+import { CategoryStats, CategoryType } from "../../../../types/Category";
 import { useNavigate } from "react-router-dom";
+import SelectionFilter from "../../../common/SelectionFilter/SelectionFilter";
+
+type SortKey = "" | "price_asc" | "price_desc";
+
+const LABEL_TO_SORT: Record<string, SortKey> = {
+  "Price Low to High": "price_asc",
+  "Price High to Low": "price_desc",
+};
 
 const Products = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [selected, setSelected] = useState<string[]>([]);
+  const [categories, setCategories] = useState<
+    CategoryStats["categories"] | undefined
+  >([]);
+  const [sortBy, setSortBy] = useState<string>("");
   const navigate = useNavigate();
 
   useEffect(() => {
     (async () => {
-      const res = await ProductService.getAllProducts();
-      setProducts(res.data as Product[]);
+      try {
+        let res;
+        switch (sortBy) {
+          case "price_asc":
+            res = await ProductService.priceLowToHigh();
+            setProducts((res?.data as Product[]) || []);
+            break;
+          case "price_desc":
+            res = await ProductService.priceHighToLow();
+            setProducts((res?.data as Product[]) || []);
+            break;
+          default:
+            res = await ProductService.getAllProducts();
+        }
+        setProducts((res?.data as Product[]) || []);
+      } catch (err) {
+        console.error(err);
+      }
+    })();
+  }, [sortBy]);
+
+  useEffect(() => {
+    (async () => {
+      const responseCategories = await CategoryService.getAllCategories();
+      setCategories(responseCategories?.data?.categories || []);
     })();
   }, []);
 
-  console.log("products", products);
-
-  const categories = [
+  const categoriess = [
     { id: "c1", name: "Electronics" },
     { id: "c2", name: "Clothing" },
     { id: "c3", name: "Kitchen" },
@@ -63,39 +98,54 @@ const Products = () => {
     { id: "s7", name: "XXXX-Large" },
   ];
 
+  const handleSortChange = (label: string) => {
+    const key = LABEL_TO_SORT[label] ?? "";
+    setSortBy(key);
+    console.log("Selected sort:", label, "→", key);
+  };
+
   const handleAddToCart = async (productId: string) => {
-    try{
+    try {
       const responseAddToCart = await CartService.addToCart(productId);
       console.log("Add to cart response:", responseAddToCart);
       navigate("/dashboard/product/cart");
-    }catch(err) {
-      console.log(err)
+    } catch (err) {
+      console.log(err);
     }
-  }
+  };
+
+  console.log("products", products);
 
   return (
     <div className="w-full h-full flex flex-col justify-between gap-6">
-      <div className="flex justify-between bg-white p-[16px] shadow rounded-lg">
+      <div className="flex justify-between items-center p-[16px] bg-white shadow rounded-lg">
         <div className="flex justify-between">
           <h6 className="text-[16px] text-[#212B37] font-bold rounded-full">
             Total{" "}
             <span className="text-[16px] text-[#E354D4] font-bold">
-              6678 Items
+              {products.length}
             </span>{" "}
             Available
           </h6>
         </div>
-        <div className="flex justify-between">B</div>
+        <div className="flex justify-between">
+          <SelectionFilter onSortChange={handleSortChange} />
+        </div>
       </div>
       <div className="flex justify-between gap-6">
         <div className="w-[75%] h-fit grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {products.map((product, index) => (
-            <ProductCard key={index ?? product._id} product={product} userClick={{
-              addToCart: () => handleAddToCart(product?._id || ""),
-              quickView: () => alert(product.productId + " quick view"),
-              addToWishlist: () => alert(product.productId + " added to wishlist"),
-              compare: () => alert(product.productId + " compare"),
-            }} />
+            <ProductCard
+              key={index ?? product._id}
+              product={product}
+              userClick={{
+                addToCart: () => handleAddToCart(product?._id || ""),
+                quickView: () => alert(product.productId + " quick view"),
+                addToWishlist: () =>
+                  alert(product.productId + " added to wishlist"),
+                compare: () => alert(product.productId + " compare"),
+              }}
+            />
           ))}
         </div>
         <div className="w-[25%] h-fit grid bg-white shadow rounded-lg">
@@ -121,19 +171,19 @@ const Products = () => {
             />
             <CategorySelect
               label="Discount"
-              data={discount}
+              data={categories}
               selected={selected}
               onChange={setSelected}
             />
             <CategorySelect
               label="Brand"
-              data={brand}
+              data={categories}
               selected={selected}
               onChange={setSelected}
             />
             <CategorySelect
               label="Size"
-              data={sizes}
+              data={categories}
               selected={selected}
               onChange={setSelected}
             />

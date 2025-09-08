@@ -60,11 +60,11 @@ export default function ProductCard({ product, productVariant, userClick }: Prod
               <BsLightningCharge className="text-white text-[11px]" />
               <p className="text-[11px] font-bold text-white">New Arrival</p>
             </div>
-            {product.discountPercent && product.discountPercent > 0 && (
+            {product.discountPercent && product.discountPercent > 0 ? (
               <div className="w-fit bg-[#ff8e6f] font-bold text-white text-[11px] px-2 py-[1px] rounded">
                 {product.discountPercent}% Off
               </div>
-            )}
+            ) : null}
           </div>
 
           <div className="absolute bottom-2 right-2">
