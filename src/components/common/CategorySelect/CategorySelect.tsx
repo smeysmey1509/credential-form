@@ -2,32 +2,41 @@ import React, { useState } from "react";
 import CheckBox from "../CheckBox/CheckBox";
 import { GoPlus } from "react-icons/go";
 import { motion, AnimatePresence } from "framer-motion";
-import { CategoryStats, CategoryType } from "../../../types/Category";
 
-interface CategorySelectProps {
+type Accessors<T> = {
+  id: (x: T) => string;
+  label: (x: T) => React.ReactNode;
+  count?: (x: T) => number | undefined;
+  disabled?: (x: T) => boolean;
+};
+
+interface GenericSelectProps<T> {
   label?: string;
-  data?: CategoryStats["categories"] | [];
+  data?: T[];
   selected: string[];
-  onChange: (selected: string[]) => void;
+  onChange: (selectedIds: string[]) => void;
+  accessors: Accessors<T>;
+  limit?: number;
+  showCount?: boolean;
 }
 
-const CategorySelect: React.FC<CategorySelectProps> = ({
+function GenericSelect<T>({
   label,
-  data,
+  data = [],
   selected,
   onChange,
-}) => {
+  accessors,
+  limit = 5,
+  showCount = true,
+}: GenericSelectProps<T>) {
   const [showAll, setShowAll] = useState(false);
 
-  const toggleCategory = (id: string) => {
-    if (selected.includes(id)) {
-      onChange(selected.filter((item) => item !== id));
-    } else {
-      onChange([...selected, id]);
-    }
+  const toggle = (id: string, isDisabled?: boolean) => {
+    if (isDisabled) return;
+    onChange(selected.includes(id) ? selected.filter(v => v !== id) : [...selected, id]);
   };
 
-  const displayedData = showAll ? data : data?.slice(0, 5);
+  const displayed = showAll ? data : data.slice(0, limit);
 
   return (
     <div className="w-full flex flex-col p-[16px] border-b border-b-gray-200">
@@ -37,35 +46,45 @@ const CategorySelect: React.FC<CategorySelectProps> = ({
         </h6>
       )}
 
-      {/* Animate list items */}
       <AnimatePresence>
-        {displayedData?.map((item) => (
-          <motion.div
-            key={item._id}
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.25 }}
-            className="w-full flex justify-between items-center mt-2 select-none"
-          >
-            <p
-              className="text-[14px] text-[#212B37] font-semibold cursor-pointer"
-              onClick={() => toggleCategory(item._id)}
+        {displayed.map((item, i) => {
+          const id = accessors?.id(item);
+          const name = accessors?.label(item);
+          const count = accessors?.count?.(item) ?? 0;
+          const disabled = accessors?.disabled?.(item) ?? false;
+
+          return (
+            <motion.div
+              key={id}
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.25, delay: i * 0.03 }}
+              className={`w-full flex justify-between items-center mt-2 select-none ${
+                disabled ? "opacity-50 cursor-not-allowed" : ""
+              }`}
             >
-              {item.categoryName}
-              <span className="text-[#6e829f] text-[0.6875rem] ml-1 font-semibold font-sans">
-                ({item.productCount || 0})
-              </span>
-            </p>
-            <CheckBox
-              checked={selected.includes(item._id)}
-              onChange={() => toggleCategory(item._id)}
-            />
-          </motion.div>
-        ))}
+              <p
+                className="text-[14px] text-[#212B37] font-semibold cursor-pointer"
+                onClick={() => toggle(id, disabled)}
+              >
+                {name}
+                {showCount && (
+                  <span className="text-[#6e829f] text-[0.6875rem] ml-1 font-semibold font-sans">
+                    ({count})
+                  </span>
+                )}
+              </p>
+              <CheckBox
+                checked={selected.includes(id)}
+                onChange={() => toggle(id, disabled)}
+              />
+            </motion.div>
+          );
+        })}
       </AnimatePresence>
 
-      {data && data?.length > 5 && (
+      {data.length > limit && (
         <div
           onClick={() => setShowAll(!showAll)}
           className="w-full flex justify-between items-center py-[10px] px-[9px] rounded-[0.3rem] mt-4 bg-[#EFF1FE] cursor-pointer"
@@ -73,16 +92,13 @@ const CategorySelect: React.FC<CategorySelectProps> = ({
           <p className="text-[11px] font-sans font-semibold text-[#5C67F7]">
             {showAll ? "LESS" : "MORE"}
           </p>
-          <motion.div
-            animate={{ rotate: showAll ? 45 : 0 }}
-            transition={{ duration: 0.25 }}
-          >
+          <motion.div animate={{ rotate: showAll ? 45 : 0 }} transition={{ duration: 0.25 }}>
             <GoPlus className="inline-block text-[16px] font-sans font-medium text-[#5C67F7]" />
           </motion.div>
         </div>
       )}
     </div>
   );
-};
+}
 
-export default CategorySelect;
+export default GenericSelect;

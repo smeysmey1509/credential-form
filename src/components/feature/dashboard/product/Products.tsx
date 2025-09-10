@@ -1,4 +1,4 @@
-import React, { use, useEffect, useState } from "react";
+import React, { use, useEffect, useMemo, useState } from "react";
 import CategorySelect from "../../../common/CategorySelect/CategorySelect";
 import PriceRange from "../../../common/PriceRange/PriceRange";
 import {
@@ -14,6 +14,10 @@ import CategoryService from "../../../../services/common/Category/CategoryServic
 import { CategoryStats, CategoryType } from "../../../../types/Category";
 import { useNavigate } from "react-router-dom";
 import SelectionFilter from "../../../common/SelectionFilter/SelectionFilter";
+import BrandService from "../../../../services/common/BrandService/BrandService";
+import { BrandStats, BrandType } from "../../../../types/BrandType";
+import { discountData, sizeData } from "../../../../dummyData/dummyData";
+import Pagination from "../../../common/Pagination/Pagination";
 
 type SortKey = "" | "price_asc" | "price_desc";
 
@@ -22,13 +26,17 @@ const LABEL_TO_SORT: Record<string, SortKey> = {
   "Price High to Low": "price_desc",
 };
 
+const perPage = 12;
+
 const Products = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [selected, setSelected] = useState<string[]>([]);
   const [categories, setCategories] = useState<
     CategoryStats["categories"] | undefined
   >([]);
+  const [brand, setBrand] = useState<BrandStats["brands"]>([]);
   const [sortBy, setSortBy] = useState<string>("");
+  const [page, setPage] = useState<number>(1);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -48,6 +56,7 @@ const Products = () => {
             res = await ProductService.getAllProducts();
         }
         setProducts((res?.data as Product[]) || []);
+        setPage(1);
       } catch (err) {
         console.error(err);
       }
@@ -61,31 +70,24 @@ const Products = () => {
     })();
   }, []);
 
-  const discount = [
-    { id: "d1", name: "10% off", value: 10 },
-    { id: "d2", name: "20% off", value: 20 },
-    { id: "d3", name: "30% off", value: 30 },
-    { id: "d4", name: "40% off", value: 40 },
-    { id: "d5", name: "50% off", value: 50 },
-  ];
+  useEffect(() => {
+    handleListBrand();
+  }, []);
 
-  const brand = [
-    { id: "b1", name: "Brand A" },
-    { id: "b2", name: "Brand B" },
-    { id: "b3", name: "Brand C" },
-    { id: "b4", name: "Brand D" },
-    { id: "b5", name: "Brand E" },
-  ];
+  const totalPages = useMemo(
+    () => Math.max(1, Math.ceil(products?.length / perPage)),
+    [products?.length]
+  );
 
-  const sizes = [
-    { id: "s1", name: "Small" },
-    { id: "s2", name: "Medium" },
-    { id: "s3", name: "Large" },
-    { id: "s4", name: "X-Large" },
-    { id: "s5", name: "XX-Large" },
-    { id: "s6", name: "XXX-Large" },
-    { id: "s7", name: "XXXX-Large" },
-  ];
+  useEffect(() => {
+    if (page > totalPages) setPage(totalPages);
+  }, [totalPages, page]);
+
+  const paginatedProducts = useMemo(() => {
+    const start = (page - 1) * perPage;
+    const end = start + perPage;
+    return products?.slice(start, end);
+  }, [products, page]);
 
   const handleSortChange = (label: string) => {
     const key = LABEL_TO_SORT[label] ?? "";
@@ -107,6 +109,16 @@ const Products = () => {
     try {
       const response = await ProductService.sortByCategory(categoryId);
       setProducts((response?.data as Product[]) || []);
+      setPage(1);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const handleListBrand = async () => {
+    try {
+      const response = await BrandService.getAllBrands();
+      setBrand((response?.data as BrandStats)?.brands || []);
     } catch (err) {
       console.log(err);
     }
@@ -129,25 +141,41 @@ const Products = () => {
         </div>
       </div>
       <div className="flex justify-between gap-6">
-        <div className="w-[75%] h-fit grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          {products.map((product, index) => (
-            <ProductCard
-              key={index ?? product._id}
-              product={product}
-              userClick={{
-                addToCart: () => handleAddToCart(product?._id || ""),
-                quickView: () => alert(product.productId + " quick view"),
-                addToWishlist: () =>
-                  alert(product.productId + " added to wishlist"),
-                compare: () => alert(product.productId + " compare"),
-              }}
-            />
-          ))}
+        <div className="w-[75%] h-fit flex flex-col gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            {paginatedProducts?.map((product, index) => (
+              <ProductCard
+                key={index ?? product._id}
+                product={product}
+                userClick={{
+                  addToCart: () => handleAddToCart(product?._id || ""),
+                  quickView: () => alert(product.productId + " quick view"),
+                  addToWishlist: () =>
+                    alert(product.productId + " added to wishlist"),
+                  compare: () => alert(product.productId + " compare"),
+                }}
+              />
+            ))}
+          </div>
+          {totalPages > 1 && (
+            <div className="w-full flex justify-center items-center mt-6">
+              <Pagination
+                page={page}
+                totalPages={totalPages}
+                onChange={setPage}
+                boundaryCount={2}
+                siblingCount={1}
+              />
+            </div>
+          )}
         </div>
         <div className="w-[25%] h-fit grid bg-white shadow rounded-lg">
           <div className="flex justify-between px-[16px] pt-[16px]">
             <h6 className="text-[16px] text-[#212B37] font-semibold">Filter</h6>
-            <button className="text-[#FF5D9F] text-[13px] font-sans font-normal cursor-pointer underline" onClick={() => alert("Clear all filters")}>
+            <button
+              className="text-[#FF5D9F] text-[13px] font-sans font-normal cursor-pointer underline"
+              onClick={() => alert("Clear all filters")}
+            >
               Clear All
             </button>
           </div>
@@ -160,6 +188,12 @@ const Products = () => {
                 setSelected(selectedCategories);
                 handleFilterCategory(selectedCategories);
               }}
+              accessors={{
+                id: (x) => x._id,
+                label: (x) => x.categoryName,
+                count: (x) => x.productCount,
+                disabled: (x) => x.productCount === 0,
+              }}
             />
             <PriceRange
               label="Price Range"
@@ -169,22 +203,40 @@ const Products = () => {
               defaultValue={[141.94, 50000]}
             />
             <CategorySelect
-              label="Discount"
-              data={categories}
+              label="Brand"
+              data={brand}
               selected={selected}
               onChange={setSelected}
+              accessors={{
+                id: (x) => x._id || "",
+                label: (x) => x.name || "",
+                count: (x) => x.productCount || 0,
+                disabled: (x) => false,
+              }}
             />
             <CategorySelect
-              label="Brand"
-              data={categories}
+              label="Discount"
+              data={discountData}
               selected={selected}
               onChange={setSelected}
+              accessors={{
+                id: (x) => x.id || "",
+                label: (x) => x.label || "",
+                count: (x) => x.count || 0,
+                disabled: (x) => x.disabled,
+              }}
             />
             <CategorySelect
               label="Size"
-              data={categories}
+              data={sizeData}
               selected={selected}
               onChange={setSelected}
+              accessors={{
+                id: (x) => x.id || "",
+                label: (x) => x.label || "",
+                count: (x) => x.count || 0,
+                disabled: (x) => x.disabled,
+              }}
             />
           </div>
         </div>

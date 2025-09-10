@@ -1,11 +1,11 @@
 // ProductType already defined separately
 import { DeliveryType } from "./DeliveryType";
-import { ProductType } from "./ProductType";
+import { Product } from "./ProductType";
 import { PromoCodeType } from "./PromoCode";
 
 export interface CartItem {
   _id?: string;
-  product: ProductType;
+  product: Product;
   quantity: number;
 }
 

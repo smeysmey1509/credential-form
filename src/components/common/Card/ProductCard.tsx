@@ -19,8 +19,7 @@ interface ProductCardProps {
   };
 }
 
-const fmt = (n?: number) =>
-  typeof n === "number" ? `$${n}` : "";
+const fmt = (n?: number) => (typeof n === "number" ? `$${n}` : "");
 
 function getPrimaryImageURL(p: Product, v?: ProductVariant): string {
   // 1) backend virtual (if present)
@@ -40,7 +39,11 @@ function getPrimaryImageURL(p: Product, v?: ProductVariant): string {
   return prodImg || varImg || "";
 }
 
-export default function ProductCard({ product, productVariant, userClick }: ProductCardProps) {
+export default function ProductCard({
+  product,
+  productVariant,
+  userClick,
+}: ProductCardProps) {
   const imgSrc = getPrimaryImageURL(product, productVariant);
 
   return (
@@ -48,7 +51,11 @@ export default function ProductCard({ product, productVariant, userClick }: Prod
       <div className="w-full h-full p-2 border-b border-b-gray-200 border-dashed">
         <div className="relative w-full h-full rounded bg-[#E9EAF7] transition-colors duration-300 ease-out group-hover/card:bg-[#DBDCF7]">
           {imgSrc ? (
-            <img src={`http://localhost:5002${imgSrc}`} alt={product?.name} className="w-full h-[250px] object-contain" />
+            <img
+              src={`http://localhost:5002${imgSrc}`}
+              alt={product?.name}
+              className="w-full h-[250px] object-contain"
+            />
           ) : (
             <div className="w-full h-[250px] flex items-center justify-center text-gray-400">
               No image
@@ -112,7 +119,10 @@ export default function ProductCard({ product, productVariant, userClick }: Prod
         </h6>
 
         <div className="flex justify-between items-center mt-1">
-          <Rate rating={product?.ratingAvg} ratingCount={product?.ratingCount} />
+          <Rate
+            rating={product?.ratingAvg}
+            ratingCount={product?.ratingCount}
+          />
           <p className="font-bold text-[#5C67F7] text-[20px]">
             {fmt(product?.defaultPrice) || "$0.00"}
           </p>
@@ -120,7 +130,7 @@ export default function ProductCard({ product, productVariant, userClick }: Prod
 
         <div className="flex justify-between items-center">
           <p className="text-[#E354D4] text-[0.8125rem] font-semibold">
-            {product?.brand ?? ""}
+            {product?.brand?.name}
           </p>
           <p className="font-bold text-[#6e829f] text-[0.8125rem] line-through">
             {fmt(product?.compareAtPrice)}

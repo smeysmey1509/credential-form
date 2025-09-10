@@ -1,4 +1,5 @@
 import { CategoryType } from "./Category";
+import { BrandStats, BrandType } from "./BrandType";
 
 export type PublishStatus = "Published" | "Unpublished";
 
@@ -33,13 +34,20 @@ export interface SEO {
   keywords?: string[];
 }
 
+export interface Brand {
+  _id?: string;
+  name: string;
+  slug?: string;
+  isActive?: boolean;
+}
+
 export interface Product {
   _id?: string;
   productId?: string;
   name: string;
   slug?: string;
   description?: string;
-  brand?: string;
+  brand?: Brand;
   price?: number;
   compareAtPrice?: number;
   currency?: string;
