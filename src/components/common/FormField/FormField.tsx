@@ -7,7 +7,7 @@ interface FormInputProps {
   value?: string | number;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   type?: "text" | "number";
-  className?: string; // ✅ allow custom class names (e.g., with !important)
+  className?: string;
 }
 
 const FormInput: React.FC<FormInputProps> = ({
@@ -17,7 +17,7 @@ const FormInput: React.FC<FormInputProps> = ({
   value,
   onChange,
   type = "text",
-  className = "", // ✅ default to empty
+  className = "",
 }) => {
   const inputBaseClasses = `
     appearance-none border mt-2 rounded bg-white

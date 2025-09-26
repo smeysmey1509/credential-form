@@ -11,11 +11,11 @@ import ProductService from "../../../../services/common/ProductService/ProductSe
 import CartService from "../../../../services/common/CartService/CartService";
 import ProductCard from "../../../common/Card/ProductCard";
 import CategoryService from "../../../../services/common/Category/CategoryService";
-import { CategoryStats, CategoryType } from "../../../../types/Category";
+import { CategoryStats } from "../../../../types/Category";
 import { useNavigate } from "react-router-dom";
 import SelectionFilter from "../../../common/SelectionFilter/SelectionFilter";
 import BrandService from "../../../../services/common/BrandService/BrandService";
-import { BrandStats, BrandType } from "../../../../types/BrandType";
+import { BrandStats } from "../../../../types/BrandType";
 import { discountData, sizeData } from "../../../../dummyData/dummyData";
 import Pagination from "../../../common/Pagination/Pagination";
 
