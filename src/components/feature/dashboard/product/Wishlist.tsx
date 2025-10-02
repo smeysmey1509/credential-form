@@ -3,6 +3,7 @@ import SearchBox from "../../../common/SearchBox/SearchBox";
 import Filter from "../../../common/SelectionFilter/Filter";
 import { IoArrowForward } from "react-icons/io5";
 import WishlistItem from "../../../common/WishlistItem/WishlistItem";
+import NumberPagination from "../../../common/Pagination/NumberPagination";
 
 const Wishlist = () => {
   return (
@@ -42,6 +43,9 @@ const Wishlist = () => {
         <WishlistItem />
         <WishlistItem />
         <WishlistItem />
+      </div>
+      <div className="w-full h-fit flex justify-center items-center">
+        <NumberPagination />
       </div>
     </div>
   );

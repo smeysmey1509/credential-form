@@ -8,6 +8,7 @@ interface FormInputProps {
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   type?: "text" | "number";
   className?: string;
+  helperTextClass?: string;
 }
 
 const FormInput: React.FC<FormInputProps> = ({
@@ -18,6 +19,7 @@ const FormInput: React.FC<FormInputProps> = ({
   onChange,
   type = "text",
   className = "",
+  helperTextClass
 }) => {
   const inputBaseClasses = `
     appearance-none border mt-2 rounded bg-white
@@ -45,7 +47,7 @@ const FormInput: React.FC<FormInputProps> = ({
         className={`${inputBaseClasses} ${className}`}
       />
       {helperText && (
-        <label className="text-[0.75rem] font-medium text-[#6e829f] mt-1">
+        <label className={`text-[0.75rem] font-medium text-[#6e829f] mt-1 ${helperTextClass}`}>
           {helperText}
         </label>
       )}

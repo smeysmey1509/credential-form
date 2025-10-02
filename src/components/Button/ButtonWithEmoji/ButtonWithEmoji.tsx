@@ -15,7 +15,7 @@ const ButtonWithEmoji: React.FC<ButtonWithEmojiProp> = ({
 }) => {
   return (
     <button
-      className={`w-fit h-fit min-w-[130px] flex justify-center items-center bg-[#5C67F7] hover:bg-[#6E77F8] text-[13px] cursor-pointer font-sans font-semibold text-white py-[6px] px-[12px] gap-2 rounded ${btnClass}`}
+      className={`w-fit h-fit min-w-[130px] flex justify-center items-center bg-[#5C67F7] hover:bg-[#6E77F8] text-[13px] cursor-pointer font-sans font-semibold text-white py-[6px] px-[12px] gap-2 rounded transition-colors duration-300 ${btnClass}`}
       onClick={onClick}
     >
       {emoji}
