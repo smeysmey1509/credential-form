@@ -16,6 +16,7 @@ import FormInput from "../../../common/FormField/FormField";
 import CheckBox from "../../../common/CheckBox/CheckBox";
 import CheckBoxRedius from "../../../common/CheckBoxRedius/CheckBoxRedius";
 import CreditCard from "../../../common/CreditCard/CreditCard";
+import SummaryCard from "../../../common/SummaryCard/SummaryCard";
 
 const Checkout = () => {
   const [activeTab, setActiveTab] = useState(0);
@@ -124,7 +125,7 @@ const Checkout = () => {
                 </div>
               </div>
             </div>
-            <div className="w-full p-3 flex justify-end items-end border border-[#ecf3fb] border-dashed">
+            <div className="w-full p-3 flex justify-end items-end border border-[#ecf3fb] border-b-0 border-r-0 border-l-0 border-dashed">
               <PersonalDetail
                 label="Personal Details"
                 emoji={<BsPerson />}
@@ -169,7 +170,7 @@ const Checkout = () => {
                 </div>
               </div>
             </div>
-            <div className="w-full p-3 flex justify-between items-center border border-[#ecf3fb] border-dashed">
+            <div className="w-full p-3 flex justify-between items-center border border-b-0 border-r-0 border-l-0 border-[#ecf3fb] border-dashed">
               <PersonalDetail
                 label="Back To Shipping"
                 emoji={<MdOutlineLocalShipping />}
@@ -276,7 +277,7 @@ const Checkout = () => {
                 </div>
               </div>
             </div>
-            <div className="w-full p-3 flex justify-between items-center border border-[#ecf3fb] border-dashed">
+            <div className="w-full p-3 flex justify-between items-center border border-b-0 border-r-0 border-l-0 border-[#ecf3fb] border-dashed">
               <PersonalDetail
                 label="Back To Personal Info"
                 emoji={<MdOutlineLocalShipping />}
@@ -335,8 +336,79 @@ const Checkout = () => {
           </motion.div>
         )}
       </div>
-      <div className="basis-3/12 h-fit flex bg-white shadow-[0px_6px_16px_2px_rgba(0,0,0,0.05)] p-3 rounded">
-        2
+      <div className="basis-3/12 h-fit flex flex-col bg-white shadow-[0px_6px_16px_2px_rgba(0,0,0,0.05)] rounded">
+        <div className="flex gap-[0.25rem] p-3 items-center">
+          <div className="text-[#212B37] text-[15.2px] font-medium font-sans">
+            Order Summary
+          </div>
+          <span className="flex justify-center items-center text-center text-[#5C67F7] text-[11px] font-medium font-sans bg-[rgba(92,103,247,0.1)] py-[0.25rem] px-[0.45rem] rounded-[50rem]">
+            01
+          </span>
+        </div>
+        <div className="p-0">
+          <ul className="mb-0 border-0 p-0 list-none flex flex-col">
+            <li className="p-3 border border-[#ecf3fb] border-t-0 border-r-0 border-l-0">
+              <SummaryCard />
+            </li>
+            <li className="p-3 border border-[#ecf3fb] border-t-0 border-r-0 border-l-0 border-dashed">
+              <SummaryCard />
+            </li>
+          </ul>
+          <div className="p-3 border border-[#ecf3fb] border-t-0 border-r-0 border-l-0 border-dashed">
+            <div className="w-full h-fit flex justify-between items-center gap-3">
+              <p className="text-[#5C67F7] text-[12px] py-[0.25rem] px-[0.45rem] rounded bg-[rgba(92,103,247,0.1)] font-semibold font-sans">
+                Subtotal :
+              </p>
+              <p className="text-[#21Ce9E] text-[12px] py-[0.25rem] px-[0.45rem] rounded font-medium font-sans">
+                COUPON APPLIED
+              </p>
+            </div>
+          </div>
+          <div className="p-3 border border-[#ecf3fb] border-t-0 border-r-0 border-l-0 border-dashed">
+            <div className="w-full h-fit flex justify-between items-center gap-3 mb-3">
+              <p className="text-[#6e829f] text-[13px] font-normal font-sans">
+                Total
+              </p>
+              <p className="text-[#212B37] text-[14px] font-bold font-sans">
+                $189
+              </p>
+            </div>
+            <div className="w-full h-fit flex justify-between items-center gap-3 mb-3">
+              <p className="text-[#6e829f] text-[13px] font-normal font-sans">
+                Discount
+              </p>
+              <p className="text-[#21Ce9E] text-[14px] font-bold font-sans">
+                10% - $31.8
+              </p>
+            </div>
+            <div className="w-full h-fit flex justify-between items-center gap-3 mb-3">
+              <p className="text-[#6e829f] text-[13px] font-normal font-sans">
+                Delivery Charge
+              </p>
+              <p className="text-[#Fb4242] text-[14px] font-bold font-sans">
+                - $29
+              </p>
+            </div>
+            <div className="w-full h-fit flex justify-between items-center gap-3">
+              <p className="text-[#6e829f] text-[13px] font-normal font-sans">
+                Service Tax (18%)
+              </p>
+              <p className="text-[#212B37] text-[14px] font-bold font-sans">
+                - $45
+              </p>
+            </div>
+          </div>
+          <div className="p-3">
+            <div className="w-full h-fit flex justify-between items-center gap-3">
+              <p className="text-[#212B37] text-[15px] font-normal font-sans">
+                Total :
+              </p>
+              <p className="text-[#212B37] text-[16px] font-bold font-sans">
+                $189
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

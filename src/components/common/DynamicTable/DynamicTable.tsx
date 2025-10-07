@@ -6,6 +6,8 @@ interface Column {
   accessor: string;
   width?: string;
   color?: string;
+  currency?: boolean;
+  bodyColor?: string;
   render?: (value: any, row: any) => React.ReactNode;
 }
 
@@ -26,7 +28,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
   return (
     <div className="overflow-x-auto">
       <table className="min-w-full text-sm text-left">
-        <thead className="py-4 border-b border-b-gray-200">
+        <thead className="py-4 border-b border-b-[#ecf3fb]">
           <tr>
             {columns.map((col, i) => (
               <th
@@ -42,7 +44,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
         <tbody>
           {data && data.length > 0 ? (
             data.map((row, ri) => (
-              <tr key={ri} className="border-b border-b-gray-200">
+              <tr key={ri} className="border-b border-b-[#ecf3fb]">
                 {columns.map((col, ci) => {
                   if (col.accessor === "name") {
                     return (
@@ -96,6 +98,49 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                     );
                   }
 
+                  if (col.accessor === "item") {
+                    return (
+                      <td key={ci} className="px-4 py-2">
+                        <div className="flex items-center gap-2 py-2">
+                          <div className="w-[80px] h-[80px] rounded-sm bg-[#F9F9FA] leading-[5rem] p-2">
+                            <img
+                              src={
+                                row?.image ||
+                                "https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg"
+                              }
+                              alt={row?.image || "No image available"}
+                              className="w-full h-full object-cover rounded"
+                            />
+                          </div>
+                          <div className="flex flex-col">
+                            <div className="flex items-center gap-2">
+                              <h4 className="text-[14px] text-[#0A0A0A] font-bold">
+                                {row?.name}
+                              </h4>
+                            </div>
+                            <div className="flex flex-col gap-1 mt-1">
+                              <span className="text-[#6E829F] text-sm font-semibold">
+                                <span className="text-[#212B37] text-sm font-normal">
+                                  Size :
+                                </span>{" "}
+                                13"
+                              </span>
+                              <span className="text-[#6E829F] text-sm font-semibold">
+                                <span className="text-[#212B37] text-sm font-normal">
+                                  Color:
+                                </span>{" "}
+                                Blue
+                                <span className="bg-[#FF8E6F] text-center text-white text-[9px] px-[7.2px] py-[4px] ml-4 rounded-sm">
+                                  20% Off
+                                </span>
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                    );
+                  }
+
                   if (col.accessor === "action") {
                     return (
                       <td
@@ -128,11 +173,11 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                     <td
                       key={ci}
                       className={`px-4 py-2 font-bold text-[#212B37] ${
-                        col.color || ""
+                        col.bodyColor || ""
                       }`}
                       style={{ width: col.width }}
                     >
-                      {col.render ? col.render(value, row) : `$${value}`}
+                      {col.render ? col.render(value, row) : `${col.currency ? "$" : ""}${value}`}
                     </td>
                   );
                 })}

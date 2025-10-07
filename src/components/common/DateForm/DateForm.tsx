@@ -1,13 +1,17 @@
 import React from "react";
 
-const PublishDateInput = () => {
+interface PublishDateInputProps {
+    label?: string;
+}
+
+const PublishDateInput = ({ label }: PublishDateInputProps) => {
     return (
         <div className="w-full flex flex-col">
             <label
                 htmlFor="publish-date"
                 className="text-[14px] font-medium text-[#212b37] mb-2"
             >
-                Publish Date
+                {label || "Publish Date"}
             </label>
             <input
                 type="date"

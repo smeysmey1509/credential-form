@@ -12,7 +12,11 @@ import ListItem from "@tiptap/extension-list-item";
 import Blockquote from "@tiptap/extension-blockquote";
 import CodeBlock from "@tiptap/extension-code-block";
 
-const RichTextEditor: React.FC = () => {
+interface RichTextEditorProps {
+  label?: string;
+}
+
+const RichTextEditor: React.FC<RichTextEditorProps> = ({ label }) => {
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -34,7 +38,13 @@ const RichTextEditor: React.FC = () => {
   }
 
   return (
-    <>
+    <div className="w-full flex flex-col">
+      <label
+        htmlFor="rich-text-editor"
+        className="text-[14px] font-medium text-[#212b37]"
+      >
+        {label || "Rich Text Editor"}
+      </label>
       <div className="border mt-2 border-[#dee7f1] dark:border-gray-700 dark:text-gray-500 rounded">
         <div className="flex w-full border-b border-box border-b-[#dee7f1] dark:border-b dark:border-b-gray-700 gap-2 px-4 py-1">
           <button
@@ -168,12 +178,11 @@ const RichTextEditor: React.FC = () => {
             {"</>"} Code
           </button>
         </div>
-
-        <div className="rounded p-2 h-full">
+        <div className="rounded p-2 w-full h-fit">
           <EditorContent editor={editor} />
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

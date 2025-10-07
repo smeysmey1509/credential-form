@@ -4,16 +4,22 @@ import { CiEdit } from "react-icons/ci";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 import { RiDeleteBinLine } from "react-icons/ri";
 import ProductService from "../../../../services/common/ProductService/ProductService";
-import { ProductType } from "../../../../types/ProductType";
+import { Pagination, Product } from "../../../../types/ProductType";
 import { motion, AnimatePresence } from "framer-motion";
 import socket from "../../../../services/socket/socket";
 import {
   toolbarVariants,
   dropdownVariants,
 } from "../../../../animation/animation";
+import { useNavigate } from "react-router-dom";
+
+export interface ProductListResponse {
+  products: Product[];
+  pagination: Pagination;
+}
 
 const ListProduct: React.FC = () => {
-  const [products, setProducts] = useState<ProductType[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
   const [selectedProductIds, setSelectedProductIds] = useState<string[]>([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalItems, setTotalItems] = useState<number>(0);
@@ -26,10 +32,10 @@ const ListProduct: React.FC = () => {
   });
   const debounceTimeout = useRef<NodeJS.Timeout | null>(null);
 
-  useEffect(() => {
-    handleFetchProducts();
+  const navigate = useNavigate();
 
-    const handleCreated = (newProduct: ProductType) => {
+  useEffect(() => {
+    const handleCreated = (newProduct: Product) => {
       if (!newProduct || !newProduct._id || !newProduct.name) return; // Validate
 
       setProducts((prev) => {
@@ -48,7 +54,7 @@ const ListProduct: React.FC = () => {
     };
 
     const handleProductUpdated = (
-      updatedProduct: Partial<ProductType> & { _id: string }
+      updatedProduct: Partial<Product> & { _id: string }
     ) => {
       setProducts((prevProducts) =>
         prevProducts.map((p) =>
@@ -61,6 +67,8 @@ const ListProduct: React.FC = () => {
       setProducts((prev) => prev.filter((p) => p._id !== deletedId));
       setTotalItems((prev) => prev - 1);
     };
+
+    handleFetchProducts();
 
     socket.on("product:created", handleCreated);
     socket.on("product:edited", handleProductUpdated);
@@ -100,14 +108,14 @@ const ListProduct: React.FC = () => {
         currentPage,
         itemsPerPage
       );
-      const { products, total, perPage, totalPages } = response.data;
 
+      const { products, pagination } = response.data as ProductListResponse;
       setProducts(products);
-      setTotalItems(total);
-      setItemsPerPage(perPage);
-      setTotalPerPage(totalPages);
+      setTotalItems(pagination.total);
+      setItemsPerPage(pagination.perPage);
+      setTotalPerPage(pagination.totalPages);
     } catch (e) {
-      console.error("Failed to fetch:", e);
+      console.error("Failed to fetch products:", e);
     }
   };
 
@@ -141,7 +149,7 @@ const ListProduct: React.FC = () => {
 
       // Update UI
       setProducts((prev) =>
-        prev.filter((product) => !selectedProductIds.includes(product._id))
+        prev.filter((product) => !selectedProductIds.includes(product?._id))
       );
       setSelectedProductIds([]);
       setSelectionToolbar(false);
@@ -260,7 +268,13 @@ const ListProduct: React.FC = () => {
                     ></span>
                   </label>
                 </td>
-                <td className="px-6 py-4" scope="row">
+                <td
+                  className="px-6 py-4  cursor-pointer"
+                  scope="row"
+                  onClick={() =>
+                    navigate(`/dashboard/product/editproducts/${product._id}`)
+                  }
+                >
                   <div className="w-full flex items-center gap-2">
                     <span
                       className={
@@ -290,10 +304,10 @@ const ListProduct: React.FC = () => {
                   </div>
                 </td>
                 <td className="px-6 py-4 dark:text-[#FFFFFFCC]" scope="row">
-                  {product.category?.name}
+                  {product.category?.categoryName}
                 </td>
                 <td className="px-6 py-4 dark:text-[#FFFFFFCC]" scope="row">
-                  ${product.price}
+                  ${product.defaultPrice}
                 </td>
                 <td className="px-6 py-4 dark:text-[#FFFFFFCC]" scope="row">
                   {product.stock}

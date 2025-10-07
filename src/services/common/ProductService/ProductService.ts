@@ -5,6 +5,7 @@ import {
   Inventory,
   Dimensions,
 } from "../../../types/ProductType";
+import { AxiosResponse } from "axios";
 
 const ProductService = {
   getAllProducts: () =>
@@ -12,13 +13,9 @@ const ProductService = {
       "/product"
     ),
   getProduct: (page = 1, limit = 10) =>
-    axiosClient.get<ProductVariant[] | Product[] | Inventory[] | Dimensions[]>(
-      `/products?page=${page}&limit=${limit}`
-    ),
-  getProductById: (id: string) =>
-    axiosClient.get<ProductVariant | Product | Inventory | Dimensions>(
-      `/product/${id}`
-    ),
+    axiosClient.get<Product[]>(`/products?page=${page}&limit=${limit}`),
+  getProductById: (id: string): Promise<AxiosResponse<Product>> =>
+    axiosClient.get<Product>(`/product/${id}`),
   createProduct: (productData: FormData) =>
     axiosClient.post<Product | ProductVariant | Inventory | Dimensions>(
       "/product",

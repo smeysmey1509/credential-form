@@ -3,6 +3,15 @@ import { BrandStats, BrandType } from "./BrandType";
 
 export type PublishStatus = "Published" | "Unpublished";
 
+export interface Pagination {
+  total?: number;
+  page?: number;
+  perPage?: number;
+  totalPages?: number;
+  hasNextPage?: boolean;
+  hasPrevPage?: boolean;
+}
+
 export interface Dimensions {
   length: number;
   width: number;
