@@ -119,6 +119,8 @@ const ListProduct: React.FC = () => {
     }
   };
 
+  console.log('totalItem', totalItems)
+
   const handleDeleteProduct = async (productId: string) => {
     try {
       const deleted = await ProductService.deleteProduct(productId);

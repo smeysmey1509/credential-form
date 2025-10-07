@@ -3,7 +3,7 @@ import { AiOutlineHome } from "react-icons/ai";
 import { IoIosArrowDown } from "react-icons/io";
 import { BsDash } from "react-icons/bs";
 import { useSidebarTitle } from "../../../context/SidebarTitleContext";
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink, useLocation, matchPath } from "react-router-dom";
 import { sidebarService } from "../../../services/common/SidebarService/SidebarService";
 import { SidebarItemNode } from "../../../types/SidebarType";
 
@@ -47,8 +47,17 @@ const Sidebar: React.FC<SidebarProps> = ({ isSidebarOpen }) => {
         // After setting items, check current URL to set active state
         items.forEach((module, moduleIndex) => {
           module.children?.forEach((service, serviceIndex) => {
-            const fullPath = `/dashboard${service?.path ?? ""}`;
-            if (location.pathname === fullPath) {
+            const path = service?.path ?? "";
+            const fullPath = `/dashboard${path}`;
+
+            const isMatchingPath =
+              matchPath({ path: fullPath, end: true }, location.pathname) ||
+              matchPath(
+                { path: `${fullPath}/*`, end: false },
+                location.pathname
+              );
+
+            if (isMatchingPath) {
               setActiveMenu(moduleIndex);
               setActiveSubmenu({ menu: moduleIndex, submenu: serviceIndex });
 

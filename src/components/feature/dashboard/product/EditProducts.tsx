@@ -12,9 +12,11 @@ import RichTextEditor from "../../../common/RichTextEditor/RichTextEditor";
 import ButtonWithEmoji from "../../../Button/ButtonWithEmoji/ButtonWithEmoji";
 import { GoPlus, GoDownload } from "react-icons/go";
 import ProductService from "../../../../services/common/ProductService/ProductService";
-import { Product } from "../../../../types/ProductType";
+import { Brand, Product } from "../../../../types/ProductType";
 import CategoryService from "../../../../services/common/Category/CategoryService";
 import { CategoryType } from "../../../../types/Category";
+import BrandService from "../../../../services/common/BrandService/BrandService";
+import { BrandStats, BrandType } from "../../../../types/BrandType";
 
 const EditProducts = () => {
   const { id } = useParams<{ id: string }>();
@@ -28,8 +30,12 @@ const EditProducts = () => {
   const [categories, setCategories] = useState<string[]>([]);
   const [categoriesOptions, setCategoriesOptions] = useState<string[]>([]);
   const [selectedCategoryId, setSelectedCategoryId] = useState<string>("");
+  const [brand, setBrand] = useState<string>("");
+  const [brandOptions, setBrandOptions] = useState<BrandType[]>([]);
   const [tag, setTag] = useState<string[]>([]);
   const [images, setImages] = useState<File[]>([]);
+  const [size, setSize] = useState<string>("");
+  const [weight, setWeight] = useState<number>(0);
   const [primaryImage, setPrimaryImage] = useState<File | string>("");
   const [publishDate, setPublishDate] = useState("");
   const [publishTime, setPublishTime] = useState("");
@@ -40,6 +46,7 @@ const EditProducts = () => {
 
   useEffect(() => {
     getCategories();
+    getBrands();
   }, []);
 
   const getProductByID = async (id: string): Promise<void> => {
@@ -51,6 +58,8 @@ const EditProducts = () => {
       setDescription(product.description || "");
       setDefaultPrice(product.defaultPrice ?? 0);
       setStock(product.stock ?? 0);
+      setBrand(product?.brand?.name || "");
+      setWeight(product?.dimensions?.width || 0);
       setStatus(product.status ?? "Published");
       setSelectedCategoryId(product?.category?.categoryName || "");
       setTag(product.tag || []);
@@ -72,6 +81,17 @@ const EditProducts = () => {
       setCategoriesOptions(responseCategoryOptions);
     } catch (error) {
       console.error("Failed to fetch categories:", error);
+    }
+  };
+
+  const getBrands = async () => {
+    try {
+      const responseBrand = await BrandService?.getAllBrands();
+      const responseBrandOptions: BrandType[] =
+        responseBrand?.data?.brands?.map((brand: any) => brand?.name) || [];
+      setBrandOptions(responseBrandOptions);
+    } catch (err) {
+      console.log("err", err);
     }
   };
 
@@ -102,8 +122,9 @@ const EditProducts = () => {
             <div className="row-start-2 row-end-3 col-start-2 col-end-3">
               <SelectItemField
                 label="Gender"
-                options={["Male", "Female", "Gay", "ByeBye"]}
+                options={["All", "Male", "Female"]}
                 placeholder="Select size"
+                value="All"
               />
             </div>
             <div className="row-start-3 row-end-4 col-start-1 col-end-2">
@@ -111,13 +132,17 @@ const EditProducts = () => {
                 label="Size"
                 options={["Large", "Medium", "Small", "Extra Small"]}
                 placeholder="Select size"
+                onChange={(value) => setSize(value)}
+                value={size}
               />
             </div>
             <div className="row-start-3 row-end-4 col-start-2 col-end-3">
               <SelectItemField
                 label="Brand"
-                options={["Gucci", "IPhone", "Samsung", "Extra Small"]}
+                options={brandOptions}
                 placeholder="Select size"
+                onChange={(brand) => setBrand(brand)}
+                value={brand}
               />
             </div>
             <div className="row-start-4 row-end-5 col-start-1 col-end-2">
@@ -151,28 +176,32 @@ const EditProducts = () => {
           <div className="w-1/2 h-full grid grid-cols-6 grid-rows-11 gap-4">
             <div className="col-span-2">
               <FormField
-                label="Price"
-                placeholder="Enter price"
+                label="Actual Price"
+                placeholder="Actual price"
                 value={defaultPrice}
                 type="number"
               />
             </div>
             <div className="col-span-2 col-start-3">
               <FormField
-                label="Stock"
-                placeholder="Enter Stock"
+                label="Dealer Price"
+                placeholder="Dealer Price"
                 value={stock}
                 type="number"
               />
             </div>
             <div className="col-span-2 col-start-5">
-              <FormField label="Product Type" placeholder="Type" />
+              <FormField label="Discount" placeholder="Type" />
             </div>
             <div className="col-span-3 row-start-2">
               <FormField label="Product Type" placeholder="Type" />
             </div>
             <div className="col-span-3 col-start-4 row-start-2">
-              <FormField label="Item Weight" placeholder="Weight" />
+              <FormField
+                label="Item Weight"
+                placeholder="Weight"
+                value={weight}
+              />
             </div>
             <div className="col-span-6 row-span-2 row-start-3">
               <ProductImageInput
