@@ -12,9 +12,8 @@ import RichTextEditor from "../../../common/RichTextEditor/RichTextEditor";
 import ButtonWithEmoji from "../../../Button/ButtonWithEmoji/ButtonWithEmoji";
 import { GoPlus, GoDownload } from "react-icons/go";
 import ProductService from "../../../../services/common/ProductService/ProductService";
-import { Brand, Product } from "../../../../types/ProductType";
+import { Product } from "../../../../types/ProductType";
 import CategoryService from "../../../../services/common/Category/CategoryService";
-import { CategoryType } from "../../../../types/Category";
 import BrandService from "../../../../services/common/BrandService/BrandService";
 import { BrandStats, BrandType } from "../../../../types/BrandType";
 
@@ -28,10 +27,11 @@ const EditProducts = () => {
   const [stock, setStock] = useState<number>(0);
   const [status, setStatus] = useState<string>("Published");
   const [categories, setCategories] = useState<string[]>([]);
+  const [currency, setCurrency] = useState<string>("");
   const [categoriesOptions, setCategoriesOptions] = useState<string[]>([]);
   const [selectedCategoryId, setSelectedCategoryId] = useState<string>("");
   const [brand, setBrand] = useState<string>("");
-  const [brandOptions, setBrandOptions] = useState<BrandType[]>([]);
+  const [brandOptions, setBrandOptions] = useState<string[]>([]);
   const [tag, setTag] = useState<string[]>([]);
   const [images, setImages] = useState<File[]>([]);
   const [size, setSize] = useState<string>("");
@@ -59,7 +59,8 @@ const EditProducts = () => {
       setDefaultPrice(product.defaultPrice ?? 0);
       setStock(product.stock ?? 0);
       setBrand(product?.brand?.name || "");
-      setWeight(product?.dimensions?.width || 0);
+      setCurrency(product?.currency || "");
+      setWeight(product?.weight || 0);
       setStatus(product.status ?? "Published");
       setSelectedCategoryId(product?.category?.categoryName || "");
       setTag(product.tag || []);
@@ -87,8 +88,9 @@ const EditProducts = () => {
   const getBrands = async () => {
     try {
       const responseBrand = await BrandService?.getAllBrands();
-      const responseBrandOptions: BrandType[] =
-        responseBrand?.data?.brands?.map((brand: any) => brand?.name) || [];
+      const responseBrandOptions: string[] = responseBrand?.data?.brands?.map(
+        (brand: any) => brand?.name
+      );
       setBrandOptions(responseBrandOptions);
     } catch (err) {
       console.log("err", err);
@@ -121,10 +123,11 @@ const EditProducts = () => {
             </div>
             <div className="row-start-2 row-end-3 col-start-2 col-end-3">
               <SelectItemField
-                label="Gender"
-                options={["All", "Male", "Female"]}
+                label="Currency"
+                options={["USD", "EURO", "RIEL"]}
                 placeholder="Select size"
-                value="All"
+                value={currency}
+                onChange={(val) => setCurrency(val)}
               />
             </div>
             <div className="row-start-3 row-end-4 col-start-1 col-end-2">
@@ -157,7 +160,7 @@ const EditProducts = () => {
                 label="Enter Cost"
                 placeholder="Cost"
                 helperText="*Mention final price of the product"
-                value={defaultPrice}
+                value={`$${defaultPrice}`}
               />
             </div>
             <div className="row-start-5 row-end-6 col-start-1 col-end-3 ">
@@ -178,7 +181,7 @@ const EditProducts = () => {
               <FormField
                 label="Actual Price"
                 placeholder="Actual price"
-                value={defaultPrice}
+                value={`$${defaultPrice}`}
                 type="number"
               />
             </div>
