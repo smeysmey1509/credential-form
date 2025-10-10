@@ -12,8 +12,11 @@ import { GoPlus, GoDownload } from "react-icons/go";
 import ProductService from "../../../../services/common/ProductService/ProductService";
 import { Product } from "../../../../types/ProductType";
 import CategoryService from "../../../../services/common/Category/CategoryService";
-import { BrandType, BrandStats } from "../../../../types/BrandType";
 import BrandService from "../../../../services/common/BrandService/BrandService";
+import { BrandType } from "../../../../types/BrandType";
+import Varaint from "../../../common/Varaint/Varaint";
+import { openAsBlob } from "fs";
+import { usePopup } from "../../../../context/PopupContext";
 
 const EditProducts = () => {
   const { id } = useParams<{ id: string }>();
@@ -43,6 +46,9 @@ const EditProducts = () => {
   const [primaryImage, setPrimaryImage] = useState<File | string>("");
   const [updatedDate, setUpdatedDate] = useState<string>("");
   const [updatedTime, setUpdatedTime] = useState<string>("");
+  const [varaintOpen, setVaraintOpen] = useState<boolean>(false);
+
+  const { showPopup, hidePopup } = usePopup();
 
   useEffect(() => {
     if (id) getProductByID(id);
@@ -106,179 +112,210 @@ const EditProducts = () => {
   const getBrands = async () => {
     try {
       const response = await BrandService.getAllBrands();
-      const brands: BrandType[] = response?.data?.brands || [];
-
-      const brandNames: string[] =
-        brands?.map((b) => b?.name || "");
-
-      setBrandOptions(brandNames);
+      const brandList = response?.data?.brands?.map((b: any) => b?.name);
+      setBrandOptions(brandList ?? []);
     } catch (err) {
       console.error("❌ Failed to fetch brands:", err);
     }
   };
 
+  const varaintData = {
+    name: "Samsung Galaxy S24 Ultra",
+    description:
+      "Samsung Galaxy S24 Ultra featuring Snapdragon 8 Gen 3, quad camera, and premium titanium design.",
+    compareAtPrice: 1399,
+    defaultPrice: 1199.99,
+    discountPercent: 14,
+    image: `http://localhost:5002${images[0]}`,
+    variants: [
+      {
+        sku: "S24U-TGY-256-2510",
+        price: 1199.99,
+        stock: 70,
+        attributes: { color: "Titanium Gray", storage: "256 GB" },
+        isActive: true,
+      },
+      {
+        sku: "S24U-TBL-512-2510",
+        price: 1299.99,
+        stock: 50,
+        attributes: { color: "Titanium Black", storage: "512 GB" },
+        isActive: true,
+      },
+      {
+        sku: "S24U-TBU-1TB-2510",
+        price: 1499.99,
+        stock: 30,
+        attributes: { color: "Titanium Blue", storage: "1 TB" },
+        isActive: true,
+      },
+    ],
+  };
+
   return (
-    <div className="w-full h-full bg-white dark:bg-[#19191C] shadow rounded">
-      <form onSubmit={handleSubmit} method="POST">
-        <div className="w-full h-fit flex justify-center p-4 gap-8 border-b border-b-gray-200 border-dashed">
-          {/* LEFT SECTION */}
-          <div className="w-1/2 h-full grid grid-cols-2 gap-x-6 gap-y-4">
-            <div className="row-start-1 row-end-2 col-start-1 col-end-3">
-              <FormField
-                label="Product Name"
-                placeholder="Name"
-                helperText="*Product Name should not exceed 30 characters"
-                value={name}
-                onChange={(event) => setName(event.target.value)}
-              />
+    <>
+      <div className="relative w-full h-full bg-white dark:bg-[#19191C] shadow rounded">
+        <form onSubmit={handleSubmit} method="POST">
+          <div className="w-full h-fit flex justify-center p-4 gap-8 border-b border-b-gray-200 border-dashed">
+            {/* LEFT SECTION */}
+            <div className="w-1/2 h-full grid grid-cols-2 gap-x-6 gap-y-4">
+              <div className="row-start-1 row-end-2 col-start-1 col-end-3">
+                <FormField
+                  label="Product Name"
+                  placeholder="Name"
+                  helperText="*Product Name should not exceed 30 characters"
+                  value={name}
+                  onChange={(event) => setName(event.target.value)}
+                />
+              </div>
+              <div className="row-start-2 row-end-3 col-start-1 col-end-2">
+                <SelectItemField
+                  label="Category"
+                  options={categoriesOptions}
+                  value={selectedCategoryId}
+                  onChange={(val) => setSelectedCategoryId(val)}
+                  placeholder="Select Category"
+                />
+              </div>
+              <div className="row-start-2 row-end-3 col-start-2 col-end-3">
+                <SelectItemField
+                  label="Currency"
+                  options={["USD", "EURO", "RIEL"]}
+                  placeholder="Select Brand"
+                  value={currency}
+                  onChange={(val) => setCurrency(val)}
+                />
+              </div>
+              <div className="row-start-3 row-end-4 col-start-1 col-end-2">
+                <SelectItemField
+                  label="Brand"
+                  options={brandOptions}
+                  placeholder="Select size"
+                  onChange={(brand) => setBrand(brand)}
+                  value={brand}
+                />
+              </div>
+              <div className="row-start-3 row-end-4 col-start-2 col-end-3">
+                <FormField
+                  label="Enter Cost"
+                  placeholder="Cost"
+                  helperText="*Mention final price of the product"
+                  value={`$${defaultPrice}`}
+                />
+              </div>
+              <div className="row-start-4 row-end-5 col-start-1 col-end-3">
+                <ButtonWithEmoji
+                  label="Varaints"
+                  btnClass="!w-full !bg-[rgba(92,103,247,0.1)] !border !border-transparent !text-[rgba(92,103,247)] !font-semibold !px-[6px] !py-[6px] !rounded hover:!bg-[rgba(92,103,247)] hover:!text-white hover:!border hover:!border-[rgba(92,103,247)] transition-all duration-300"
+                  onClick={() => showPopup(<Varaint onClose={hidePopup} />)}
+                />
+              </div>
+              <div className="row-start-5 row-end-6 col-start-1 col-end-3 ">
+                <ProductDescriptionInput
+                  label="Product Description"
+                  helpText="*Description should not exceed 500 letters"
+                  onChange={(e) => setDescription(e.target.value)}
+                  value={description}
+                />
+              </div>
+              <div className="row-start-6 row-end-6 col-start-1 col-end-3">
+                <RichTextEditor label="Product Features" value={feature} />
+              </div>
             </div>
-            <div className="row-start-2 row-end-3 col-start-1 col-end-2">
-              <SelectItemField
-                label="Category"
-                options={categoriesOptions}
-                value={selectedCategoryId}
-                onChange={(val) => setSelectedCategoryId(val)}
-                placeholder="Select Category"
-              />
-            </div>
-            <div className="row-start-2 row-end-3 col-start-2 col-end-3">
-              <SelectItemField
-                label="Currency"
-                options={["USD", "EURO", "RIEL"]}
-                placeholder="Select Brand"
-                value={currency}
-                onChange={(val) => setCurrency(val)}
-              />
-            </div>
-            <div className="row-start-3 row-end-4 col-start-1 col-end-2">
-              <SelectItemField
-                label="Brand"
-                options={brandOptions}
-                placeholder="Select size"
-                onChange={(brand) => setBrand(brand)}
-                value={brand}
-              />
-            </div>
-            <div className="row-start-3 row-end-4 col-start-2 col-end-3">
-              <FormField
-                label="Enter Cost"
-                placeholder="Cost"
-                helperText="*Mention final price of the product"
-                value={`$${defaultPrice}`}
-              />
-            </div>
-            <div className="row-start-4 row-end-5 col-start-1 col-end-3">
-              <ButtonWithEmoji
-                label="Varaints"
-                btnClass="!w-full !bg-[rgba(92,103,247,0.1)] !border !border-transparent !text-[rgba(92,103,247)] !font-semibold !px-[6px] !py-[6px] !rounded-lg hover:!bg-[rgba(92,103,247)] hover:!text-white hover:!border hover:!border-[rgba(92,103,247)] transition-all duration-300"
-                onClick={() => alert("123")}
-              />
-            </div>
-            <div className="row-start-5 row-end-6 col-start-1 col-end-3 ">
-              <ProductDescriptionInput
-                label="Product Description"
-                helpText="*Description should not exceed 500 letters"
-                onChange={(e) => setDescription(e.target.value)}
-                value={description}
-              />
-            </div>
-            <div className="row-start-6 row-end-6 col-start-1 col-end-3">
-              <RichTextEditor label="Product Features" value={feature} />
+            {/* RIGHT SECTION */}
+            <div className="w-1/2 h-full grid grid-cols-6 grid-rows-11 gap-4">
+              <div className="col-span-2">
+                <FormField
+                  label="Actual Price"
+                  placeholder="Actual price"
+                  value={`$${actualPrice}`}
+                  type="text"
+                />
+              </div>
+              <div className="col-span-2 col-start-3">
+                <FormField
+                  label="Dealer Price"
+                  placeholder="Dealer Price"
+                  value={`$${dealerPrice}`}
+                  type="text"
+                />
+              </div>
+              <div className="col-span-2 col-start-5">
+                <FormField label="Discount" placeholder="Discount" />
+              </div>
+              <div className="col-span-3 row-start-2">
+                <FormField
+                  label="Product Type"
+                  placeholder="Type"
+                  value={productType}
+                />
+              </div>
+              <div className="col-span-3 col-start-4 row-start-2">
+                <FormField
+                  label="Item Weight"
+                  placeholder="Weight"
+                  value={weight}
+                />
+              </div>
+              <div className="col-span-6 row-span-2 row-start-3">
+                <ProductImageInput
+                  label="Product Image"
+                  onChange={(files) => setImages(files)}
+                  value={images}
+                />
+              </div>
+              <div className="col-span-6 row-span-2 row-start-5">
+                <ProductImageInput label="Warranty Documents:" />
+              </div>
+              <div className="col-span-6 row-start-7">
+                <PublishDateInput label="Publish Date" value={updatedDate} />
+              </div>
+              <div className="col-span-6 row-start-8">
+                <PublishDateInput label="Publish Time" value={updatedTime} />
+              </div>
+              <div className="col-span-6 row-start-9">
+                <SelectItemField
+                  label="Published Status"
+                  options={["Published", "Unpublished"]}
+                  placeholder="Select"
+                  onChange={(e) => setStatus(e)}
+                  value={status}
+                />
+              </div>
+              <div className="col-span-6 row-start-10">
+                <MultiSelect
+                  options={["IPhone", "Samsung", "Nokia", "Leang"]}
+                  placeholder="Tag"
+                  label="Product Tag"
+                  onChange={(newSelected) => setTag(newSelected)}
+                  value={tag}
+                />
+              </div>
+              <div className="col-span-6 row-start-11">
+                <SelectItemField
+                  label="Availability"
+                  options={["Stock", "Out Of Stock"]}
+                  placeholder="Select"
+                  value="Stock"
+                />
+              </div>
             </div>
           </div>
-          {/* RIGHT SECTION */}
-          <div className="w-1/2 h-full grid grid-cols-6 grid-rows-11 gap-4">
-            <div className="col-span-2">
-              <FormField
-                label="Actual Price"
-                placeholder="Actual price"
-                value={`$${actualPrice}`}
-                type="text"
-              />
-            </div>
-            <div className="col-span-2 col-start-3">
-              <FormField
-                label="Dealer Price"
-                placeholder="Dealer Price"
-                value={`$${dealerPrice}`}
-                type="text"
-              />
-            </div>
-            <div className="col-span-2 col-start-5">
-              <FormField label="Discount" placeholder="Discount" />
-            </div>
-            <div className="col-span-3 row-start-2">
-              <FormField
-                label="Product Type"
-                placeholder="Type"
-                value={productType}
-              />
-            </div>
-            <div className="col-span-3 col-start-4 row-start-2">
-              <FormField
-                label="Item Weight"
-                placeholder="Weight"
-                value={weight}
-              />
-            </div>
-            <div className="col-span-6 row-span-2 row-start-3">
-              <ProductImageInput
-                label="Product Image"
-                onChange={(files) => setImages(files)}
-                value={images}
-              />
-            </div>
-            <div className="col-span-6 row-span-2 row-start-5">
-              <ProductImageInput label="Warranty Documents:" />
-            </div>
-            <div className="col-span-6 row-start-7">
-              <PublishDateInput label="Publish Date" value={updatedDate} />
-            </div>
-            <div className="col-span-6 row-start-8">
-              <PublishDateInput label="Publish Time" value={updatedTime} />
-            </div>
-            <div className="col-span-6 row-start-9">
-              <SelectItemField
-                label="Published Status"
-                options={["Published", "Unpublished"]}
-                placeholder="Select"
-                onChange={(e) => setStatus(e)}
-                value={status}
-              />
-            </div>
-            <div className="col-span-6 row-start-10">
-              <MultiSelect
-                options={["IPhone", "Samsung", "Nokia", "Leang"]}
-                placeholder="Tag"
-                label="Product Tag"
-                onChange={(newSelected) => setTag(newSelected)}
-                value={tag}
-              />
-            </div>
-            <div className="col-span-6 row-start-11">
-              <SelectItemField
-                label="Availability"
-                options={["Stock", "Out Of Stock"]}
-                placeholder="Select"
-                value="Stock"
-              />
-            </div>
+          <div className="w-full h-fit flex justify-end p-4 gap-2">
+            <ButtonWithEmoji
+              label="Add Product"
+              emoji={<GoPlus />}
+              btnClass="flex-row-reverse !bg-[#E354D41A] !text-[#E354D4] hover:!bg-[#E354D4] hover:!text-white"
+            />
+            <ButtonWithEmoji
+              label="Save Product"
+              emoji={<GoDownload />}
+              btnClass="flex-row-reverse"
+            />
           </div>
-        </div>
-        <div className="w-full h-fit flex justify-end p-4 gap-2">
-          <ButtonWithEmoji
-            label="Add Product"
-            emoji={<GoPlus />}
-            btnClass="flex-row-reverse !bg-[#E354D41A] !text-[#E354D4] hover:!bg-[#E354D4] hover:!text-white"
-          />
-          <ButtonWithEmoji
-            label="Save Product"
-            emoji={<GoDownload />}
-            btnClass="flex-row-reverse"
-          />
-        </div>
-      </form>
-    </div>
+        </form>
+      </div>
+    </>
   );
 };
 

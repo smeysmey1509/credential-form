@@ -6,7 +6,7 @@ import Rate from "../Rate/Rate";
 import { RiDeleteBin5Line } from "react-icons/ri";
 
 const WishlistItem = () => {
-  const [stock, setStock] = useState<boolean>(true)
+  const [stock, setStock] = useState<boolean>(true);
   return (
     <div className="w-full h-fit flex gap-2 p-4 bg-white shadow-[0px_6px_16px_2px_rgba(0,0,0,0.05)] rounded-lg">
       <div className="w-fit h-fit">
