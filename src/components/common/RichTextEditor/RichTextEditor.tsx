@@ -14,9 +14,10 @@ import CodeBlock from "@tiptap/extension-code-block";
 
 interface RichTextEditorProps {
   label?: string;
+  value?: string;
 }
 
-const RichTextEditor: React.FC<RichTextEditorProps> = ({ label }) => {
+const RichTextEditor: React.FC<RichTextEditorProps> = ({ label, value }) => {
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -30,7 +31,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ label }) => {
       Blockquote,
       CodeBlock,
     ],
-    content: "<p>Hello World!</p>",
+    content: `<p>${value}</p>`,
   });
 
   if (!editor) {

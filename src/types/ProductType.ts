@@ -56,15 +56,19 @@ export interface Product {
   name: string;
   slug?: string;
   description?: string;
+  feature?: string;
   brand?: Brand;
   price?: number;
   compareAtPrice?: number;
+  actualPrice?: number;
+  dealerPrice?: number;
   currency?: string;
   stock?: number;
   category: CategoryType;
   seller: string;
   status: PublishStatus;
   tag: string[];
+  productType?: string;
   images: string[];
   primaryImageIndex: number;
   ratingAvg?: number;
@@ -89,12 +93,15 @@ export interface Product {
   priceMin?: number;
   priceMax?: number;
   defaultPrice?: number;
+  createdDate?: string;
+  createdTime?: string;
+  updatedDate?: string;
+  updatedTime?: string;
 }
 
 export type FormImage = File | string;
 
-export interface ProductVariantForm
-  extends Omit<ProductVariant, "images"> {
+export interface ProductVariantForm extends Omit<ProductVariant, "images"> {
   images: FormImage[];
 }
 
