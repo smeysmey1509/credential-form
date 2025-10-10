@@ -109,7 +109,7 @@ const EditProducts = () => {
       const brands: BrandType[] = response?.data?.brands || [];
 
       const brandNames: string[] =
-        brands.map((b) => b.name || "");
+        brands?.map((b) => b?.name || "");
 
       setBrandOptions(brandNames);
     } catch (err) {
