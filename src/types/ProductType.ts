@@ -92,7 +92,7 @@ export interface Product {
   availableTotal?: number;
   priceMin?: number;
   priceMax?: number;
-  defaultPrice?: number;
+  cost?: string;
   discount?: number;
   createdDate?: string;
   createdTime?: string;

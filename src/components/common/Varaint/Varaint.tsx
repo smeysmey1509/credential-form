@@ -9,28 +9,50 @@ interface VaraintProp {
   fullDataVaraint?: Product;
   onClose?: () => void;
   onClick?: () => void;
+  onVariantChange?: (rowIndex: number, field: string, newValue: any) => void;
 }
 
 const Varaint: React.FC<VaraintProp> = ({
   onClose,
   onClick,
   fullDataVaraint,
+  onVariantChange,
 }) => {
   const [editVaraint, setEditVaraint] = useState<boolean>(false);
 
+  const imageValue =
+    "http://localhost:5002/uploads/1759814049488-218117895.jpg";
+
   const columns = [
+    {
+      header: "Images",
+      accessor: "images",
+      width: "10%",
+      color: "!font-bold",
+      bodyColor: "!text-[13px] !text-[#212b37] !font-medium",
+      editable: false,
+      render: (value: any, row: any) => (
+        <div className="w-[32px] h-[32px]">
+          <img
+            src={imageValue}
+            alt={imageValue}
+            className="w-full h-full object-contain"
+          />
+        </div>
+      ),
+    },
     {
       header: "SKU",
       accessor: "sku",
       width: "25%",
       bodyColor: "!text-[#5C67F7] !text-[13px] !font-normal",
       color: "!font-bold",
-      editable: true,
+      editable: false,
     },
     {
       header: "Price",
       accessor: "price",
-      width: "15%",
+      width: "10%",
       color: "!font-bold",
       bodyColor: "!text-[13px] !text-[#212b37] !font-medium",
       currency: true,
@@ -39,7 +61,7 @@ const Varaint: React.FC<VaraintProp> = ({
     {
       header: "Stock",
       accessor: "stock",
-      width: "15%",
+      width: "10%",
       color: "!font-bold",
       bodyColor: "!text-[13px] !text-[#212b37] !font-medium",
       editable: true,
@@ -56,7 +78,7 @@ const Varaint: React.FC<VaraintProp> = ({
     {
       header: "Storage",
       accessor: "storage",
-      width: "15%",
+      width: "10%",
       color: "!font-bold",
       bodyColor: "!text-[13px] !text-[#212b37] !font-medium",
       currency: false,
@@ -83,6 +105,7 @@ const Varaint: React.FC<VaraintProp> = ({
     newValue: any
   ) => {
     console.log("📝 Edit:", { rowIndex, field, newValue });
+    onVariantChange?.(rowIndex, field, newValue);
   };
 
   return (
@@ -113,12 +136,12 @@ const Varaint: React.FC<VaraintProp> = ({
               {fullDataVaraint?.description}
             </p>
             <p className="text-[#212B37] text-3xl font-sans font-medium">
-              ${fullDataVaraint?.defaultPrice}
+              ${fullDataVaraint?.cost}
               <span className="ml-4 font-normal text-[#7e7d7f] text-xl line-through">
                 ${fullDataVaraint?.compareAtPrice}
               </span>
               <span className="ml-3 font-normal text-[#Fb4242] text-lg font-sans">
-                -{fullDataVaraint?.discount}
+                -%{fullDataVaraint?.discount}
               </span>
             </p>
             <p className="text-[#212B37] text-lg font-sans font-light">
@@ -142,7 +165,7 @@ const Varaint: React.FC<VaraintProp> = ({
                     } 
                       !text-white !font-semibold !px-4 !py-[0.45rem]`}
           />
-          <ButtonWithEmoji label={"Save"} onClick={onClick} />
+          <ButtonWithEmoji type="submit" label={"Save"} onClick={onClick} />
         </div>
         <div className="w-full h-[400px] rounded bg-white overflow-auto">
           <DynamicTable

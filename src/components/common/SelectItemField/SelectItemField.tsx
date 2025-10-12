@@ -25,7 +25,6 @@ const CustomSelect: React.FC<CustomSelectProps> = ({
   const [searchTerm, setSearchTerm] = useState<string>("");
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Normalize options to OptionType[]
   const normalizedOptions: OptionType[] = options.map((opt) =>
     typeof opt === "string" ? { label: opt, value: opt } : opt
   );

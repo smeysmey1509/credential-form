@@ -1,7 +1,9 @@
 import React, { FormEvent, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import FormField from "../../../common/FormField/FormField";
-import SelectItemField from "../../../common/SelectItemField/SelectItemField";
+import SelectItemField, {
+  OptionType,
+} from "../../../common/SelectItemField/SelectItemField";
 import MultiSelect from "../../../common/MultiSelect/MultiSelect";
 import ProductDescriptionInput from "../../../common/ProductDescriptionInput/ProductDescriptionInput";
 import ProductImageInput from "../../../common/ProductImageInput/ProductImageInput";
@@ -13,10 +15,9 @@ import ProductService from "../../../../services/common/ProductService/ProductSe
 import { Product, ProductVariant } from "../../../../types/ProductType";
 import CategoryService from "../../../../services/common/Category/CategoryService";
 import BrandService from "../../../../services/common/BrandService/BrandService";
-import { BrandType } from "../../../../types/BrandType";
 import Varaint from "../../../common/Varaint/Varaint";
-import { openAsBlob } from "fs";
 import { usePopup } from "../../../../context/PopupContext";
+import { data } from "autoprefixer";
 
 const EditProducts = () => {
   const { id } = useParams<{ id: string | undefined }>();
@@ -25,7 +26,7 @@ const EditProducts = () => {
   const [productId, setProductId] = useState<string>("");
   const [name, setName] = useState<string>("");
   const [description, setDescription] = useState<string>("");
-  const [defaultPrice, setDefaultPrice] = useState<number>(0);
+  const [cost, setCost] = useState<string>("");
   const [actualPrice, setActualPrice] = useState<number>(0);
   const [dealerPrice, setDealerPrice] = useState<number>(0);
   const [totalStock, setTotalStock] = useState<number>(0);
@@ -33,10 +34,10 @@ const EditProducts = () => {
   const [status, setStatus] = useState<string>("Published");
   const [compareAtPrice, setCompareAtPrice] = useState<number>(0);
   const [currency, setCurrency] = useState<string>("");
-  const [categoriesOptions, setCategoriesOptions] = useState<string[]>([]);
+  const [categoriesOptions, setCategoriesOptions] = useState<OptionType[]>([]);
   const [selectedCategoryId, setSelectedCategoryId] = useState<string>("");
-  const [brand, setBrand] = useState<string>("");
-  const [brandOptions, setBrandOptions] = useState<string[]>([]);
+  const [brandOptions, setBrandOptions] = useState<OptionType[]>([]);
+  const [selectedBrandId, setSelectedBrandId] = useState<string>("");
   const [productType, setProductType] = useState<string>("");
   const [tag, setTag] = useState<string[]>([]);
   const [images, setImages] = useState<File[]>([]);
@@ -59,20 +60,31 @@ const EditProducts = () => {
     getBrands();
   }, []);
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const getCategories = async () => {
     try {
-      const formData = new FormData();
-      formData.append("name", name);
-      formData.append("category", selectedCategoryId);
-
-      const responseUpdateData = await ProductService?.updateProduct(
-        id,
-        formData
-      );
-      alert("Updated Successfully.");
+      const response = await CategoryService.getAllCategories();
+      const responseCategoryOptions: OptionType[] =
+        response?.data?.categories?.map((cat: any) => ({
+          value: cat?._id,
+          label: cat?.categoryName,
+        })) || [];
+      setCategoriesOptions(responseCategoryOptions);
     } catch (error) {
-      console.error("Error Update", error);
+      console.error("Failed to fetch categories:", error);
+    }
+  };
+
+  const getBrands = async () => {
+    try {
+      const response = await BrandService.getAllBrands();
+      const brandList =
+        response?.data?.brands?.map((b: any) => ({
+          value: b?._id,
+          label: b?.name,
+        })) || [];
+      setBrandOptions(brandList ?? []);
+    } catch (err) {
+      console.error("❌ Failed to fetch brands:", err);
     }
   };
 
@@ -83,20 +95,20 @@ const EditProducts = () => {
       setProductId(product?.productId || "");
       setName(product.name || "");
       setDescription(product.description || "");
-      setDefaultPrice(product.defaultPrice ?? 0);
+      setCost(product.cost || "");
       setActualPrice(product?.actualPrice || 0);
       setDealerPrice(product?.dealerPrice || 0);
       setCompareAtPrice(product?.compareAtPrice || 0);
       setRating(product?.ratingCount || 0);
       setTotalStock(product.stock ?? 0);
       setFeature(product?.feature || "");
-      setBrand(product?.brand?.name || "");
       setCurrency(product?.currency || "");
       setWeight(product?.weight || 0);
       setVaraints(product?.variants || []);
       setStatus(product.status ?? "Published");
       setProductType(product?.productType || "");
-      setSelectedCategoryId(product?.category?.categoryId || "");
+      setSelectedCategoryId(product?.category?._id || "");
+      setSelectedBrandId(product?.brand?._id || "");
       setTag(product.tag || []);
       setImages([]);
       setPrimaryImage(product.primaryImage || "");
@@ -113,28 +125,6 @@ const EditProducts = () => {
     }
   };
 
-  const getCategories = async () => {
-    try {
-      const response = await CategoryService.getAllCategories();
-      const responseCategoryOptions: string[] = response.data.categories?.map(
-        (cat: any) => cat?.categoryName
-      );
-      setCategoriesOptions(responseCategoryOptions);
-    } catch (error) {
-      console.error("Failed to fetch categories:", error);
-    }
-  };
-
-  const getBrands = async () => {
-    try {
-      const response = await BrandService.getAllBrands();
-      const brandList = response?.data?.brands?.map((b: any) => b?.name);
-      setBrandOptions(brandList ?? []);
-    } catch (err) {
-      console.error("❌ Failed to fetch brands:", err);
-    }
-  };
-
   const dataVaraint = varatins?.map((item) => ({
     sku: item.sku,
     price: item.price,
@@ -147,21 +137,85 @@ const EditProducts = () => {
   const fullDataVaraint = {
     name: name,
     description: description,
-    defaultPrice: defaultPrice,
+    cost: cost,
     compareAtPrice: compareAtPrice,
     discount: 12,
     productId: productId,
     primaryImage: `http://localhost:5002${primaryImage}`,
     ratingCount: rating,
-    variants: dataVaraint,
+    variants: dataVaraint
   };
 
-  console.log(selectedCategoryId);
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      const formData = new FormData();
+      formData.append("name", name);
+      formData.append("category", selectedCategoryId);
+      formData.append("currency", currency);
+      formData.append("brand", selectedBrandId);
+      formData.append("cost", cost);
+
+      await ProductService?.updateProduct(id, formData);
+      alert("Updated Successfully.");
+    } catch (error) {
+      console.error("Error Update", error);
+    }
+  };
+
+  const handleVariantUpdate = (
+    rowIndex: number,
+    field: string,
+    newValue: any
+  ) => {
+    setVaraints((prev) => {
+      const updated = [...prev];
+      const variant = { ...updated[rowIndex] };
+
+      // If it's nested attributes like color or storage
+      if (field === "color" || field === "storage") {
+        variant.attributes = { ...variant.attributes, [field]: newValue };
+      } else {
+        (variant as any)[field] = newValue;
+      }
+
+      updated[rowIndex] = variant;
+      return updated;
+    });
+  };
+
+  const handleSaveVariants = async () => {
+    try {
+      const formData = new FormData();
+      formData.append("variants", JSON.stringify(dataVaraint));
+
+      await ProductService.updateProduct(id, formData);
+      alert("✅ Variants updated successfully.");
+    } catch (err) {
+      console.error("❌ Failed to update variants:", err);
+      alert("Failed to update variants.");
+    }
+  };
+
+  const handleCostChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value.replace(/[^0-9.]/g, ""); // remove non-numerics
+    setCost(val);
+  };
+
+  console.log("varatins", dataVaraint);
+  console.log("JSON.stringify(varatins)", JSON.stringify(dataVaraint));
 
   return (
     <>
       <div className="relative w-full h-full bg-white dark:bg-[#19191C] shadow rounded">
-        <form onSubmit={handleSubmit} method="POST">
+        <form
+          onSubmit={(e) => {
+            e.preventDefault(); // prevent page reload
+            handleSubmit(e);
+            handleSaveVariants();
+          }}
+          method="POST"
+        >
           <div className="w-full h-fit flex justify-center p-4 gap-8 border-b border-b-gray-200 border-dashed">
             {/* LEFT SECTION */}
             <div className="w-1/2 h-full grid grid-cols-2 gap-x-6 gap-y-4">
@@ -196,9 +250,9 @@ const EditProducts = () => {
                 <SelectItemField
                   label="Brand"
                   options={brandOptions}
-                  placeholder="Select size"
-                  onChange={(brand) => setBrand(brand)}
-                  value={brand}
+                  placeholder="Select Brand"
+                  onChange={(brand) => setSelectedBrandId(brand)}
+                  value={selectedBrandId}
                 />
               </div>
               <div className="row-start-3 row-end-4 col-start-2 col-end-3">
@@ -206,7 +260,8 @@ const EditProducts = () => {
                   label="Enter Cost"
                   placeholder="Cost"
                   helperText="*Mention final price of the product"
-                  value={`$${defaultPrice}`}
+                  value={cost ? `$${cost}` : ""}
+                  onChange={handleCostChange}
                 />
               </div>
               <div className="row-start-4 row-end-5 col-start-1 col-end-3">
@@ -217,7 +272,8 @@ const EditProducts = () => {
                     showPopup(
                       <Varaint
                         onClose={hidePopup}
-                        onClick={() => alert("123")}
+                        onVariantChange={handleVariantUpdate}
+                        onClick={handleSaveVariants}
                         fullDataVaraint={fullDataVaraint}
                       />
                     )

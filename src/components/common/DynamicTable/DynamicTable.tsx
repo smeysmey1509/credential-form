@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaRegTrashAlt, FaRegHeart } from "react-icons/fa";
 
 interface Column {
@@ -31,11 +31,27 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
   actions = {},
   onEdit,
 }) => {
+  const [localData, setLocalData] = useState<any[]>(data || []);
   const [editingCell, setEditingCell] = useState<{
     row: number;
     col: string;
   } | null>(null);
   const [editValue, setEditValue] = useState<string>("");
+
+  useEffect(() => {
+    setLocalData(data || []);
+  }, [data]);
+
+  const handleCommitEdit = (ri: number, accessor: string, newValue: any) => {
+    const updated = [...localData];
+    updated[ri] = { ...updated[ri], [accessor]: newValue };
+    setLocalData(updated);
+    setEditingCell(null);
+
+    // notify parent
+    onEdit?.(ri, accessor, newValue);
+  };
+
   return (
     <div className="relative max-h-[400px] overflow-x-auto">
       <table className="min-w-full text-sm text-left">
@@ -53,8 +69,8 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
           </tr>
         </thead>
         <tbody className="min-h-screen overflow-auto">
-          {data && data.length > 0 ? (
-            data.map((row, ri) => (
+          {localData && localData?.length > 0 ? (
+            localData.map((row, ri) => (
               <tr key={ri} className="border-b border-b-[#ecf3fb]">
                 {columns.map((col, ci) => {
                   if (col.accessor === "name") {
@@ -187,16 +203,18 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                   const handleDoubleClick = () => {
                     if (isEditMode && col.editable) {
                       setEditingCell({ row: ri, col: col.accessor });
-                      setEditValue(value);
+                      setEditValue(value ?? "");
                     }
                   };
 
                   return (
                     <td
                       key={ci}
-                      className={`px-4 py-2 font-bold text-[#212B37] ${
-                        col.bodyColor || ""
-                      } ${
+                      className={`px-4 py-2 font-bold text-[#212B37] border-[#dee7f1]
+    focus:border-[#5c67f780] focus:bg-[#fff]
+    focus:shadow-[0px_0px_6px_0px_rgba(92,_103,_247,_0.5)]
+    dark:placeholder:text-gray-500 outline-none
+    transition duration-200 cursor-default ${col.bodyColor || ""} ${
                         isEditMode && col.editable
                           ? "cursor-pointer hover:bg-[#f9f9fa]"
                           : ""
@@ -214,8 +232,21 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                             onEdit?.(ri, col.accessor, editValue);
                             setEditingCell(null);
                           }}
-                          className="w-full border border-[#5c67f7] rounded px-2 py-1 text-sm focus:outline-none"
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                              handleCommitEdit(ri, col.accessor, editValue);
+                            } else if (e.key === "Escape") {
+                              setEditingCell(null);
+                            }
+                          }}
+                          className="w-full border border-transparent rounded px-2 py-1
+                                focus:border-[#5c67f780] focus:bg-[#fff]
+                                focus:shadow-[0px_0px_6px_0px_rgba(92,_103,_247,_0.5)]
+                                dark:placeholder:text-gray-500 outline-none
+                                transition duration-200 text-sm focus:outline-none"
                         />
+                      ) : col.render ? (
+                        col.render(value, row)
                       ) : (
                         <span>{col.currency ? `$${value}` : value}</span>
                       )}
