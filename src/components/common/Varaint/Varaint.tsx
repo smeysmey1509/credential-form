@@ -1,153 +1,156 @@
-import React from "react";
+import React, { useState } from "react";
 import { IoClose } from "react-icons/io5";
-import Samsung from "../../../assets/samsung-galaxy-s24-ultra-Titanium Gray.webp";
 import Rate from "../Rate/Rate";
 import DynamicTable from "../DynamicTable/DynamicTable";
+import { Product } from "../../../types/ProductType";
+import ButtonWithEmoji from "../../Button/ButtonWithEmoji/ButtonWithEmoji";
 
 interface VaraintProp {
+  fullDataVaraint?: Product;
   onClose?: () => void;
+  onClick?: () => void;
 }
 
-const columns = [
-  {
-    header: "SKU",
-    accessor: "sku",
-    width: "15%",
-    bodyColor: "!text-[#5C67F7] !text-[13px] !font-normal",
-  },
-  {
-    header: "Price",
-    accessor: "price",
-    width: "15%",
-    bodyColor: "!text-[13px] !text-[#212b37] !font-medium",
-    currency: true,
-  },
-  {
-    header: "Stock",
-    accessor: "stock",
-    width: "15%",
-    bodyColor: "!text-[13px] !text-[#212b37] !font-medium",
-  },
-  {
-    header: "Color",
-    accessor: "color",
-    width: "15%",
-    bodyColor: "!text-[13px] !text-[#212b37] !font-medium",
-    currency: false,
-  },
-  {
-    header: "Storage",
-    accessor: "storage",
-    width: "15%",
-    bodyColor: "!text-[13px] !text-[#212b37] !font-medium",
-    currency: false,
-  },
-  {
-    header: "Status",
-    accessor: "status",
-    width: "15%",
-    bodyColor: "!text-[13px] !text-[#212b37] !font-medium",
-    currency: false,
-  },
-];
+const Varaint: React.FC<VaraintProp> = ({
+  onClose,
+  onClick,
+  fullDataVaraint,
+}) => {
+  const [editVaraint, setEditVaraint] = useState<boolean>(false);
 
-const data = [
-  {
-    sku: "S24U-TIT-256BLK",
-    price: 1199,
-    stock: 42,
-    color: "Titanium Black",
-    storage: "256GB",
-    status: "Active",
-  },
-  {
-    sku: "S24U-TIT-512SLV",
-    price: 1299,
-    stock: 35,
-    color: "Titanium Silver",
-    storage: "512GB",
-    status: "Active",
-  },
-  {
-    sku: "S24U-TIT-1TBGRY",
-    price: 1399,
-    stock: 12,
-    color: "Titanium Gray",
-    storage: "1TB",
-    status: "Active",
-  },
-  {
-    sku: "S24U-TIT-128GRN",
-    price: 1099,
-    stock: 0,
-    color: "Emerald Green",
-    storage: "128GB",
-    status: "Out of Stock",
-  },
-  {
-    sku: "S24U-TIT-256PUR",
-    price: 1199,
-    stock: 20,
-    color: "Lavender Purple",
-    storage: "256GB",
-    status: "Active",
-  },
-  {
-    sku: "S24U-TIT-512BLU",
-    price: 1299,
-    stock: 15,
-    color: "Cobalt Blue",
-    storage: "512GB",
-    status: "Low Stock",
-  },
-];
+  const columns = [
+    {
+      header: "SKU",
+      accessor: "sku",
+      width: "25%",
+      bodyColor: "!text-[#5C67F7] !text-[13px] !font-normal",
+      color: "!font-bold",
+      editable: true,
+    },
+    {
+      header: "Price",
+      accessor: "price",
+      width: "15%",
+      color: "!font-bold",
+      bodyColor: "!text-[13px] !text-[#212b37] !font-medium",
+      currency: true,
+      editable: true,
+    },
+    {
+      header: "Stock",
+      accessor: "stock",
+      width: "15%",
+      color: "!font-bold",
+      bodyColor: "!text-[13px] !text-[#212b37] !font-medium",
+      editable: true,
+    },
+    {
+      header: "Color",
+      accessor: "color",
+      width: "15%",
+      color: "!font-bold",
+      bodyColor: "!text-[13px] !text-[#212b37] !font-medium",
+      currency: false,
+      editable: true,
+    },
+    {
+      header: "Storage",
+      accessor: "storage",
+      width: "15%",
+      color: "!font-bold",
+      bodyColor: "!text-[13px] !text-[#212b37] !font-medium",
+      currency: false,
+      editable: true,
+    },
+    {
+      header: "Status",
+      accessor: "status",
+      width: "15%",
+      color: "!font-bold",
+      bodyColor: "!text-[13px] !text-[#212b37] !font-medium",
+      currency: false,
+      render: (value: any, row: any) => (
+        <button className="bg-blue-600 text-white py-1 px-4 rounded cursor-pointer">
+          {value}
+        </button>
+      ),
+    },
+  ];
 
-const Varaint: React.FC<VaraintProp> = ({ onClose }) => {
+  const handleEditVaraint = (
+    rowIndex: number,
+    field: string,
+    newValue: any
+  ) => {
+    console.log("📝 Edit:", { rowIndex, field, newValue });
+  };
+
   return (
-    <div className="w-[50%] h-[80%] bg-white rounded">
+    <div className="w-[50%] h-fit bg-white rounded">
       <div className="head w-full h-fit flex justify-between items-center p-4 border-b border-b-[#ecf3fb]">
-        <h4>Varaint</h4>
+        <h4 className="text-lg font-sans font-semibold">Varaint</h4>
         <div
-          className="w-fit h-fit text-white bg-amber-500 rounded cursor-pointer"
           onClick={onClose}
+          className="w-8 h-8 flex items-center justify-center bg-white/70 hover:bg-white/90 text-[#212B37] border border-gray-200 rounded-full shadow-sm hover:shadow-md cursor-pointer transition-all duration-200"
         >
-          <IoClose className="text-xl" />
+          <IoClose className="text-[18px]" />
         </div>
       </div>
       <div className="body w-full h-fit flex flex-col items-center gap-2">
-        <div className="w-full h-fit flex justify-between p-4 gap-4">
+        <div className="w-full h-full flex justify-between p-4 gap-4">
           <div className="w-[40%] h-[220px] rounded bg-[#EFF1FE]">
             <img
-              src={`https://www.att.com/scmsassets/global/devices/phones/samsung/samsung-galaxy-s24-ultra/carousel/titanium-black-1.png`}
-              alt={Samsung}
+              src={fullDataVaraint?.primaryImage}
+              alt={fullDataVaraint?.primaryImage}
               className="w-full h-full object-contain drop-shadow-[0_8px_16px_rgba(0,0,0,0.2)] hover:scale-105 transition-transform duration-300"
             />
           </div>
           <div className="w-[60%] flex flex-col justify-start items-start gap-3">
             <h4 className="text-[#212B37] text-2xl font-sans font-semibold">
-              Samsung Galaxy S24 Ultra
+              {fullDataVaraint?.name}
             </h4>
             <p className="text-[#212B37] text-md font-medium leading-none">
-              Samsung Galaxy S24 Ultra featuring Snapdragon 8 Gen 3, quad
-              camera, and premium titanium design.
+              {fullDataVaraint?.description}
             </p>
             <p className="text-[#212B37] text-3xl font-sans font-medium">
-              $1,119.99
+              ${fullDataVaraint?.defaultPrice}
               <span className="ml-4 font-normal text-[#7e7d7f] text-xl line-through">
-                $1392.99
+                ${fullDataVaraint?.compareAtPrice}
               </span>
               <span className="ml-3 font-normal text-[#Fb4242] text-lg font-sans">
-                -14%
+                -{fullDataVaraint?.discount}
               </span>
             </p>
             <p className="text-[#212B37] text-lg font-sans font-light">
-              ID: 685ab59e33f273e409dc3eac
+              ID: {fullDataVaraint?.productId}
             </p>
-            <Rate rating={3.9} ratingCount={2} />
+            <Rate
+              rating={fullDataVaraint?.ratingCount}
+              ratingCount={fullDataVaraint?.ratingCount}
+            />
           </div>
         </div>
-        <div className="w-full h-fit">
-          <DynamicTable columns={columns} data={data} />
+        <div className="w-full h-fit flex justify-between pl-4 pr-4">
+          <ButtonWithEmoji
+            label={editVaraint ? "Editing Enabled" : "Enable Edit"}
+            onClick={() => setEditVaraint(!editVaraint)}
+            btnClass={`flex-row-reverse transition-all duration-300 border !rounded
+                    ${
+                      editVaraint
+                        ? "!bg-[#38D0A2] !border-[#38D0A2] hover:!bg-[#2ECe9E] hover:!border-[#2ECe9E]"
+                        : "!bg-gray-300 !border-gray-300 hover:!bg-gray-400"
+                    } 
+                      !text-white !font-semibold !px-4 !py-[0.45rem]`}
+          />
+          <ButtonWithEmoji label={"Save"} onClick={onClick} />
+        </div>
+        <div className="w-full h-[400px] rounded bg-white overflow-auto">
+          <DynamicTable
+            columns={columns}
+            data={fullDataVaraint?.variants || []}
+            onEdit={handleEditVaraint}
+            isEditMode={editVaraint}
+          />
         </div>
       </div>
     </div>

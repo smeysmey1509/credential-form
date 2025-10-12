@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { FaRegTrashAlt, FaRegHeart } from "react-icons/fa";
 
 interface Column {
@@ -9,40 +9,50 @@ interface Column {
   currency?: boolean;
   headerClass?: string;
   bodyColor?: string;
+  editable?: boolean;
   render?: (value: any, row: any) => React.ReactNode;
 }
 
 interface DynamicTableProps {
   columns: Column[];
   data: any[] | null;
+  isEditMode?: boolean;
   actions?: {
     wishlist?: (row: any) => void;
     delete?: (row: any) => void;
   };
+  onEdit?: (rowIndex: number, accessor: string, newValue: any) => void;
 }
 
 const DynamicTable: React.FC<DynamicTableProps> = ({
   columns,
   data = [],
+  isEditMode = false,
   actions = {},
+  onEdit,
 }) => {
+  const [editingCell, setEditingCell] = useState<{
+    row: number;
+    col: string;
+  } | null>(null);
+  const [editValue, setEditValue] = useState<string>("");
   return (
-    <div className="overflow-x-auto">
+    <div className="relative max-h-[400px] overflow-x-auto">
       <table className="min-w-full text-sm text-left">
-        <thead className="py-4 border-b border-b-[#ecf3fb]">
+        <thead className="sticky h-fit top-0 py-4 bg-white border-b border-b-[#ecf3fb]">
           <tr>
             {columns.map((col, i) => (
               <th
                 key={i}
                 style={{ width: col.width }}
-                className={`px-4 py-2 font-mediu ${col.color || ""}`}
+                className={`px-4 py-2 font-medium ${col.color || ""}`}
               >
                 {col.header}
               </th>
             ))}
           </tr>
         </thead>
-        <tbody>
+        <tbody className="min-h-screen overflow-auto">
           {data && data.length > 0 ? (
             data.map((row, ri) => (
               <tr key={ri} className="border-b border-b-[#ecf3fb]">
@@ -169,16 +179,46 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                     );
                   }
 
+                  const isEditing =
+                    editingCell?.row === ri &&
+                    editingCell?.col === col.accessor;
                   const value = row[col.accessor];
+
+                  const handleDoubleClick = () => {
+                    if (isEditMode && col.editable) {
+                      setEditingCell({ row: ri, col: col.accessor });
+                      setEditValue(value);
+                    }
+                  };
+
                   return (
                     <td
                       key={ci}
                       className={`px-4 py-2 font-bold text-[#212B37] ${
                         col.bodyColor || ""
+                      } ${
+                        isEditMode && col.editable
+                          ? "cursor-pointer hover:bg-[#f9f9fa]"
+                          : ""
                       }`}
                       style={{ width: col.width }}
+                      onDoubleClick={handleDoubleClick}
                     >
-                      {col.render ? col.render(value, row) : `${col.currency ? "$" : ""}${value}`}
+                      {isEditing ? (
+                        <input
+                          type="text"
+                          value={editValue}
+                          autoFocus
+                          onChange={(e) => setEditValue(e.target.value)}
+                          onBlur={() => {
+                            onEdit?.(ri, col.accessor, editValue);
+                            setEditingCell(null);
+                          }}
+                          className="w-full border border-[#5c67f7] rounded px-2 py-1 text-sm focus:outline-none"
+                        />
+                      ) : (
+                        <span>{col.currency ? `$${value}` : value}</span>
+                      )}
                     </td>
                   );
                 })}

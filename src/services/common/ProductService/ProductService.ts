@@ -26,13 +26,15 @@ const ProductService = {
         },
       }
     ),
-  updateProduct: (
-    id: string,
-    updateData: Partial<Product | ProductVariant | Inventory | Dimensions>
-  ) =>
-    axiosClient.put<Product | ProductVariant | Inventory | Dimensions>(
-      `/product/delete/${id}`,
-      updateData
+  updateProduct: (id?: string, updateData?: FormData) =>
+    axiosClient.patch<Product | ProductVariant | Inventory | Dimensions>(
+      `/product/${id}`,
+      updateData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
     ),
   deleteProduct: (id: string) => axiosClient.delete(`/product/delete/${id}`),
   multiDeleteProduct: (ids: string[]) =>

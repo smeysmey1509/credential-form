@@ -10,7 +10,7 @@ import RichTextEditor from "../../../common/RichTextEditor/RichTextEditor";
 import ButtonWithEmoji from "../../../Button/ButtonWithEmoji/ButtonWithEmoji";
 import { GoPlus, GoDownload } from "react-icons/go";
 import ProductService from "../../../../services/common/ProductService/ProductService";
-import { Product } from "../../../../types/ProductType";
+import { Product, ProductVariant } from "../../../../types/ProductType";
 import CategoryService from "../../../../services/common/Category/CategoryService";
 import BrandService from "../../../../services/common/BrandService/BrandService";
 import { BrandType } from "../../../../types/BrandType";
@@ -19,9 +19,10 @@ import { openAsBlob } from "fs";
 import { usePopup } from "../../../../context/PopupContext";
 
 const EditProducts = () => {
-  const { id } = useParams<{ id: string }>();
+  const { id } = useParams<{ id: string | undefined }>();
 
   // product fields
+  const [productId, setProductId] = useState<string>("");
   const [name, setName] = useState<string>("");
   const [description, setDescription] = useState<string>("");
   const [defaultPrice, setDefaultPrice] = useState<number>(0);
@@ -30,7 +31,7 @@ const EditProducts = () => {
   const [totalStock, setTotalStock] = useState<number>(0);
   const [feature, setFeature] = useState<string>("");
   const [status, setStatus] = useState<string>("Published");
-  const [categories, setCategories] = useState<string[]>([]);
+  const [compareAtPrice, setCompareAtPrice] = useState<number>(0);
   const [currency, setCurrency] = useState<string>("");
   const [categoriesOptions, setCategoriesOptions] = useState<string[]>([]);
   const [selectedCategoryId, setSelectedCategoryId] = useState<string>("");
@@ -39,14 +40,13 @@ const EditProducts = () => {
   const [productType, setProductType] = useState<string>("");
   const [tag, setTag] = useState<string[]>([]);
   const [images, setImages] = useState<File[]>([]);
-  const [size, setSize] = useState<string>("");
+  const [rating, setRating] = useState<number>(0);
   const [weight, setWeight] = useState<number>(0);
-  const [color, setColor] = useState<string[]>([]);
   const [colorOptions, setColorOptions] = useState<string[]>([]);
-  const [primaryImage, setPrimaryImage] = useState<File | string>("");
+  const [primaryImage, setPrimaryImage] = useState<string>("");
   const [updatedDate, setUpdatedDate] = useState<string>("");
   const [updatedTime, setUpdatedTime] = useState<string>("");
-  const [varaintOpen, setVaraintOpen] = useState<boolean>(false);
+  const [varatins, setVaraints] = useState<ProductVariant[]>([]);
 
   const { showPopup, hidePopup } = usePopup();
 
@@ -61,26 +61,42 @@ const EditProducts = () => {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    try {
+      const formData = new FormData();
+      formData.append("name", name);
+      formData.append("category", selectedCategoryId);
+
+      const responseUpdateData = await ProductService?.updateProduct(
+        id,
+        formData
+      );
+      alert("Updated Successfully.");
+    } catch (error) {
+      console.error("Error Update", error);
+    }
   };
 
   const getProductByID = async (id: string): Promise<void> => {
     try {
       const response = await ProductService.getProductById(id);
       const product: Product = response.data;
-
+      setProductId(product?.productId || "");
       setName(product.name || "");
       setDescription(product.description || "");
       setDefaultPrice(product.defaultPrice ?? 0);
       setActualPrice(product?.actualPrice || 0);
       setDealerPrice(product?.dealerPrice || 0);
+      setCompareAtPrice(product?.compareAtPrice || 0);
+      setRating(product?.ratingCount || 0);
       setTotalStock(product.stock ?? 0);
       setFeature(product?.feature || "");
       setBrand(product?.brand?.name || "");
       setCurrency(product?.currency || "");
       setWeight(product?.weight || 0);
+      setVaraints(product?.variants || []);
       setStatus(product.status ?? "Published");
       setProductType(product?.productType || "");
-      setSelectedCategoryId(product?.category?.categoryName || "");
+      setSelectedCategoryId(product?.category?.categoryId || "");
       setTag(product.tag || []);
       setImages([]);
       setPrimaryImage(product.primaryImage || "");
@@ -101,7 +117,7 @@ const EditProducts = () => {
     try {
       const response = await CategoryService.getAllCategories();
       const responseCategoryOptions: string[] = response.data.categories?.map(
-        (cat: any) => cat.categoryName
+        (cat: any) => cat?.categoryName
       );
       setCategoriesOptions(responseCategoryOptions);
     } catch (error) {
@@ -119,38 +135,28 @@ const EditProducts = () => {
     }
   };
 
-  const varaintData = {
-    name: "Samsung Galaxy S24 Ultra",
-    description:
-      "Samsung Galaxy S24 Ultra featuring Snapdragon 8 Gen 3, quad camera, and premium titanium design.",
-    compareAtPrice: 1399,
-    defaultPrice: 1199.99,
-    discountPercent: 14,
-    image: `http://localhost:5002${images[0]}`,
-    variants: [
-      {
-        sku: "S24U-TGY-256-2510",
-        price: 1199.99,
-        stock: 70,
-        attributes: { color: "Titanium Gray", storage: "256 GB" },
-        isActive: true,
-      },
-      {
-        sku: "S24U-TBL-512-2510",
-        price: 1299.99,
-        stock: 50,
-        attributes: { color: "Titanium Black", storage: "512 GB" },
-        isActive: true,
-      },
-      {
-        sku: "S24U-TBU-1TB-2510",
-        price: 1499.99,
-        stock: 30,
-        attributes: { color: "Titanium Blue", storage: "1 TB" },
-        isActive: true,
-      },
-    ],
+  const dataVaraint = varatins?.map((item) => ({
+    sku: item.sku,
+    price: item.price,
+    stock: item.stock,
+    color: item.attributes?.color || "N/A",
+    storage: item.attributes?.storage || "N/A",
+    status: item?.stock === 0 ? "Out of Stock" : "In Stock",
+  }));
+
+  const fullDataVaraint = {
+    name: name,
+    description: description,
+    defaultPrice: defaultPrice,
+    compareAtPrice: compareAtPrice,
+    discount: 12,
+    productId: productId,
+    primaryImage: `http://localhost:5002${primaryImage}`,
+    ratingCount: rating,
+    variants: dataVaraint,
   };
+
+  console.log(selectedCategoryId);
 
   return (
     <>
@@ -207,7 +213,15 @@ const EditProducts = () => {
                 <ButtonWithEmoji
                   label="Varaints"
                   btnClass="!w-full !bg-[rgba(92,103,247,0.1)] !border !border-transparent !text-[rgba(92,103,247)] !font-semibold !px-[6px] !py-[6px] !rounded hover:!bg-[rgba(92,103,247)] hover:!text-white hover:!border hover:!border-[rgba(92,103,247)] transition-all duration-300"
-                  onClick={() => showPopup(<Varaint onClose={hidePopup} />)}
+                  onClick={() =>
+                    showPopup(
+                      <Varaint
+                        onClose={hidePopup}
+                        onClick={() => alert("123")}
+                        fullDataVaraint={fullDataVaraint}
+                      />
+                    )
+                  }
                 />
               </div>
               <div className="row-start-5 row-end-6 col-start-1 col-end-3 ">
@@ -311,6 +325,7 @@ const EditProducts = () => {
               label="Save Product"
               emoji={<GoDownload />}
               btnClass="flex-row-reverse"
+              type="submit"
             />
           </div>
         </form>

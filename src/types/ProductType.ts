@@ -26,12 +26,12 @@ export interface Inventory {
 
 export interface ProductVariant {
   _id?: string;
-  sku: string;
-  price: number;
+  sku?: string;
+  price?: number;
   stock?: number;
   inventory?: Inventory;
-  attributes: Record<string, string>;
-  images: string[];
+  attributes?: Record<string, string>;
+  images?: string[];
   isActive?: boolean;
   createdAt?: string;
   updatedAt?: string;
@@ -64,13 +64,13 @@ export interface Product {
   dealerPrice?: number;
   currency?: string;
   stock?: number;
-  category: CategoryType;
-  seller: string;
-  status: PublishStatus;
-  tag: string[];
+  category?: CategoryType;
+  seller?: string;
+  status?: PublishStatus;
+  tag?: string[];
   productType?: string;
-  images: string[];
-  primaryImageIndex: number;
+  images?: string[];
+  primaryImageIndex?: number;
   ratingAvg?: number;
   ratingCount?: number;
   salesCount?: number;
@@ -87,12 +87,13 @@ export interface Product {
   dedupeKey?: string;
   createdAt?: string;
   updatedAt?: string;
-  primaryImage?: string | null;
+  primaryImage?: string;
   discountPercent?: number;
   availableTotal?: number;
   priceMin?: number;
   priceMax?: number;
   defaultPrice?: number;
+  discount?: number;
   createdDate?: string;
   createdTime?: string;
   updatedDate?: string;

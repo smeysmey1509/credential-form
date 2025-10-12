@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, ReactNode } from "react";
 import ReactDOM from "react-dom";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface PopupContextType {
   showPopup: (content: ReactNode) => void;
@@ -24,13 +25,23 @@ export const PopupProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     <PopupContext.Provider value={{ showPopup, hidePopup }}>
       {children}
 
-      {popupContent &&
-        ReactDOM.createPortal(
-          <div className="fixed inset-0 flex items-center justify-center bg-black/40 z-[9999]">
-           {popupContent}
-          </div>,
-          document.body
-        )}
+      {ReactDOM.createPortal(
+        <AnimatePresence>
+          {popupContent && (
+            <motion.div
+              key="popup-backdrop"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.25, ease: "easeInOut" }}
+              className="fixed inset-0 flex items-center justify-center bg-black/40 z-[9999]"
+            >
+              {popupContent}
+            </motion.div>
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
     </PopupContext.Provider>
   );
 };

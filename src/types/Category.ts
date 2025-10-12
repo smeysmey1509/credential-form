@@ -1,5 +1,5 @@
 export interface CategoryType {
-    _id: string;
+    _id?: string;
     categoryId?: string;
     categoryName?: string;
     productCount?: number;
