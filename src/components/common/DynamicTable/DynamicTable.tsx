@@ -7,6 +7,7 @@ interface Column {
   width?: string;
   color?: string;
   currency?: boolean;
+  headerClass?: string;
   bodyColor?: string;
   render?: (value: any, row: any) => React.ReactNode;
 }
@@ -34,7 +35,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
               <th
                 key={i}
                 style={{ width: col.width }}
-                className={`px-4 py-2 font-medium ${col.color || ""}`}
+                className={`px-4 py-2 font-mediu ${col.color || ""}`}
               >
                 {col.header}
               </th>

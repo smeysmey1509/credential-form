@@ -67,7 +67,6 @@ const data = [
     color: "Titanium Silver",
     storage: "512GB",
     status: "Active",
-
   },
   {
     sku: "S24U-TIT-1TBGRY",
