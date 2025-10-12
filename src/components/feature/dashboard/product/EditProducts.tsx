@@ -202,8 +202,8 @@ const EditProducts = () => {
     setCost(val);
   };
 
-  console.log("varatins", dataVaraint);
-  console.log("JSON.stringify(varatins)", JSON.stringify(dataVaraint));
+  console.log("dataVaraint", dataVaraint);
+  console.log("JSON.stringify(dataVaraint)", JSON.stringify(dataVaraint));
 
   return (
     <>
