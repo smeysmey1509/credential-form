@@ -1,4 +1,4 @@
-import React, { FormEvent, useEffect, useState } from "react";
+import React, { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import FormField from "../../../common/FormField/FormField";
 import SelectItemField, {
@@ -17,7 +17,6 @@ import CategoryService from "../../../../services/common/Category/CategoryServic
 import BrandService from "../../../../services/common/BrandService/BrandService";
 import Varaint from "../../../common/Varaint/Varaint";
 import { usePopup } from "../../../../context/PopupContext";
-import { data } from "autoprefixer";
 
 const EditProducts = () => {
   const { id } = useParams<{ id: string | undefined }>();
@@ -48,6 +47,7 @@ const EditProducts = () => {
   const [updatedDate, setUpdatedDate] = useState<string>("");
   const [updatedTime, setUpdatedTime] = useState<string>("");
   const [varatins, setVaraints] = useState<ProductVariant[]>([]);
+  const variantsRef = useRef<ProductVariant[]>([]);
 
   const { showPopup, hidePopup } = usePopup();
 
@@ -125,26 +125,44 @@ const EditProducts = () => {
     }
   };
 
-  const dataVaraint = varatins?.map((item) => ({
-    sku: item.sku,
-    price: item.price,
-    stock: item.stock,
-    color: item.attributes?.color || "N/A",
-    storage: item.attributes?.storage || "N/A",
-    status: item?.stock === 0 ? "Out of Stock" : "In Stock",
-  }));
+  useEffect(() => {
+    variantsRef.current = varatins;
+  }, [varatins]);
 
-  const fullDataVaraint = {
-    name: name,
-    description: description,
-    cost: cost,
-    compareAtPrice: compareAtPrice,
-    discount: 12,
-    productId: productId,
-    primaryImage: `http://localhost:5002${primaryImage}`,
-    ratingCount: rating,
-    variants: dataVaraint
-  };
+  const displayVariants = useMemo(
+    () =>
+      varatins.map((item) => ({
+        ...item,
+        color: item.attributes?.color || "N/A",
+        storage: item.attributes?.storage || "N/A",
+        status: item?.stock === 0 ? "Out of Stock" : "In Stock",
+      })),
+    [varatins]
+  );
+
+  const fullDataVaraint = useMemo(
+    () => ({
+      name,
+      description,
+      cost,
+      compareAtPrice,
+      discount: 12,
+      productId,
+      primaryImage: `http://localhost:5002${primaryImage}`,
+      ratingCount: rating,
+      variants: displayVariants,
+    }),
+    [
+      compareAtPrice,
+      cost,
+      description,
+      displayVariants,
+      name,
+      primaryImage,
+      productId,
+      rating,
+    ]
+  );
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -187,8 +205,14 @@ const EditProducts = () => {
   const handleSaveVariants = async () => {
     try {
       const formData = new FormData();
-      formData.append("variants", JSON.stringify(dataVaraint));
+      const latestVariants = variantsRef.current.map((variant) => ({
+        ...variant,
+        attributes: {
+          ...variant.attributes,
+        },
+      }));
 
+      formData.append("variants", JSON.stringify(latestVariants));
       await ProductService.updateProduct(id, formData);
       alert("✅ Variants updated successfully.");
     } catch (err) {
@@ -201,9 +225,6 @@ const EditProducts = () => {
     const val = e.target.value.replace(/[^0-9.]/g, ""); // remove non-numerics
     setCost(val);
   };
-
-  console.log("dataVaraint", dataVaraint);
-  console.log("JSON.stringify(dataVaraint)", JSON.stringify(dataVaraint));
 
   return (
     <>
