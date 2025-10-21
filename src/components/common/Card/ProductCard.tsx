@@ -47,7 +47,7 @@ export default function ProductCard({
   const imgSrc = getPrimaryImageURL(product, productVariant);
 
   return (
-    <div className="group/card flex flex-col shadow rounded">
+    <div className="group/card flex flex-col shadow-[0px_6px_16px_2px_rgba(0,0,0,0.05)] rounded">
       <div className="w-full h-full p-2 border-b border-b-gray-200 border-dashed">
         <div className="relative w-full h-full rounded bg-[#E9EAF7] transition-colors duration-300 ease-out group-hover/card:bg-[#DBDCF7]">
           {imgSrc ? (
@@ -110,7 +110,6 @@ export default function ProductCard({
           </div>
         </div>
       </div>
-
       <div className="w-full bg-white p-4 rounded">
         <h6 className="font-bold text-[1.1rem] text-[#0A0A0A]">
           <a href="#" className="decoration-none">
@@ -124,7 +123,7 @@ export default function ProductCard({
             ratingCount={product?.ratingCount}
           />
           <p className="font-bold text-[#5C67F7] text-[20px]">
-            {fmt(product?.defaultPrice) || "$0.00"}
+            {product?.cost || "$0.00"}
           </p>
         </div>
 

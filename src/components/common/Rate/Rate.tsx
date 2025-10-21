@@ -5,9 +5,10 @@ interface RateProps {
   rating?: number;
   ratingCount?: number;
   max?: number;
+  classname?: string;
 }
 
-const Rate: React.FC<RateProps> = ({ rating, max = 5, ratingCount }) => {
+const Rate: React.FC<RateProps> = ({ rating, max = 5, ratingCount, classname }) => {
   const stars = [];
 
   for (let i = 1; i <= max; i++) {
@@ -23,7 +24,7 @@ const Rate: React.FC<RateProps> = ({ rating, max = 5, ratingCount }) => {
     }
   }
 
-  return <div className="flex items-center gap-[2px]">{stars}{<p className="text-[12px] text-[#8D9DB3] ml-1">({ratingCount || 0}) Ratings</p>}</div>;
+  return <div className={`flex items-center gap-[2px] ${classname}`}>{stars}{<p className="text-[12px] text-[#8D9DB3] ml-1">({ratingCount || 0}) Ratings</p>}</div>;
 };
 
 export default Rate;

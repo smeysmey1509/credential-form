@@ -6,6 +6,7 @@ interface QuantityInputProps {
   min?: number;
   max?: number;
   onChange?: (value: number) => void;
+  classname?: string;
 }
 
 const QuantityInput: React.FC<QuantityInputProps> = ({
@@ -13,6 +14,7 @@ const QuantityInput: React.FC<QuantityInputProps> = ({
   min = 1,
   max = 100,
   onChange,
+  classname
 }) => {
   const decrement = () => {
     const newVal = Math.max(min, value - 1);
@@ -32,7 +34,7 @@ const QuantityInput: React.FC<QuantityInputProps> = ({
   };
 
   return (
-    <div className="w-full h-full flex justify-center items-center gap-2">
+    <div className={`w-full h-full flex justify-center items-center gap-2 ${classname}`}>
       <button
         type="button"
         aria-label="decrease quantity"

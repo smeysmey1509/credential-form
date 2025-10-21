@@ -7,9 +7,10 @@ import Cart from "./components/feature/dashboard/product/Cart";
 import Wishlist from "./components/feature/dashboard/product/Wishlist";
 import Products from "./components/feature/dashboard/product/Products";
 import Checkout from "./components/feature/dashboard/product/Checkout";
-import OrderDetails from "./components/feature/dashboard/product/OrderDetails";
+import ProductDetails from "./components/feature/dashboard/product/ProductDetails";
 import Orders from "./components/feature/dashboard/product/Order";
 import EditProducts from "./components/feature/dashboard/product/EditProducts";
+import OrderDetails from "./components/feature/dashboard/product/OrderDetails";
 
 const LoginPage = lazy(() => import("./pages/auth/LoginPage"));
 const HomePage = lazy(() => import("./pages/auth/HomePage"));
@@ -70,6 +71,7 @@ function App() {
           <Route path="product/create" element={<CreateProduct />} />
           <Route path="product/listproduct" element={<ListProduct />} />
           <Route path="product/editproducts/:id" element={<EditProducts />} />
+          <Route path="product/productdetails/:id" element={<ProductDetails />} />
           <Route path="product/cart" element={<Cart />} />
           <Route path="product/edit/:id" element={<Products />} />
           <Route path="product/wishlist" element={<Wishlist />} />

@@ -109,17 +109,15 @@ const ListProduct: React.FC = () => {
         itemsPerPage
       );
 
-      const { products, pagination } = response.data as ProductListResponse;
+      const { products, pagination } = response?.data as ProductListResponse;
       setProducts(products);
-      setTotalItems(pagination.total);
-      setItemsPerPage(pagination.perPage);
-      setTotalPerPage(pagination.totalPages);
+      setTotalItems(pagination?.total);
+      setItemsPerPage(pagination?.perPage);
+      setTotalPerPage(pagination?.totalPages);
     } catch (e) {
       console.error("Failed to fetch products:", e);
     }
   };
-
-  console.log('totalItem', totalItems)
 
   const handleDeleteProduct = async (productId: string) => {
     try {
@@ -143,8 +141,6 @@ const ListProduct: React.FC = () => {
     try {
       if (selectedProductIds.length === 0) return;
 
-      console.log("Sending to backend:", selectedProductIds);
-
       const response = await ProductService.multiDeleteProduct(
         selectedProductIds
       );
@@ -165,10 +161,10 @@ const ListProduct: React.FC = () => {
     if (!dateString) return "";
 
     const date = new Date(dateString);
-    if (isNaN(date.getTime())) return ""; // invalid date
+    if (isNaN(date.getTime())) return "";
 
     const day = String(date.getDate()).padStart(2, "0");
-    const month = String(date.getMonth() + 1).padStart(2, "0"); // Month is 0-based
+    const month = String(date.getMonth() + 1).padStart(2, "0");
     const year = date.getFullYear();
 
     return `${day}-${month}-${year}`;
@@ -274,7 +270,7 @@ const ListProduct: React.FC = () => {
                   className="px-6 py-4  cursor-pointer"
                   scope="row"
                   onClick={() =>
-                    navigate(`/dashboard/product/editproducts/${product._id}`)
+                    navigate(`/dashboard/product/productdetails/${product._id}`)
                   }
                 >
                   <div className="w-full flex items-center gap-2">
@@ -309,7 +305,7 @@ const ListProduct: React.FC = () => {
                   {product.category?.categoryName}
                 </td>
                 <td className="px-6 py-4 dark:text-[#FFFFFFCC]" scope="row">
-                  ${product.defaultPrice}
+                  ${product.cost}
                 </td>
                 <td className="px-6 py-4 dark:text-[#FFFFFFCC]" scope="row">
                   {product.stock}
@@ -354,7 +350,9 @@ const ListProduct: React.FC = () => {
                   {formatDateDMY(product?.createdAt)}
                 </td>
                 <td className="px-6 py-4" scope="row">
-                  <div className={"flex items-center gap-2"}>
+                  <div className={"flex items-center gap-2"} onClick={() =>
+                    navigate(`/dashboard/product/editproducts/${product._id}`)
+                  }>
                     <span
                       className={
                         "p-2 bg-[#5c67f71a] rounded-md text-[#5c67f7] hover:bg-[#5c67f7] hover:text-white cursor-pointer"
@@ -366,7 +364,7 @@ const ListProduct: React.FC = () => {
                       className={
                         "p-2 bg-[#fb42421a] rounded-md text-[#fb4242] hover:bg-[#fb4242] hover:text-white cursor-pointer"
                       }
-                      onClick={() => handleDeleteProduct(product?._id)}
+                      onClick={() => handleDeleteProduct(product?._id || "")}
                     >
                       <RiDeleteBinLine />
                     </span>

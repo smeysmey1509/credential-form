@@ -19,9 +19,9 @@ export interface Dimensions {
 }
 
 export interface Inventory {
-  onHand: number;
-  reserved: number;
-  safetyStock: number;
+  onHand?: number;
+  reserved?: number;
+  safetyStock?: number;
 }
 
 export interface ProductVariant {

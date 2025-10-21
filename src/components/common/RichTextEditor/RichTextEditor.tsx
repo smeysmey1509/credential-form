@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./RichTextEditor.css";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
@@ -11,6 +11,7 @@ import OrderedList from "@tiptap/extension-ordered-list";
 import ListItem from "@tiptap/extension-list-item";
 import Blockquote from "@tiptap/extension-blockquote";
 import CodeBlock from "@tiptap/extension-code-block";
+import { marked } from "marked"; // ✅ markdown parser
 
 interface RichTextEditorProps {
   label?: string;
@@ -18,6 +19,9 @@ interface RichTextEditorProps {
 }
 
 const RichTextEditor: React.FC<RichTextEditorProps> = ({ label, value }) => {
+  // Convert markdown to HTML before feeding to TipTap
+  const parsedHTML = value ? marked.parse(value) : "<p></p>";
+
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -31,154 +35,62 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ label, value }) => {
       Blockquote,
       CodeBlock,
     ],
-    content: `<p>${value}</p>`,
+    content: parsedHTML,
   });
 
-  if (!editor) {
-    return null;
-  }
+  /** 👇 Update editor when `value` changes */
+  useEffect(() => {
+    if (editor && value !== undefined) {
+      const html = marked.parse(value || "");
+      const current = editor.getHTML();
+      if (current !== html) {
+        editor.commands.setContent(html);
+      }
+    }
+  }, [value, editor]);
+
+  if (!editor) return null;
 
   return (
     <div className="w-full flex flex-col">
-      <label
-        htmlFor="rich-text-editor"
-        className="text-[14px] font-medium text-[#212b37]"
-      >
-        {label || "Rich Text Editor"}
-      </label>
+      {label && (
+        <label className="text-[14px] font-medium text-[#212b37]">
+          {label}
+        </label>
+      )}
       <div className="border mt-2 border-[#dee7f1] dark:border-gray-700 dark:text-gray-500 rounded">
-        <div className="flex w-full border-b border-box border-b-[#dee7f1] dark:border-b dark:border-b-gray-700 gap-2 px-4 py-1">
+        {/* Toolbar */}
+        <div className="flex w-full border-b border-b-[#dee7f1] dark:border-b-gray-700 gap-2 px-4 py-1">
           <button
+            type="button"
             onClick={() => editor.chain().focus().toggleBold().run()}
-            className={
-              editor.isActive("bold") ? "font-bold bg-gray-200 px-2" : "px-2"
-            }
+            className={`px-2 ${
+              editor.isActive("bold") ? "font-bold bg-gray-200" : ""
+            }`}
           >
             Bold
           </button>
           <button
+            type="button"
             onClick={() => editor.chain().focus().toggleItalic().run()}
-            className={
-              editor.isActive("italic") ? "italic bg-gray-200 px-2" : "px-2"
-            }
+            className={`px-2 ${
+              editor.isActive("italic") ? "italic bg-gray-200" : ""
+            }`}
           >
             Italic
           </button>
           <button
+            type="button"
             onClick={() => editor.chain().focus().toggleUnderline().run()}
-            className={
-              editor.isActive("underline")
-                ? "underline bg-gray-200 px-2"
-                : "px-2"
-            }
+            className={`px-2 ${
+              editor.isActive("underline") ? "underline bg-gray-200" : ""
+            }`}
           >
             Underline
           </button>
-          <button
-            onClick={() =>
-              editor.chain().focus().toggleHeading({ level: 1 }).run()
-            }
-            className={
-              editor.isActive("heading", { level: 1 })
-                ? "bg-gray-200 px-2"
-                : "px-2"
-            }
-          >
-            H1
-          </button>
-          <button
-            onClick={() =>
-              editor.chain().focus().toggleHeading({ level: 2 }).run()
-            }
-            className={
-              editor.isActive("heading", { level: 2 })
-                ? "bg-gray-200 px-2"
-                : "px-2"
-            }
-          >
-            H2
-          </button>
-          <button
-            onClick={() =>
-              editor.chain().focus().toggleHeading({ level: 3 }).run()
-            }
-            className={
-              editor.isActive("heading", { level: 3 })
-                ? "bg-gray-200 px-2"
-                : "px-2"
-            }
-          >
-            H3
-          </button>
-          <button
-            onClick={() =>
-              editor.chain().focus().toggleHeading({ level: 4 }).run()
-            }
-            className={
-              editor.isActive("heading", { level: 4 })
-                ? "bg-gray-200 px-2"
-                : "px-2"
-            }
-          >
-            H4
-          </button>
-          <button
-            onClick={() =>
-              editor.chain().focus().toggleHeading({ level: 5 }).run()
-            }
-            className={
-              editor.isActive("heading", { level: 5 })
-                ? "bg-gray-200 px-2"
-                : "px-2"
-            }
-          >
-            H5
-          </button>
-          <button
-            onClick={() =>
-              editor.chain().focus().toggleHeading({ level: 6 }).run()
-            }
-            className={
-              editor.isActive("heading", { level: 6 })
-                ? "bg-gray-200 px-2"
-                : "px-2"
-            }
-          >
-            H6
-          </button>
-          <button
-            onClick={() => editor.chain().focus().toggleBulletList().run()}
-            className={
-              editor.isActive("bulletList") ? "bg-gray-200 px-2" : "px-2"
-            }
-          >
-            • List
-          </button>
-          <button
-            onClick={() => editor.chain().focus().toggleOrderedList().run()}
-            className={
-              editor.isActive("orderedList") ? "bg-gray-200 px-2" : "px-2"
-            }
-          >
-            1. List
-          </button>
-          <button
-            onClick={() => editor.chain().focus().toggleBlockquote().run()}
-            className={
-              editor.isActive("blockquote") ? "bg-gray-200 px-2" : "px-2"
-            }
-          >
-            ❝ Quote
-          </button>
-          <button
-            onClick={() => editor.chain().focus().toggleCodeBlock().run()}
-            className={
-              editor.isActive("codeBlock") ? "bg-gray-200 px-2" : "px-2"
-            }
-          >
-            {"</>"} Code
-          </button>
         </div>
+
+        {/* Content Area */}
         <div className="rounded p-2 w-full h-fit">
           <EditorContent editor={editor} />
         </div>

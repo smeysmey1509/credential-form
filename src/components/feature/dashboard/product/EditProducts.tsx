@@ -133,6 +133,9 @@ const EditProducts = () => {
     () =>
       varatins.map((item) => ({
         ...item,
+        onHand: item?.inventory?.onHand || 0,
+        reserved: item?.inventory?.reserved || 0,
+        safetyStock: item?.inventory?.safetyStock || 0,
         color: item.attributes?.color || "N/A",
         storage: item.attributes?.storage || "N/A",
         status: item?.stock === 0 ? "Out of Stock" : "In Stock",
@@ -190,6 +193,16 @@ const EditProducts = () => {
       const updated = [...prev];
       const variant = { ...updated[rowIndex] };
 
+      if (
+        field === "onHand" ||
+        field === "reserved" ||
+        field === "safetyStock"
+      ) {
+        variant.inventory = { ...variant?.inventory, [field]: newValue };
+      } else {
+        (variant as any)[field] = newValue;
+      }
+
       // If it's nested attributes like color or storage
       if (field === "color" || field === "storage") {
         variant.attributes = { ...variant.attributes, [field]: newValue };
@@ -229,14 +242,7 @@ const EditProducts = () => {
   return (
     <>
       <div className="relative w-full h-full bg-white dark:bg-[#19191C] shadow rounded">
-        <form
-          onSubmit={(e) => {
-            e.preventDefault(); // prevent page reload
-            handleSubmit(e);
-            handleSaveVariants();
-          }}
-          method="POST"
-        >
+        <form onSubmit={handleSubmit} method="POST">
           <div className="w-full h-fit flex justify-center p-4 gap-8 border-b border-b-gray-200 border-dashed">
             {/* LEFT SECTION */}
             <div className="w-1/2 h-full grid grid-cols-2 gap-x-6 gap-y-4">

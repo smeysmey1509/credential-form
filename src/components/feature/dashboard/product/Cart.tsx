@@ -7,12 +7,8 @@ import FormField from "../../../common/FormField/FormField";
 import PromoCodeService from "../../../../services/common/PromoCode/PromoCode";
 import { BsFillExclamationCircleFill } from "react-icons/bs";
 import { AnimatePresence, motion } from "framer-motion";
-import {
-  DEFAULT_IMG,
-  API_BASE,
-  toAbs,
-  getPrimaryUrl,
-} from "../../../../utils/image";
+import { toAbs, getPrimaryUrl } from "../../../../utils/image";
+import { FaRegHeart, FaRegTrashAlt } from "react-icons/fa";
 
 const Cart = () => {
   const [cart, setCart] = useState<any[] | null>(null);
@@ -232,8 +228,19 @@ const Cart = () => {
           columns={columns}
           data={cart}
           actions={{
-            wishlist: handleAddToWishlist,
-            delete: handleDeleteCart,
+            wishlist: {
+              // label: "Wishlist",
+              icon: <FaRegHeart />,
+              colorClass: "!p-2 bg-blue-500 text-white rounded cursor-pointer",
+              onClick: (row) => handleAddToWishlist(row),
+            },
+            delete: {
+              // label: "Delete",
+              icon: <FaRegTrashAlt />,
+              colorClass:
+                "!p-2 bg-pink-500 text-white rounded ml-1 cursor-pointer",
+              onClick: (row) => handleDeleteCart(row),
+            },
           }}
         />
       </div>

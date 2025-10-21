@@ -4,6 +4,8 @@ import Rate from "../Rate/Rate";
 import DynamicTable from "../DynamicTable/DynamicTable";
 import { Product } from "../../../types/ProductType";
 import ButtonWithEmoji from "../../Button/ButtonWithEmoji/ButtonWithEmoji";
+import { FaEdit } from "react-icons/fa";
+import { FaDeleteLeft } from "react-icons/fa6";
 
 interface VaraintProp {
   fullDataVaraint?: Product;
@@ -27,7 +29,7 @@ const Varaint: React.FC<VaraintProp> = ({
     {
       header: "Images",
       accessor: "images",
-      width: "10%",
+      width: "6%",
       color: "!font-bold",
       bodyColor: "!text-[13px] !text-[#212b37] !font-medium",
       editable: false,
@@ -36,7 +38,7 @@ const Varaint: React.FC<VaraintProp> = ({
           <img
             src={imageValue}
             alt={imageValue}
-            className="w-full h-full object-contain"
+            className="w-full h-full object-contain rounded"
           />
         </div>
       ),
@@ -44,7 +46,7 @@ const Varaint: React.FC<VaraintProp> = ({
     {
       header: "SKU",
       accessor: "sku",
-      width: "25%",
+      width: "18%",
       bodyColor: "!text-[#5C67F7] !text-[13px] !font-normal",
       color: "!font-bold",
       editable: false,
@@ -52,51 +54,80 @@ const Varaint: React.FC<VaraintProp> = ({
     {
       header: "Price",
       accessor: "price",
-      width: "10%",
+      width: "8%",
       color: "!font-bold",
-      bodyColor: "!text-[13px] !text-[#212b37] !font-medium",
+      bodyColor: "!text-[13px] !text-[#212b37]",
       currency: true,
       editable: true,
     },
     {
       header: "Stock",
       accessor: "stock",
-      width: "10%",
+      width: "7%",
       color: "!font-bold",
-      bodyColor: "!text-[13px] !text-[#212b37] !font-medium",
+      bodyColor: "!text-[13px] !text-[#212b37]",
+      editable: true,
+    },
+    {
+      header: "OnHand",
+      accessor: "onHand",
+      width: "7%",
+      color: "!font-bold",
+      bodyColor: "!text-[13px] !text-[#212b37]",
+      editable: true,
+    },
+    {
+      header: "Reserved",
+      accessor: "reserved",
+      width: "7%",
+      color: "!font-bold",
+      bodyColor: "!text-[13px] !text-[#212b37]",
+      editable: true,
+    },
+    {
+      header: "SafetyStock",
+      accessor: "safetyStock",
+      width: "7%",
+      color: "!font-bold",
+      bodyColor: "!text-[13px] !text-[#212b37]",
       editable: true,
     },
     {
       header: "Color",
       accessor: "color",
-      width: "15%",
+      width: "12%",
       color: "!font-bold",
-      bodyColor: "!text-[13px] !text-[#212b37] !font-medium",
-      currency: false,
+      bodyColor: "!text-[13px] !text-[#212b37]",
       editable: true,
     },
     {
       header: "Storage",
       accessor: "storage",
-      width: "10%",
+      width: "8%",
       color: "!font-bold",
-      bodyColor: "!text-[13px] !text-[#212b37] !font-medium",
-      currency: false,
+      bodyColor: "!text-[13px] !text-[#212b37]",
       editable: true,
     },
     {
       header: "Status",
       accessor: "status",
-      width: "15%",
+      width: "10%",
       color: "!font-bold",
-      bodyColor: "!text-[13px] !text-[#212b37] !font-medium",
-      currency: false,
-      render: (value: any, row: any) => (
+      bodyColor: "!text-[13px] !text-[#212b37]",
+      render: (value: any) => (
         <button className="bg-blue-600 text-white py-1 px-4 rounded cursor-pointer">
           {value}
         </button>
       ),
     },
+    // {
+    //   header: "Action",
+    //   accessor: "action",
+    //   width: "10%",
+    //   color: "!font-bold",
+    //   bodyColor: "!text-[13px] !text-[#212b37]",
+    //   editable: false,
+    // },
   ];
 
   const handleEditVaraint = (
@@ -109,7 +140,7 @@ const Varaint: React.FC<VaraintProp> = ({
   };
 
   return (
-    <div className="w-[50%] h-fit bg-white rounded">
+    <div className="w-[80%] h-fit bg-white rounded">
       <div className="head w-full h-fit flex justify-between items-center p-4 border-b border-b-[#ecf3fb]">
         <h4 className="text-lg font-sans font-semibold">Varaint</h4>
         <div
@@ -173,6 +204,22 @@ const Varaint: React.FC<VaraintProp> = ({
             data={fullDataVaraint?.variants || []}
             onEdit={handleEditVaraint}
             isEditMode={editVaraint}
+            actions={{
+              edit: {
+                label: "Edit",
+                icon: <FaEdit />,
+                colorClass:
+                  "bg-blue-600 text-white py-1 px-2 gap-1 rounded cursor-pointer",
+                onClick: (row) => console.log("edit", row),
+              },
+              delete: {
+                label: "Delete",
+                icon: <FaDeleteLeft />,
+                colorClass:
+                  "bg-blue-600 text-white py-1 px-2 gap-1 rounded cursor-pointer",
+                onClick: (row) => console.log("delete", row),
+              },
+            }}
           />
         </div>
       </div>

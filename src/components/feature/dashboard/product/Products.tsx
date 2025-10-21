@@ -1,12 +1,7 @@
-import React, { use, useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import CategorySelect from "../../../common/CategorySelect/CategorySelect";
 import PriceRange from "../../../common/PriceRange/PriceRange";
-import {
-  ProductVariant,
-  Product,
-  Inventory,
-  Dimensions,
-} from "../../../../types/ProductType";
+import { Product } from "../../../../types/ProductType";
 import ProductService from "../../../../services/common/ProductService/ProductService";
 import CartService from "../../../../services/common/CartService/CartService";
 import ProductCard from "../../../common/Card/ProductCard";
@@ -189,7 +184,7 @@ const Products = () => {
                 handleFilterCategory(selectedCategories);
               }}
               accessors={{
-                id: (x) => x._id,
+                id: (x) => x._id || "",
                 label: (x) => x.categoryName,
                 count: (x) => x.productCount,
                 disabled: (x) => x.productCount === 0,

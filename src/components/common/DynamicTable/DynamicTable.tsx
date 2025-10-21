@@ -17,10 +17,15 @@ interface DynamicTableProps {
   columns: Column[];
   data: any[] | null;
   isEditMode?: boolean;
-  actions?: {
-    wishlist?: (row: any) => void;
-    delete?: (row: any) => void;
-  };
+  actions?: Record<
+    string,
+    {
+      label?: string;
+      icon?: React.ReactNode;
+      onClick?: (row: any) => void;
+      colorClass?: string;
+    }
+  >;
   onEdit?: (rowIndex: number, accessor: string, newValue: any) => void;
 }
 
@@ -175,22 +180,25 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                         className={`px-4 py-2 ${col.color || ""}`}
                         style={{ width: col.width }}
                       >
-                        {actions.wishlist && (
-                          <button
-                            className="p-2 bg-blue-500 text-white rounded cursor-pointer"
-                            onClick={() => actions.wishlist?.(row)}
-                          >
-                            <FaRegHeart />
-                          </button>
-                        )}
-                        {actions.delete && (
-                          <button
-                            className="p-2 bg-pink-500 text-white rounded ml-1 cursor-pointer"
-                            onClick={() => actions.delete?.(row)}
-                          >
-                            <FaRegTrashAlt />
-                          </button>
-                        )}
+                        <div className="flex items-center gap-2">
+                          {actions &&
+                            Object.entries(actions).map(([key, action]) => (
+                              <button
+                                key={key}
+                                onClick={() =>
+                                  action.onClick && action.onClick(row)
+                                }
+                                className={`flex items-center px-2 py-[0.3rem] text-white text-[12px] rounded cursor-pointer transition duration-200 ${
+                                  action.colorClass ||
+                                  "bg-blue-500 hover:bg-blue-600"
+                                }`}
+                                title={action.label}
+                              >
+                                {action.icon}
+                                <span>{action.label}</span>
+                              </button>
+                            ))}
+                        </div>
                       </td>
                     );
                   }
