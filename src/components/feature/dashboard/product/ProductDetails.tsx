@@ -6,17 +6,21 @@ import Review from "../../../common/Review/Review";
 import FeatureCard from "../../../common/FeatureCard/FeatureCard";
 import ProductCard from "../../../common/Card/ProductCard";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import ProductService from "../../../../services/common/ProductService/ProductService";
 import { Product } from "../../../../types/ProductType";
+import CartService from "../../../../services/common/CartService/CartService";
 
 const ProductDetails = () => {
   const { id } = useParams<{ id: string | undefined }>();
   const [product, setProduct] = useState<Partial<Product>>({});
   const [colorList, setColorList] = useState<string[]>([]);
+  const [storagesList, setStoragesList] = useState<string[]>([]);
 
   const sliderRef = useRef<HTMLDivElement>(null);
   const [index, setIndex] = useState(0);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (id) handleFetchProductById(id);
@@ -101,10 +105,29 @@ const ProductDetails = () => {
             ?.filter((c: string | undefined): c is string => Boolean(c))
         ),
       ];
-      console.log("listColor", listColor);
+
+      const listStorage = [
+        ...new Set(
+          responseProduct?.data?.variants
+            ?.map((v: any) => v?.attributes?.storage)
+            ?.filter((c: string | undefined): c is string => Boolean(c))
+        ),
+      ];
+      setColorList(listColor);
+      setStoragesList(listStorage);
       setProduct(responseProduct?.data || {});
     } catch (err) {
       console.error("Err Fetch Pooduct BY ID", err);
+    }
+  };
+
+  const handleAddToCart = async (id: string): Promise<void> => {
+    try {
+      const responseAddToCart = await CartService.addToCart(id);
+      console.log("Add to cart response:", responseAddToCart);
+      navigate("/dashboard/product/cart");
+    } catch (err) {
+      console.log(err);
     }
   };
 
@@ -142,6 +165,8 @@ const ProductDetails = () => {
     },
   ];
 
+  console.log("listStorage", storagesList);
+
   return (
     <div className="w-full h-fit">
       <div className="grid grid-cols-5 gap-4">
@@ -160,10 +185,10 @@ const ProductDetails = () => {
             cost={product?.cost}
             compareAtPrice={product?.compareAtPrice}
             description={product?.description}
-            storageList={list}
+            storageList={storagesList}
             colorList={colors}
             onCompare={() => alert("Compare")}
-            onAddToCart={() => alert("Add To Cart")}
+            onAddToCart={() => handleAddToCart(id || "")}
           />
         </div>
         <div className="col-span-3 row-start-2 bg-white shadow-[0px_6px_16px_2px_rgba(0,0,0,0.05)] rounded">

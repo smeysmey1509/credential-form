@@ -232,7 +232,7 @@ const Cart = () => {
               // label: "Wishlist",
               icon: <FaRegHeart />,
               colorClass: "!p-2 bg-blue-500 text-white rounded cursor-pointer",
-              onClick: (row) => handleAddToWishlist(row),
+              onClick: (row) => oWishlist(row),
             },
             delete: {
               // label: "Delete",
