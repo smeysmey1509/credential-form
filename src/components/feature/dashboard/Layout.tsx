@@ -1,5 +1,4 @@
-import axios from "axios";
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import Header from "../../layout/Header/Header";
 import Sidebar from "../../layout/Sidebar/Sidebar";
 import Content from "../../layout/Content/Content";
@@ -7,43 +6,46 @@ import Footer from "../../layout/Footer/Footer";
 import axiosClient from "../../../services/api/axiosClient";
 
 const Layout = () => {
-    const [message, setMessage] = useState("");
-    const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
 
-    useEffect(() => {
-        const fetchDashboard = async () => {
-            try {
-                const res = await axiosClient.get('/profile')
-                setMessage(res.data.message);
-            } catch (err) {
-                console.error("Error fetching dashboard data:", err);
-                setMessage("Failed to fetch dashboard data. Please try again later.");
-                // Optionally, redirect to login if the token is invalid
-                // window.location.href = "/login";
-                return;
-            }
-        };
-        fetchDashboard();
-    }, []);
-
-    const toggleSidebar = () => {
-        setIsSidebarOpen(!isSidebarOpen);
+  useEffect(() => {
+    const fetchDashboard = async () => {
+      try {
+        await axiosClient.get("/profile");
+      } catch (err) {
+        console.error("Error fetching dashboard data:", err);
+      }
     };
+    fetchDashboard();
+  }, []);
 
-    return (
-        <main className="flex max-h-full">
-            <Sidebar isSidebarOpen={isSidebarOpen}/>
-            <div
-                className={`fixed max-h-full overflow-y-auto ${
-                    isSidebarOpen ? "w-full h-screen max-h-full left-0" : "w-[85%] left-[15%] right-0"
-                } flex flex-col bg-[#fff] transition-all duration-300 ease-in-out`}
-            >
-                <Header toggleSidebar={toggleSidebar}/>
-                <Content/>
-                <Footer/>
-            </div>
-        </main>
-    );
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
+  return (
+    <main className="flex">
+      <Sidebar isSidebarOpen={isSidebarOpen} />
+
+      <div
+        className={`relative flex flex-col min-h-screen bg-[#fff] transition-all duration-300 ease-in-out ${
+          isSidebarOpen ? "w-full ml-0" : "w-[85%] ml-[15%]"
+        }`}
+      >
+        {/* 🧠 Freeze Header */}
+        <div className="sticky top-0 z-50">
+          <Header toggleSidebar={toggleSidebar} />
+        </div>
+
+        {/* Content Scroll Area */}
+        <div className="flex-grow overflow-y-auto">
+          <Content />
+        </div>
+
+        <Footer />
+      </div>
+    </main>
+  );
 };
 
 export default Layout;
