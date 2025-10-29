@@ -80,13 +80,14 @@ const DetailCardInformation: React.FC<DetailCardInformationProp> = ({
                   title={color.name}
                   onClick={() => setSelectedColor(color.name)}
                   className={`w-4 h-4 rounded-full border-2 border-white cursor-pointer transition-all duration-200
-        ${color.bgClass}
-        ${
-          isSelected
-            ? `ring-2 ${color.ringClass}`
-            : `hover:ring-2 ${color.ringClass}`
-        }
+        ${isSelected ? "ring-2" : "hover:ring-2"}
       `}
+                  style={{
+                    backgroundColor: color.hex,
+                    boxShadow: isSelected
+                      ? `0 0 0 2px ${color.hex}80`
+                      : undefined,
+                  }}
                 ></button>
               );
             })}
@@ -168,7 +169,7 @@ const DetailCardInformation: React.FC<DetailCardInformationProp> = ({
             onClick={onCompare}
           />
           <ButtonWithEmoji
-            label="Add to Cart"
+            label="Add to Wishlist"
             emoji={<FaRegCreditCard />}
             btnClass="border border-transparent"
             onClick={onAddToCart}

@@ -16,6 +16,8 @@ const ProductService = {
     axiosClient.get<Product[]>(`/products?page=${page}&limit=${limit}`),
   getProductById: (id: string): Promise<AxiosResponse<Product>> =>
     axiosClient.get<Product>(`/product/${id}`),
+  recommendationsProduct: (id: string): Promise<AxiosResponse<Product>> =>
+    axiosClient.get(`/product/${id}/recommendations`),
   createProduct: (productData: FormData) =>
     axiosClient.post<Product | ProductVariant | Inventory | Dimensions>(
       "/product",

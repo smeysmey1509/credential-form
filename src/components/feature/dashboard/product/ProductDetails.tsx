@@ -10,12 +10,26 @@ import { useNavigate, useParams } from "react-router-dom";
 import ProductService from "../../../../services/common/ProductService/ProductService";
 import { Product } from "../../../../types/ProductType";
 import CartService from "../../../../services/common/CartService/CartService";
+import { colorNameToDynamicHex } from "../../../../utils/colorUtils";
+
+interface ColorItem {
+  name: string;
+  hex?: string;
+  bgClass?: string;
+  ringClass?: string;
+}
 
 const ProductDetails = () => {
   const { id } = useParams<{ id: string | undefined }>();
   const [product, setProduct] = useState<Partial<Product>>({});
-  const [colorList, setColorList] = useState<string[]>([]);
+  const [colorList, setColorList] = useState<ColorItem[]>([]);
   const [storagesList, setStoragesList] = useState<string[]>([]);
+  const [featuredProduct, setFeaturedProduct] = useState<Partial<Product>[]>(
+    []
+  );
+  const [relatedProducts, setRelatedProducts] = useState<Partial<Product>[]>(
+    []
+  );
 
   const sliderRef = useRef<HTMLDivElement>(null);
   const [index, setIndex] = useState(0);
@@ -23,21 +37,11 @@ const ProductDetails = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (id) handleFetchProductById(id);
+    if (id) {
+      handleFetchProductById(id);
+      handleProductRelationship(id);
+    }
   }, [id]);
-
-  const relatedProducts = [
-    { id: 1, name: "1" },
-    { id: 2, name: "2" },
-    { id: 3, name: "3" },
-    { id: 4, name: "4" },
-    { id: 5, name: "5" },
-    { id: 6, name: "6" },
-    { id: 7, name: "7" },
-    { id: 8, name: "8" },
-    { id: 9, name: "9" },
-    { id: 10, name: "10" },
-  ];
 
   // duplicate for seamless loop
   const looped = [...relatedProducts, ...relatedProducts, ...relatedProducts];
@@ -96,8 +100,6 @@ const ProductDetails = () => {
   const handleFetchProductById = async (id: string) => {
     try {
       const responseProduct = await ProductService?.getProductById(id);
-
-      // ✅ Extract unique colors from variants
       const listColor = [
         ...new Set(
           responseProduct?.data?.variants
@@ -105,7 +107,6 @@ const ProductDetails = () => {
             ?.filter((c: string | undefined): c is string => Boolean(c))
         ),
       ];
-
       const listStorage = [
         ...new Set(
           responseProduct?.data?.variants
@@ -113,7 +114,19 @@ const ProductDetails = () => {
             ?.filter((c: string | undefined): c is string => Boolean(c))
         ),
       ];
-      setColorList(listColor);
+
+      // Convert color names to hex dynamically
+      const convertedColors = listColor.map((name) => {
+        const hex = colorNameToDynamicHex(name);
+        return {
+          name,
+          hex,
+          bgClass: `bg-[${hex}]`,
+          ringClass: `ring-[${hex}]`,
+        };
+      });
+
+      setColorList(convertedColors);
       setStoragesList(listStorage);
       setProduct(responseProduct?.data || {});
     } catch (err) {
@@ -131,41 +144,47 @@ const ProductDetails = () => {
     }
   };
 
-  const list = ["1GB", "2GB", "3GB", "4GB"];
-  const colors = [
-    {
-      name: "Midnight Black",
-      hex: "[#011635]",
-      bgClass: "bg-[#011635]",
-      ringClass: "ring-[#011635]",
-    },
-    {
-      name: "Gray",
-      hex: "gray",
-      bgClass: "bg-gray-500",
-      ringClass: "ring-gray-400",
-    },
-    {
-      name: "Red",
-      hex: "red",
-      bgClass: "bg-red-500",
-      ringClass: "ring-red-400",
-    },
-    {
-      name: "Green",
-      hex: "green",
-      bgClass: "bg-green-500",
-      ringClass: "ring-green-400",
-    },
-    {
-      name: "Yellow",
-      hex: "yellow",
-      bgClass: "bg-yellow-500",
-      ringClass: "ring-yellow-400",
-    },
-  ];
+  const handleProductRelationship = async (id: string) => {
+    try {
+      const responseProductRelationship =
+        await ProductService?.recommendationsProduct(id);
 
-  console.log("listStorage", storagesList);
+      const featuredProductsData =
+        (responseProductRelationship?.data as any)?.featuredProducts || [];
+      const releatedProductsData =
+        (responseProductRelationship?.data as any)?.relatedProducts || [];
+
+      // ✅ map backend response into FeatureItem shape
+      const mappedFeaturedProducts = featuredProductsData.map((item: any) => ({
+        productImg: item.primaryImage || item.images?.[0],
+        productName: item.name,
+        ratingProduct: item.ratingAvg,
+        ratingCountProduct: item.ratingCount,
+        productCost: item.cost,
+        compareAtPrice: item.compareAtPrice,
+        addToCart: () => handleAddToCart(item._id),
+      }));
+
+      const mappedRelatedProducts = releatedProductsData?.map((item: any) => ({
+        _id: item._id,
+        name: item.name,
+        brand: item.brand,
+        cost: item.cost,
+        compareAtPrice: item.compareAtPrice,
+        ratingAvg: item.ratingAvg,
+        ratingCount: item.ratingCount,
+        primaryImage: item.primaryImage || item.images?.[0],
+        images: item.images || [],
+      }));
+
+      setFeaturedProduct(mappedFeaturedProducts);
+      setRelatedProducts(mappedRelatedProducts);
+    } catch (err) {
+      console.error("Error Fetch Product Relationship", err);
+    }
+  };
+  
+  console.log("relatedProduct", relatedProducts);
 
   return (
     <div className="w-full h-fit">
@@ -186,16 +205,27 @@ const ProductDetails = () => {
             compareAtPrice={product?.compareAtPrice}
             description={product?.description}
             storageList={storagesList}
-            colorList={colors}
+            colorList={colorList}
             onCompare={() => alert("Compare")}
             onAddToCart={() => handleAddToCart(id || "")}
           />
         </div>
         <div className="col-span-3 row-start-2 bg-white shadow-[0px_6px_16px_2px_rgba(0,0,0,0.05)] rounded">
-          <Tabs />
+          <Tabs
+            productDetails={{
+              productName: product?.brand?.name,
+              productBrand: product?.name,
+              display: product?.attributes?.display,
+              chipset: product?.attributes?.chipset,
+              waterResistance: product?.attributes?.waterResistance,
+            }}
+          />
         </div>
         <div className="col-span-2 row-span-2 col-start-4 row-start-2 bg-white shadow-[0px_6px_16px_2px_rgba(0,0,0,0.05)] rounded">
-          <FeatureCard />
+          <FeatureCard
+            featureItems={featuredProduct}
+            onClick={() => alert("View All")}
+          />
         </div>
         <div className="col-span-3 row-start-3 bg-white shadow-[0px_6px_16px_2px_rgba(0,0,0,0.05)] rounded">
           <Review />
@@ -222,12 +252,20 @@ const ProductDetails = () => {
           onScroll={handleScroll}
           className="flex overflow-hidden gap-5 scrollbar-hide scroll-smooth"
         >
-          {looped.map((product, i) => (
+          {relatedProducts.map((p, i) => (
             <div
-              key={`${product.id}-${i}`}
+              key={`${p._id}-${i}`}
               className="flex-shrink-0 w-[19%] bg-white rounded"
             >
-              <ProductCard product={product} />
+              <ProductCard
+                product={p as Product} // 👈 cast if needed
+                userClick={{
+                  addToCart: () => handleAddToCart(p._id || ""),
+                  quickView: () => console.log("Quick view:", p.name),
+                  addToWishlist: () => console.log("Wishlist:", p.name),
+                  compare: () => console.log("Compare:", p.name),
+                }}
+              />
             </div>
           ))}
         </div>

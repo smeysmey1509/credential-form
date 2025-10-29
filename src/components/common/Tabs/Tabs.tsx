@@ -1,8 +1,17 @@
 import React, { useState } from "react";
-import PrimaryButton from "../../Button/PrimaryButton/PrimaryButton";
 
-const Tabs = () => {
-  const [activeTab, setActiveTab] = useState("Key Features");
+interface TabsProp {
+  productDetails?: {
+    productName?: string;
+    productBrand?: string;
+    display?: string;
+    chipset?: string;
+    waterResistance?: string;
+  };
+}
+
+const Tabs: React.FC<TabsProp> = ({ productDetails }) => {
+  const [activeTab, setActiveTab] = useState("Product Details");
 
   const tabs = ["Product Details", "Key Features", "Additional Features"];
 
@@ -107,41 +116,43 @@ const Tabs = () => {
             <table className="w-full border-collapse">
               <tbody>
                 <tr className="border-b border-gray-200">
-                  <td className="w-[200px] px-4 py-3 text-sm font-semibold text-[#0A0A0A] bg-gray-50">
+                  <td className="w-[100px] px-4 py-3 text-sm font-semibold text-[#0A0A0A] bg-gray-50">
                     Brand
                   </td>
-                  <td className="px-4 py-3 text-sm text-gray-700">TechPro</td>
+                  <td className="px-4 py-3 text-sm text-gray-700">
+                    {productDetails?.productName || ""}
+                  </td>
                 </tr>
                 <tr className="border-b border-gray-200">
-                  <td className="w-1/5 px-4 py-3 text-sm font-semibold text-[#0A0A0A] bg-gray-50">
+                  <td className="w-1/4 px-4 py-3 text-sm font-semibold text-[#0A0A0A] bg-gray-50">
                     Model Name
                   </td>
                   <td className="px-4 py-3 text-sm text-gray-700">
-                    X15 Elite - 2024 Edition
+                    {productDetails?.productBrand || ""}
                   </td>
                 </tr>
                 <tr className="border-b border-gray-200">
-                  <td className="w-1/2 px-4 py-3 text-sm font-semibold text-[#0A0A0A] bg-gray-50">
+                  <td className="w-1/4 px-4 py-3 text-sm font-semibold text-[#0A0A0A] bg-gray-50">
                     Display
                   </td>
                   <td className="px-4 py-3 text-sm text-gray-700">
-                    15.6” 4K UHD Touchscreen
+                    {productDetails?.display}
                   </td>
                 </tr>
                 <tr className="border-b border-gray-200">
-                  <td className="w-1/2 px-4 py-3 text-sm font-semibold text-[#0A0A0A] bg-gray-50">
+                  <td className="w-1/4 px-4 py-3 text-sm font-semibold text-[#0A0A0A] bg-gray-50">
                     Processor
                   </td>
                   <td className="px-4 py-3 text-sm text-gray-700">
-                    Intel Core i7
+                    {productDetails?.chipset}
                   </td>
                 </tr>
                 <tr>
-                  <td className="w-1/2 px-4 py-3 text-sm font-semibold text-[#0A0A0A] bg-gray-50">
-                    Operating System
+                  <td className="w-1/4 px-4 py-3 text-sm font-semibold text-[#0A0A0A] bg-gray-50">
+                    Water Resistance
                   </td>
                   <td className="px-4 py-3 text-sm text-gray-700">
-                    Windows 10 Home
+                    {productDetails?.waterResistance || ""}
                   </td>
                 </tr>
               </tbody>

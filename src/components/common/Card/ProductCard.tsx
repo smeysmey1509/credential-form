@@ -52,7 +52,7 @@ export default function ProductCard({
         <div className="relative w-full h-full rounded bg-[#E9EAF7] transition-colors duration-300 ease-out group-hover/card:bg-[#DBDCF7]">
           {imgSrc ? (
             <img
-              src={`http://localhost:5002${imgSrc}`}
+              src={`${imgSrc}`}
               alt={product?.name}
               className="w-full h-[250px] object-contain"
             />
