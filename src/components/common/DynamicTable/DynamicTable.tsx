@@ -17,6 +17,7 @@ interface DynamicTableProps {
   columns: Column[];
   data: any[] | null;
   isEditMode?: boolean;
+  classname?: string;
   actions?: Record<
     string,
     {
@@ -34,6 +35,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
   data = [],
   isEditMode = false,
   actions = {},
+  classname,
   onEdit,
 }) => {
   const [localData, setLocalData] = useState<any[]>(data || []);
@@ -58,7 +60,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
   };
 
   return (
-    <div className="relative max-h-[400px] overflow-x-auto">
+    <div className={`relative h-fit overflow-x-auto ${classname}`}>
       <table className="min-w-full text-sm text-left">
         <thead className="sticky h-fit top-0 py-4 bg-white border-b border-b-[#ecf3fb]">
           <tr>

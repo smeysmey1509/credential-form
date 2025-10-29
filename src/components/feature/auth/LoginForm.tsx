@@ -26,10 +26,11 @@ const LoginForm = () => {
                 });
 
             const accessToken = response.data.accessToken;
+            const userName = response?.data?.user?.name
 
             if (accessToken) {
                 setCookie("accessToken", accessToken, 1);
-                localStorage.setItem("user", JSON.stringify(response.data.user));
+                // setCookie("name", userName, 1);
                 navigate("/dashboard");
             }
         } catch (err) {

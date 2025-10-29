@@ -94,7 +94,6 @@ const Products = () => {
     try {
       const responseAddToCart = await CartService.addToCart(productId);
       console.log("Add to cart response:", responseAddToCart);
-      navigate("/dashboard/product/cart");
     } catch (err) {
       console.log(err);
     }

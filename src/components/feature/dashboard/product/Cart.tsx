@@ -221,28 +221,30 @@ const Cart = () => {
   };
 
   return (
-    <div className="w-full h-full flex justify-between gap-6">
-      <div className="w-3/4 h-full flex flex-col bg-white dark:bg-[#19191C] shadow rounded-lg gap-2">
-        <h2 className="py-2 px-4">Cart Items</h2>
-        <DynamicTable
-          columns={columns}
-          data={cart}
-          actions={{
-            wishlist: {
-              // label: "Wishlist",
-              icon: <FaRegHeart />,
-              colorClass: "!p-2 bg-blue-500 text-white rounded cursor-pointer",
-              onClick: (row) => oWishlist(row),
-            },
-            delete: {
-              // label: "Delete",
-              icon: <FaRegTrashAlt />,
-              colorClass:
-                "!p-2 bg-pink-500 text-white rounded ml-1 cursor-pointer",
-              onClick: (row) => handleDeleteCart(row),
-            },
-          }}
-        />
+    <div className="w-full flex justify-between items-stretch gap-6 h-full">
+      <div className="w-3/4 flex flex-col bg-white dark:bg-[#19191C] shadow rounded-lg overflow-hidden">
+        <h2 className="p-4 text-[15.2px] text-[#212B37] font-sans font-semibold">Cart Items</h2>
+        <div className="flex-grow overflow-hidden">
+          <DynamicTable
+            classname="!max-h-[600px] !overflow-y-auto"
+            columns={columns}
+            data={cart}
+            actions={{
+              wishlist: {
+                icon: <FaRegHeart />,
+                colorClass:
+                  "!p-2 bg-blue-500 text-white rounded cursor-pointer",
+                onClick: (row) => handleAddToWishlist(row),
+              },
+              delete: {
+                icon: <FaRegTrashAlt />,
+                colorClass:
+                  "!p-2 bg-pink-500 text-white rounded ml-1 cursor-pointer",
+                onClick: (row) => handleDeleteCart(row),
+              },
+            }}
+          />
+        </div>
       </div>
 
       <div className="flex-none basis-auto w-1/4 h-full flex-col bg-white dark:bg-[#19191C] shadow rounded-lg p-4 gap-8">

@@ -75,8 +75,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isSidebarOpen }) => {
   return (
     <div
       className={`fixed ${
-        isSidebarOpen ? "left-[-15%]" : "left-0"
-      } w-[15%] bg-[#202947] dark:bg-[#19191C] text-white h-full border-[rgba(255, 255, 255, 0.1)] shadow-custom transition-all duration-300 ease-in-out overflow-hidden`}
+        isSidebarOpen ? "left-[-13%]" : "left-0"
+      } w-[13%] bg-[#202947] dark:bg-[#19191C] text-white h-full border-[rgba(255, 255, 255, 0.1)] shadow-custom transition-all duration-300 ease-in-out overflow-hidden`}
     >
       <div className="w-full h-[4.6rem] flex items-center justify-center pt-3.5 pb-3.5 pl-4 pr-4">
         Ur Logo Here
