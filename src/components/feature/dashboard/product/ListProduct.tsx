@@ -34,6 +34,15 @@ interface FormattedProduct {
   published: string;
 }
 
+type SortKey = "" | "price_asc" | "price_desc" | "sort_by" | "most_relevant";
+
+const LABEL_TO_SORT: Record<string, SortKey> = {
+  "Price Low to High": "price_asc",
+  "Price High to Low": "price_desc",
+  "Sort By": "sort_by",
+  "Most Relevant": "most_relevant",
+};
+
 const ListProduct: React.FC = () => {
   const [products, setProducts] = useState<FormattedProduct[]>([]);
   const [selectedProductIds, setSelectedProductIds] = useState<string[]>([]);
@@ -42,11 +51,14 @@ const ListProduct: React.FC = () => {
   const [itemsPerPage, setItemsPerPage] = useState<number>(10);
   const [totalPerPage, setTotalPerPage] = useState<number>(10);
   const [page, setPage] = useState<number>(0);
+  const [hasNextPage, setHasNextPage] = useState<boolean>(false);
+  const [hasPrevPage, setHasPrevPage] = useState<boolean>(false);
   const [changeStatus, setChangeStatus] = useState<boolean>(true);
   const [selectionToolbar, setSelectionToolbar] = useState<boolean>(false);
   const [searchInput, setSearchInput] = useState({
     query: "",
   });
+  const [filter, setFilter] = useState<string>("");
 
   const [debouncedQuery, setDebouncedQuery] = useState<string>("");
   const debounceTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -149,19 +161,92 @@ const ListProduct: React.FC = () => {
   const handleFetchProducts = useCallback(async (): Promise<void> => {
     try {
       const res = await ProductService.getProduct(currentPage, itemsPerPage);
-      const { products, pagination } = res?.data;
+      const { products = [], pagination } = res?.data ?? {};
 
       const formattedData = formatProducts(products);
 
       setProducts(formattedData);
-      setTotalItems(pagination.total ?? 0);
-      setItemsPerPage(pagination?.perPage ?? 10);
-      setPage(pagination?.page ?? 1);
-      setTotalPerPage(pagination?.totalPages ?? 1);
+      setTotalItems(pagination?.total ?? products.length ?? 0);
+      setItemsPerPage((prev) =>
+        pagination?.perPage && pagination.perPage > 0
+          ? pagination.perPage
+          : prev
+      );
+      const resolvedPage =
+        pagination?.page && pagination.page > 0 ? pagination.page : currentPage;
+      setPage(resolvedPage);
+      if (resolvedPage !== currentPage) {
+        setCurrentPage(resolvedPage);
+      }
+      setTotalPerPage(
+        pagination?.totalPages && pagination.totalPages > 0
+          ? pagination.totalPages
+          : 1
+      );
+      setHasNextPage(
+        typeof pagination?.hasNextPage === "boolean"
+          ? pagination.hasNextPage
+          : resolvedPage < (pagination?.totalPages ?? resolvedPage)
+      );
+      setHasPrevPage(
+        typeof pagination?.hasPrevPage === "boolean"
+          ? pagination.hasPrevPage
+          : resolvedPage > 1
+      );
     } catch (e) {
       console.error("Failed to fetch products:", e);
+      setHasNextPage(false);
+      setHasPrevPage(false);
     }
-  }, [currentPage, itemsPerPage, formatProducts]);
+  }, [currentPage, formatProducts, itemsPerPage]);
+
+  const handleFilterProduct = async (filterType: string) => {
+    try {
+      const filterResponse = await ProductService?.filterProduct(
+        filterType,
+        currentPage,
+        itemsPerPage
+      );
+
+      const { products = [], pagination } = filterResponse?.data ?? {};
+
+      const formattedData = formatProducts(products);
+
+      setProducts(formattedData);
+      setTotalItems(pagination?.total ?? products?.length ?? 0);
+      setItemsPerPage((prev) =>
+        pagination?.perPage && pagination?.perPage > 0
+          ? pagination?.perPage
+          : prev
+      );
+      const resolvedPage =
+        pagination?.page && pagination.page > 0 ? pagination.page : currentPage;
+      setPage(resolvedPage);
+      if (resolvedPage !== currentPage) {
+        setCurrentPage(resolvedPage);
+      }
+      setTotalPerPage(
+        pagination?.totalPages && pagination.totalPages > 0
+          ? pagination.totalPages
+          : 1
+      );
+      setHasNextPage(
+        typeof pagination?.hasNextPage === "boolean"
+          ? pagination.hasNextPage
+          : resolvedPage < (pagination?.totalPages ?? resolvedPage)
+      );
+      setHasPrevPage(
+        typeof pagination?.hasPrevPage === "boolean"
+          ? pagination.hasPrevPage
+          : resolvedPage > 1
+      );
+      console.log("filter", formattedData);
+    } catch (err) {
+      console.log("err", err);
+      setHasNextPage(false);
+      setHasPrevPage(false);
+    }
+  };
 
   const fetchSearchResults = useCallback(
     async (query: string, pageToFetch = 1): Promise<void> => {
@@ -174,21 +259,16 @@ const ListProduct: React.FC = () => {
           itemsPerPage
         );
 
-        const { results = [], pagination, total } = res?.data ?? {};
+        const { products = [], pagination } = res?.data ?? {};
 
         if (latestSearchRef.current !== query) {
           return;
         }
 
-        const formattedProducts = formatProducts(results);
+        const formattedProducts = formatProducts(products);
 
         setProducts(formattedProducts);
-        setTotalItems(
-          (typeof total === "number" ? total : undefined) ??
-            pagination?.total ??
-            results.length ??
-            0
-        );
+        setTotalItems(pagination?.total ?? products.length ?? 0);
         setItemsPerPage((prev) =>
           pagination?.perPage && pagination.perPage > 0
             ? pagination.perPage
@@ -200,25 +280,50 @@ const ListProduct: React.FC = () => {
             ? pagination.page
             : pageToFetch;
 
-        setCurrentPage(resolvedPage);
+        if (resolvedPage !== currentPage) {
+          setCurrentPage(resolvedPage);
+        }
         setPage(resolvedPage);
         setTotalPerPage(
           pagination?.totalPages && pagination.totalPages > 0
             ? pagination.totalPages
             : 1
         );
+        setHasNextPage(
+          typeof pagination?.hasNextPage === "boolean"
+            ? pagination.hasNextPage
+            : resolvedPage < (pagination?.totalPages ?? resolvedPage)
+        );
+        setHasPrevPage(
+          typeof pagination?.hasPrevPage === "boolean"
+            ? pagination.hasPrevPage
+            : resolvedPage > 1
+        );
       } catch (err) {
         console.error("Search failed:", err);
+        setHasNextPage(false);
+        setHasPrevPage(false);
       }
     },
-    [formatProducts, itemsPerPage]
+    [currentPage, formatProducts, itemsPerPage]
   );
+
+  const handleSortChange = (label: string) => {
+    const key = LABEL_TO_SORT[label] ?? "";
+    setFilter(key);
+  };
 
   useEffect(() => {
     if (!searchInput.query.trim()) {
       handleFetchProducts();
     }
   }, [searchInput.query, handleFetchProducts]);
+
+  useEffect(() => {
+    if (filter) {
+      handleFilterProduct(filter);
+    }
+  }, []);
 
   useEffect(() => {
     if (!debouncedQuery) {
@@ -384,6 +489,8 @@ const ListProduct: React.FC = () => {
       setDebouncedQuery("");
       setCurrentPage(1);
       setPage(1);
+      setHasNextPage(false);
+      setHasPrevPage(false);
       return;
     }
 
@@ -414,6 +521,10 @@ const ListProduct: React.FC = () => {
     setChangeStatus((prevState) => !prevState);
   };
 
+  const startItem = totalItems === 0 ? 0 : (currentPage - 1) * itemsPerPage + 1;
+  const endItem =
+    totalItems === 0 ? 0 : Math.min(currentPage * itemsPerPage, totalItems);
+
   const handleDeleteMultipleProducts = async () => {
     try {
       if (selectedProductIds.length === 0) return;
@@ -436,6 +547,8 @@ const ListProduct: React.FC = () => {
     }
   };
 
+  console.log('product', products)
+
   return (
     <div className="w-full h-full bg-white dark:bg-[#19191C] shadow rounded-lg p-6">
       <div className="flex gap-3">
@@ -446,7 +559,7 @@ const ListProduct: React.FC = () => {
           onChange={handleFoundProduct}
           value={searchInput.query}
         />
-        <SelectionFilter classname="" />
+        <SelectionFilter onSortChange={handleSortChange} />
       </div>
       <div className={"w-full h-[600px] overflow-x-auto mt-5"}>
         <DynamicTable
@@ -477,8 +590,7 @@ const ListProduct: React.FC = () => {
         <span className="text-sm font-normal text-gray-500 dark:text-[#fff] mb-4 md:mb-0 block w-full md:inline md:w-auto">
           Showing{" "}
           <span className="font-semibold text-gray-900 dark:text-white">
-            {(currentPage - 1) * itemsPerPage + 1} -{" "}
-            {Math.min(currentPage * itemsPerPage, totalItems)}
+            {startItem} - {endItem}
           </span>{" "}
           of{" "}
           <span className="font-semibold text-gray-900 dark:text-white">
@@ -488,8 +600,10 @@ const ListProduct: React.FC = () => {
         <ul className="inline-flex -space-x-px rtl:space-x-reverse text-sm h-8">
           <li>
             <button
-              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-              disabled={currentPage === 1}
+              onClick={() =>
+                setCurrentPage((prev) => (prev > 1 ? prev - 1 : prev))
+              }
+              disabled={!hasPrevPage}
               className="flex items-center justify-center px-3 h-8 ms-0 leading-tight cursor-pointer text-gray-500 bg-white border border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 disabled:opacity-50 dark:bg-[#19191C] dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
             >
               Previous
@@ -528,9 +642,11 @@ const ListProduct: React.FC = () => {
           <li>
             <button
               onClick={() =>
-                setCurrentPage((prev) => Math.min(prev + 1, totalPerPage))
+                setCurrentPage((prev) =>
+                  prev < totalPerPage ? prev + 1 : prev
+                )
               }
-              disabled={currentPage === totalPerPage}
+              disabled={!hasNextPage}
               className="flex items-center justify-center px-3 h-8 leading-tight cursor-pointer text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 disabled:opacity-50 dark:bg-[#19191C] dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
             >
               Next

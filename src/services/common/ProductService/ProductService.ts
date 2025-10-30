@@ -9,12 +9,11 @@ import {
 import { AxiosResponse } from "axios";
 
 const ProductService = {
-  getAllProducts: () =>
-    axiosClient.get<Product[]>(
-      "/product"
-    ),
+  getAllProducts: () => axiosClient.get<Product[]>("/product"),
   getProduct: (page = 1, limit = 10) =>
-    axiosClient.get<ProductListResponse>(`/products?page=${page}&limit=${limit}`),
+    axiosClient.get<ProductListResponse>(
+      `/products?page=${page}&limit=${limit}`
+    ),
   getProductById: (id: string): Promise<AxiosResponse<Product>> =>
     axiosClient.get<Product>(`/product/${id}`),
   recommendationsProduct: (id: string): Promise<AxiosResponse<Product>> =>
@@ -65,6 +64,10 @@ const ProductService = {
   sortByCategory: (categoryId: string[]) =>
     axiosClient.get<ProductVariant[] | Product[] | Inventory[] | Dimensions[]>(
       `/products?category=${categoryId}`
+    ),
+  filterProduct: (filterType: string, page = 1, limit = 10) =>
+    axiosClient.get<ProductListResponse>(
+      `/products?sort=${filterType}page=${page}&limit=${limit}`
     ),
 };
 
