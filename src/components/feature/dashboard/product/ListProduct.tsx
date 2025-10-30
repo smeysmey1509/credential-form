@@ -200,53 +200,58 @@ const ListProduct: React.FC = () => {
     }
   }, [currentPage, formatProducts, itemsPerPage]);
 
-  const handleFilterProduct = async (filterType: string) => {
-    try {
-      const filterResponse = await ProductService?.filterProduct(
-        filterType,
-        currentPage,
-        itemsPerPage
-      );
+  const handleFilterProduct = useCallback(
+    async (filterType: string) => {
+      try {
+        const filterResponse = await ProductService?.filterProduct(
+          filterType,
+          currentPage,
+          itemsPerPage
+        );
 
-      const { products = [], pagination } = filterResponse?.data ?? {};
+        const { products = [], pagination } = filterResponse?.data ?? {};
 
-      const formattedData = formatProducts(products);
+        const formattedData = formatProducts(products);
 
-      setProducts(formattedData);
-      setTotalItems(pagination?.total ?? products?.length ?? 0);
-      setItemsPerPage((prev) =>
-        pagination?.perPage && pagination?.perPage > 0
-          ? pagination?.perPage
-          : prev
-      );
-      const resolvedPage =
-        pagination?.page && pagination.page > 0 ? pagination.page : currentPage;
-      setPage(resolvedPage);
-      if (resolvedPage !== currentPage) {
-        setCurrentPage(resolvedPage);
+        setProducts(formattedData);
+        setTotalItems(pagination?.total ?? products?.length ?? 0);
+        setItemsPerPage((prev) =>
+          pagination?.perPage && pagination?.perPage > 0
+            ? pagination?.perPage
+            : prev
+        );
+        const resolvedPage =
+          pagination?.page && pagination.page > 0
+            ? pagination.page
+            : currentPage;
+        setPage(resolvedPage);
+        if (resolvedPage !== currentPage) {
+          setCurrentPage(resolvedPage);
+        }
+        setTotalPerPage(
+          pagination?.totalPages && pagination.totalPages > 0
+            ? pagination.totalPages
+            : 1
+        );
+        setHasNextPage(
+          typeof pagination?.hasNextPage === "boolean"
+            ? pagination.hasNextPage
+            : resolvedPage < (pagination?.totalPages ?? resolvedPage)
+        );
+        setHasPrevPage(
+          typeof pagination?.hasPrevPage === "boolean"
+            ? pagination.hasPrevPage
+            : resolvedPage > 1
+        );
+        console.log("filter", formattedData);
+      } catch (err) {
+        console.log("err", err);
+        setHasNextPage(false);
+        setHasPrevPage(false);
       }
-      setTotalPerPage(
-        pagination?.totalPages && pagination.totalPages > 0
-          ? pagination.totalPages
-          : 1
-      );
-      setHasNextPage(
-        typeof pagination?.hasNextPage === "boolean"
-          ? pagination.hasNextPage
-          : resolvedPage < (pagination?.totalPages ?? resolvedPage)
-      );
-      setHasPrevPage(
-        typeof pagination?.hasPrevPage === "boolean"
-          ? pagination.hasPrevPage
-          : resolvedPage > 1
-      );
-      console.log("filter", formattedData);
-    } catch (err) {
-      console.log("err", err);
-      setHasNextPage(false);
-      setHasPrevPage(false);
-    }
-  };
+    },
+    [currentPage, formatProducts, itemsPerPage]
+  );
 
   const fetchSearchResults = useCallback(
     async (query: string, pageToFetch = 1): Promise<void> => {
@@ -323,7 +328,7 @@ const ListProduct: React.FC = () => {
     if (filter) {
       handleFilterProduct(filter);
     }
-  }, []);
+  }, [filter, handleFilterProduct]);
 
   useEffect(() => {
     if (!debouncedQuery) {
@@ -547,7 +552,7 @@ const ListProduct: React.FC = () => {
     }
   };
 
-  console.log('product', products)
+  console.log("product", products);
 
   return (
     <div className="w-full h-full bg-white dark:bg-[#19191C] shadow rounded-lg p-6">
