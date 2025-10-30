@@ -11,31 +11,48 @@ import { OptionType } from "../../../common/SelectItemField/SelectItemField";
 import ProductService from "../../../../services/common/ProductService/ProductService";
 import RichTextEditor from "../../../common/RichTextEditor/RichTextEditor";
 import PrimaryButton from "../../../Button/PrimaryButton/PrimaryButton";
+import { CategoryType } from "../../../../types/Category";
+import ButtonWithEmoji from "../../../Button/ButtonWithEmoji/ButtonWithEmoji";
+import Varaint from "../../../common/Varaint/Varaint";
+import { usePopup } from "../../../../context/PopupContext";
+import { BrandType } from "../../../../types/BrandType";
 
 const CreateProduct = () => {
   const [name, setName] = useState<string>("");
   const [description, setDescription] = useState<string>("");
-  const [price, setPrice] = useState<number>(0);
+  const [actualPrice, setActualPrice] = useState<number>(0);
   const [stock, setStock] = useState<number>(0);
   const [status, setStatus] = useState<string>("Published");
-  const [categories, setCategories] = useState<OptionType[]>([]);
+  const [categoryOptions, setCategoryOptions] = useState<OptionType[]>([]);
   const [selectedCategoryId, setSelectedCategoryId] = useState<string>("");
+  const [brandOptions, setBrandOptions] = useState<OptionType[]>([]);
+  const [selectedBrandId, setSelectedBrandId] = useState<string>("");
+  const [currency, setCurrency] = useState<string>("");
+  const [cost, setCost] = useState<string>("");
+  const [productType, setProductType] = useState<string>("");
+  const [weight, setWeight] = useState<string>("");
   const [tag, setTag] = useState<string[]>([]);
+  const [publishDate, setPublishDate] = useState<string>("");
+  const [publishTime, setPublishTime] = useState<string>("");
+  const [stockAvailability, setStockAvailability] = useState<string>("");
   const [images, setImages] = useState<File[]>([]);
+
+  const { showPopup, hidePopup } = usePopup();
 
   useEffect(() => {
     fetchCategories();
+    fetchBrands();
   }, []);
 
   const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     if (value === "") {
-      setPrice(0);
+      setActualPrice(0);
       return;
     }
     const parsed = Number(value);
     if (!isNaN(parsed)) {
-      setPrice(parsed);
+      setActualPrice(parsed);
     }
   };
 
@@ -52,12 +69,27 @@ const CreateProduct = () => {
 
   const fetchCategories = async () => {
     try {
-      const response = await axiosClient.get("/category"); // adjust API endpoint if needed
-      const categoryOptions = response.data.map((cat: any) => ({
-        value: cat._id,
-        label: cat.name,
+      const response = await axiosClient.get("/categories");
+      const mappedOptions = response.data.categories.map(
+        (cat: CategoryType) => ({
+          value: cat._id ?? "",
+          label: cat.categoryName ?? "Unnamed",
+        })
+      );
+      setCategoryOptions(mappedOptions);
+    } catch (error) {
+      console.error("Failed to fetch categories:", error);
+    }
+  };
+
+  const fetchBrands = async () => {
+    try {
+      const response = await axiosClient.get("/brands");
+      const mappedOptions = response?.data?.brands?.map((b: BrandType) => ({
+        value: b?._id ?? "",
+        label: b.name ?? "Unnamed",
       }));
-      setCategories(categoryOptions);
+      setBrandOptions(mappedOptions);
     } catch (error) {
       console.error("Failed to fetch categories:", error);
     }
@@ -70,10 +102,20 @@ const CreateProduct = () => {
       const formData = new FormData();
       formData.append("name", name);
       formData.append("description", description);
-      formData.append("price", price.toString());
+      formData.append("price", actualPrice.toString());
       formData.append("stock", stock.toString());
       formData.append("category", selectedCategoryId);
       formData.append("status", status);
+      formData.append("publishDate", publishDate);
+      formData.append("publishTime", publishTime);
+      formData.append("cost", cost);
+      formData.append("brand", selectedBrandId);
+      formData.append("category", selectedCategoryId);
+      formData.append("currency", currency);
+      formData.append("stockAvailability", stockAvailability);
+      formData.append("weight", weight);
+      formData.append("productType", productType);
+      formData.append("seller", "685ab59e33f273e409dc3eac")
 
       tag.forEach((t) => formData.append("tag", t));
 
@@ -88,6 +130,9 @@ const CreateProduct = () => {
     }
   };
 
+  console.log('selectedBrandId', selectedBrandId);
+  console.log('selectedCategoryId', selectedCategoryId);
+
   return (
     <div className="w-full h-full bg-white dark:bg-[#19191C] shadow rounded-lg p-6">
       <form onSubmit={handleSubmit} method="POST">
@@ -100,26 +145,32 @@ const CreateProduct = () => {
                 helperText="*Product Name should not exceed 30 characters"
                 value={name}
                 onChange={(event) => setName(event.target.value)}
+                required
               />
             </div>
             <div className="row-start-2 row-end-3 col-start-1 col-end-2">
-              <SelectItemField
-                label="Size"
-                options={["Large", "Medium", "Small", "Extra Small"]}
-                placeholder="Select size"
+              <FormField
+                label="Enter Cost"
+                placeholder="Cost"
+                value={cost}
+                helperText="*Mention final price Of the product"
+                required
+                onChange={(event) => setCost(event.target.value)}
               />
             </div>
             <div className="row-start-2 row-end-3 col-start-2 col-end-3">
               <SelectItemField
                 label="Brand"
-                options={["Gucci", "IPhone", "Samsung", "Extra Small"]}
-                placeholder="Select size"
+                options={brandOptions}
+                placeholder="Select Brand"
+                value={selectedBrandId}
+                onChange={(val) => setSelectedBrandId(val)}
               />
             </div>
             <div className="row-start-3 row-end-4 col-start-1 col-end-2">
               <SelectItemField
                 label="Category"
-                options={categories}
+                options={categoryOptions}
                 value={selectedCategoryId}
                 onChange={(val) => setSelectedCategoryId(val)}
                 placeholder="Select Category"
@@ -127,23 +178,18 @@ const CreateProduct = () => {
             </div>
             <div className="row-start-3 row-end-4 col-start-2 col-end-3">
               <SelectItemField
-                label="Gender"
-                options={["Male", "Female", "Gay", "ByeBye"]}
+                label="Currency"
+                options={["USD", "RIEL", "YUAN", "EURO"]}
                 placeholder="Select size"
+                value={currency}
+                onChange={(val) => setCurrency(val)}
               />
             </div>
-            <div className="row-start-4 row-end-5 col-start-1 col-end-2">
-              <MultiSelect
-                options={["Black", "Blue", "Green", "Yellow", "Red", "White"]}
-                placeholder="Select Color"
-                label="Color"
-              />
-            </div>
-            <div className="row-start-4 row-end-5 col-start-2 col-end-3">
-              <FormField
-                label="Enter Cost"
-                placeholder="Cost"
-                helperText="*Mention final price of the product"
+            <div className="row-start-4 row-end-5 col-start-1 col-end-3">
+              <ButtonWithEmoji
+                label="Add Varaints"
+                btnClass="!w-full !bg-[rgba(92,103,247,0.1)] !border !border-transparent !text-[rgba(92,103,247)] !font-semibold !px-[6px] !py-[6px] !rounded hover:!bg-[rgba(92,103,247)] hover:!text-white hover:!border hover:!border-[rgba(92,103,247)] transition-all duration-300"
+                onClick={() => showPopup(<Varaint onClose={hidePopup} />)}
               />
             </div>
             <div className="row-start-5 row-end-6 col-start-1 col-end-3 ">
@@ -155,10 +201,20 @@ const CreateProduct = () => {
               />
             </div>
             <div className="row-start-6 row-end-7 col-start-1 col-end-2">
-              <FormField label="Product Type" placeholder="Type" />
+              <FormField
+                label="Product Type"
+                placeholder="Type"
+                value={productType}
+                onChange={(val) => setProductType(val.target.value)}
+              />
             </div>
             <div className="row-start-6 row-end-7 col-start-2 col-end-3">
-              <FormField label="Item Weight" placeholder="Weight in gms" />
+              <FormField
+                label="Item Weight"
+                placeholder="Weight in gms"
+                value={weight}
+                onChange={(e) => setWeight(e.target.value)}
+              />
             </div>
             <div className="row-start-7 row-end-8 col-start-1 col-end-3">
               <ProductImageInput
@@ -172,21 +228,23 @@ const CreateProduct = () => {
                 label="Availability"
                 options={["Stock", "Out Of Stock"]}
                 placeholder="Select"
+                value={stockAvailability}
+                onChange={(val) => setStockAvailability(val)}
               />
             </div>
           </div>
           <div className="w-1/2 h-full grid grid-cols-6 gap-x-6 gap-y-4">
             <div className="col-span-6 row-span-3">
-              <RichTextEditor />
+              <RichTextEditor label="Product Feature" />
             </div>
             <div className="col-span-6 row-start-4">
               <ProductImageInput label="Warranty Documents:" />
             </div>
             <div className="col-span-2 row-start-5">
               <FormField
-                label="Price"
-                placeholder="Enter price"
-                value={price}
+                label="Actual Price"
+                placeholder="Actual Price"
+                value={actualPrice}
                 onChange={handlePriceChange}
                 type="number"
               />
@@ -204,10 +262,18 @@ const CreateProduct = () => {
               <FormField label="Discount" placeholder="Discount" />
             </div>
             <div className="col-span-3 row-start-6">
-              <PublishDateInput />
+              <PublishDateInput
+                label="Publish Date"
+                value={publishDate}
+                onChange={(val) => setPublishDate(val.target.value)}
+              />
             </div>
             <div className="col-span-3 col-start-4 row-start-6">
-              <PublishDateTimeInput label="Publish Date" />
+              <PublishDateTimeInput
+                label="Publish Time"
+                value={publishTime}
+                onChange={(val) => setPublishTime(val.target.value)}
+              />
             </div>
             <div className="col-span-6 row-start-7">
               <SelectItemField

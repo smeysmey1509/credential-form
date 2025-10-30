@@ -13,6 +13,6 @@ export interface BrandStats {
     brands?: BrandType[];
     total?: number;
     page?: number;
-    pageSize?: number;
+    perPage?: number;
     totalPages?: number;
 }

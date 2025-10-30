@@ -36,7 +36,7 @@ const ProductImageInput: React.FC<ProductImageInputProps> = ({label, onChange, v
 
     return (
         <div className="w-full flex flex-col gap-2">
-            <label className="text-[14px] font-medium text-[#212b37] dark:text-white">
+            <label className="text-[14px] font-bold text-[#212b37] dark:text-white">
                 {label}
             </label>
 

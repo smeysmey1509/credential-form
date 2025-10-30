@@ -24,7 +24,7 @@ import SelectionFilter from "../../../common/SelectionFilter/SelectionFilter";
 
 interface FormattedProduct {
   _id?: string;
-  check: ReactNode;
+  check?: ReactNode;
   product: { _id: string; name: string; image: string };
   category: string;
   price?: number | string;
@@ -58,13 +58,27 @@ const ListProduct: React.FC = () => {
   const [searchInput, setSearchInput] = useState({
     query: "",
   });
-  const [filter, setFilter] = useState<string>("");
+  const [sort, setSort] = useState<string>("");
 
   const [debouncedQuery, setDebouncedQuery] = useState<string>("");
   const debounceTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
   const latestSearchRef = useRef<string>("");
 
   const navigate = useNavigate();
+
+  const handleSelectProduct = (productId: string) => {
+    setSelectedProductIds((prevSelected) => {
+      if (prevSelected.includes(productId)) {
+        const updated = prevSelected.filter((id) => id !== productId);
+        setSelectionToolbar(updated.length > 0);
+        return updated;
+      } else {
+        const updated = [...prevSelected, productId];
+        setSelectionToolbar(true);
+        return updated;
+      }
+    });
+  };
 
   useEffect(() => {
     const handleCreated = (newProduct: Product) => {
@@ -136,7 +150,7 @@ const ListProduct: React.FC = () => {
 
         return {
           _id: p._id ?? "",
-          check: <CheckBox />,
+          // check: <CheckBox />,
           product: {
             _id: p?._id ?? "",
             name: p.name,
@@ -200,59 +214,6 @@ const ListProduct: React.FC = () => {
     }
   }, [currentPage, formatProducts, itemsPerPage]);
 
-  const handleFilterProduct = useCallback(
-    async (filterType: string) => {
-      try {
-        const filterResponse = await ProductService?.filterProduct(
-          filterType,
-          currentPage,
-          itemsPerPage
-        );
-
-        const { products = [], pagination } = filterResponse?.data ?? {};
-
-        const formattedData = formatProducts(products);
-
-        setProducts(formattedData);
-        setTotalItems(pagination?.total ?? products?.length ?? 0);
-        setItemsPerPage((prev) =>
-          pagination?.perPage && pagination?.perPage > 0
-            ? pagination?.perPage
-            : prev
-        );
-        const resolvedPage =
-          pagination?.page && pagination.page > 0
-            ? pagination.page
-            : currentPage;
-        setPage(resolvedPage);
-        if (resolvedPage !== currentPage) {
-          setCurrentPage(resolvedPage);
-        }
-        setTotalPerPage(
-          pagination?.totalPages && pagination.totalPages > 0
-            ? pagination.totalPages
-            : 1
-        );
-        setHasNextPage(
-          typeof pagination?.hasNextPage === "boolean"
-            ? pagination.hasNextPage
-            : resolvedPage < (pagination?.totalPages ?? resolvedPage)
-        );
-        setHasPrevPage(
-          typeof pagination?.hasPrevPage === "boolean"
-            ? pagination.hasPrevPage
-            : resolvedPage > 1
-        );
-        console.log("filter", formattedData);
-      } catch (err) {
-        console.log("err", err);
-        setHasNextPage(false);
-        setHasPrevPage(false);
-      }
-    },
-    [currentPage, formatProducts, itemsPerPage]
-  );
-
   const fetchSearchResults = useCallback(
     async (query: string, pageToFetch = 1): Promise<void> => {
       if (!query) return;
@@ -313,9 +274,37 @@ const ListProduct: React.FC = () => {
     [currentPage, formatProducts, itemsPerPage]
   );
 
+  const handleFilterProductsAdvanced = useCallback(async () => {
+    try {
+      const params = {
+        search: searchInput.query || undefined,
+        sort: sort || undefined,
+        page: currentPage,
+        limit: itemsPerPage,
+        // You can later extend here with priceMin, priceMax, categories...
+      };
+
+      const res = await ProductService.filterProducts(params);
+      const { products = [], pagination } = res?.data ?? {};
+
+      const formattedData = formatProducts(products);
+      setProducts(formattedData);
+
+      setTotalItems(pagination?.total ?? products.length ?? 0);
+      setItemsPerPage(pagination?.perPage ?? itemsPerPage);
+      setTotalPerPage(pagination?.totalPages ?? 1);
+      setHasNextPage(pagination?.hasNextPage ?? false);
+      setHasPrevPage(pagination?.hasPrevPage ?? false);
+    } catch (err) {
+      console.error("Failed to load filtered products:", err);
+      setHasNextPage(false);
+      setHasPrevPage(false);
+    }
+  }, [searchInput.query, sort, currentPage, itemsPerPage, formatProducts]);
+
   const handleSortChange = (label: string) => {
     const key = LABEL_TO_SORT[label] ?? "";
-    setFilter(key);
+    setSort(key);
   };
 
   useEffect(() => {
@@ -325,10 +314,8 @@ const ListProduct: React.FC = () => {
   }, [searchInput.query, handleFetchProducts]);
 
   useEffect(() => {
-    if (filter) {
-      handleFilterProduct(filter);
-    }
-  }, [filter, handleFilterProduct]);
+    handleFilterProductsAdvanced();
+  }, [debouncedQuery, sort, currentPage, handleFilterProductsAdvanced]);
 
   useEffect(() => {
     if (!debouncedQuery) {
@@ -340,13 +327,37 @@ const ListProduct: React.FC = () => {
     fetchSearchResults(debouncedQuery, currentPage);
   }, [debouncedQuery, currentPage, fetchSearchResults]);
 
+  const handleSelectAll = () => {
+    if (selectedProductIds.length === products.length) {
+      setSelectedProductIds([]);
+      setSelectionToolbar(false);
+    } else {
+      const allIds = products.map((p) => p._id || "");
+      setSelectedProductIds(allIds);
+      setSelectionToolbar(allIds.length > 0);
+    }
+  };
+
   const columns = [
     {
-      header: <CheckBox />,
+      header: (
+        <CheckBox
+          checked={
+            products.length > 0 && selectedProductIds.length === products.length
+          }
+          onChange={handleSelectAll}
+        />
+      ),
       accessor: "check",
       width: "2%",
       color: "!font-semibold",
       bodyColor: "!text-[13px] !text-[#212b37] !font-medium",
+      render: (_: any, row: FormattedProduct) => (
+        <CheckBox
+          checked={selectedProductIds.includes(row._id || "")}
+          onChange={() => handleSelectProduct(row._id || "")}
+        />
+      ),
     },
     {
       header: "Product",
@@ -552,8 +563,6 @@ const ListProduct: React.FC = () => {
     }
   };
 
-  console.log("product", products);
-
   return (
     <div className="w-full h-full bg-white dark:bg-[#19191C] shadow rounded-lg p-6">
       <div className="flex gap-3">
@@ -662,7 +671,7 @@ const ListProduct: React.FC = () => {
       <AnimatePresence>
         {selectionToolbar && (
           <motion.div
-            className="w-fit h-fit fixed bottom-0 left-[50%] transform -translate-x-[25%] -translate-y-1/2 z-50 flex items-center justify-center bg-white dark:bg-[#19191C] shadow-[0px_0px_4px_0px_rgba(0,_0,_0,_0.15)] dark:shadow-[0px_0px_4px_0px_rgba(0,_0,_0,_0.35)] rounded-lg"
+            className="w-fit h-fit fixed bottom-2 left-[50%] transform -translate-x-[25%] -translate-y-1/2 z-50 flex items-center justify-center bg-white dark:bg-[#19191C] shadow-[0px_0px_4px_0px_rgba(0,_0,_0,_0.15)] dark:shadow-[0px_0px_4px_0px_rgba(0,_0,_0,_0.35)] rounded-lg"
             initial="hidden"
             animate="visible"
             exit="exit"

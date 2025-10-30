@@ -9,6 +9,7 @@ interface FormInputProps {
   type?: "text" | "number";
   className?: string;
   helperTextClass?: string;
+  required?: boolean;
 }
 
 const FormInput: React.FC<FormInputProps> = ({
@@ -19,7 +20,8 @@ const FormInput: React.FC<FormInputProps> = ({
   onChange,
   type = "text",
   className = "",
-  helperTextClass
+  helperTextClass,
+  required
 }) => {
   const inputBaseClasses = `
     appearance-none border mt-2 rounded bg-white
@@ -35,8 +37,8 @@ const FormInput: React.FC<FormInputProps> = ({
   return (
     <div className="flex flex-col w-full">
       {label && (
-        <label className="text-[14px] font-medium text-[#212b37] dark:text-white">
-          {label}
+        <label className="text-[14px] font-bold text-[#212b37] dark:text-white">
+          {label} {required && <span className="text-red-500">*</span>}
         </label>
       )}
       <input
@@ -45,6 +47,7 @@ const FormInput: React.FC<FormInputProps> = ({
         value={value}
         onChange={onChange}
         className={`${inputBaseClasses} ${className}`}
+        required={required}
       />
       {helperText && (
         <label className={`text-[0.75rem] font-medium text-[#6e829f] mt-1 ${helperTextClass}`}>

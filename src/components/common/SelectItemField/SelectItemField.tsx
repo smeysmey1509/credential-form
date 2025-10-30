@@ -23,7 +23,9 @@ const CustomSelect: React.FC<CustomSelectProps> = ({
 }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [searchTerm, setSearchTerm] = useState<string>("");
+  const [openUpward, setOpenUpward] = useState<boolean>(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const normalizedOptions: OptionType[] = options.map((opt) =>
     typeof opt === "string" ? { label: opt, value: opt } : opt
@@ -39,10 +41,19 @@ const CustomSelect: React.FC<CustomSelectProps> = ({
         setSearchTerm("");
       }
     };
-
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  // ✅ Smart positioning: detect if dropdown would overflow window
+  useEffect(() => {
+    if (isOpen && containerRef.current) {
+      const rect = containerRef.current.getBoundingClientRect();
+      const spaceBelow = window.innerHeight - rect.bottom;
+      const dropdownHeight = 240; // approximate max dropdown height
+      setOpenUpward(spaceBelow < dropdownHeight);
+    }
+  }, [isOpen]);
 
   const toggleDropdown = () => setIsOpen((prev) => !prev);
 
@@ -60,7 +71,7 @@ const CustomSelect: React.FC<CustomSelectProps> = ({
 
   return (
     <div ref={containerRef} className="relative w-full">
-      <label className="text-[14px] font-semibold text-[#212b37] dark:text-white">
+      <label className="text-[14px] font-bold text-[#212b37] dark:text-white">
         {label}
       </label>
       <div
@@ -74,7 +85,12 @@ const CustomSelect: React.FC<CustomSelectProps> = ({
       </div>
 
       {isOpen && (
-        <div className="absolute z-10 w-full border border-gray-300 bg-white dark:bg-[#19191C] dark:border-gray-700 shadow-lg">
+        <div
+          ref={dropdownRef}
+          className={`absolute z-10 w-full border border-gray-300 bg-white dark:bg-[#19191C] dark:border-gray-700 shadow-lg transition-all ${
+            openUpward ? "bottom-[100%] mb-1" : "top-[100%] mt-1"
+          }`}
+        >
           <input
             type="text"
             placeholder="Search"

@@ -19,7 +19,7 @@ const ProductService = {
   recommendationsProduct: (id: string): Promise<AxiosResponse<Product>> =>
     axiosClient.get(`/product/${id}/recommendations`),
   createProduct: (productData: FormData) =>
-    axiosClient.post<Product | ProductVariant | Inventory | Dimensions>(
+    axiosClient.post<Product>(
       "/product",
       productData,
       {
@@ -65,10 +65,41 @@ const ProductService = {
     axiosClient.get<ProductVariant[] | Product[] | Inventory[] | Dimensions[]>(
       `/products?category=${categoryId}`
     ),
-  filterProduct: (filterType: string, page = 1, limit = 10) =>
-    axiosClient.get<ProductListResponse>(
-      `/products?sort=${filterType}page=${page}&limit=${limit}`
-    ),
+  filterProducts: (params: {
+    search?: string;
+    priceMin?: number;
+    priceMax?: number;
+    categories?: string[];
+    sort?: string;
+    page?: number;
+    limit?: number;
+  }) => {
+    const {
+      search,
+      priceMin,
+      priceMax,
+      categories,
+      sort,
+      page = 1,
+      limit = 10,
+    } = params;
+
+    const queryParams: any = {
+      page,
+      limit,
+    };
+
+    if (search) queryParams.search = search;
+    if (priceMin !== undefined) queryParams["price[min]"] = priceMin;
+    if (priceMax !== undefined) queryParams["price[max]"] = priceMax;
+    if (categories && categories.length > 0)
+      queryParams.categories = categories.join(",");
+    if (sort) queryParams.sort = sort;
+
+    return axiosClient.get<ProductListResponse>("/products", {
+      params: queryParams,
+    });
+  },
 };
 
 export default ProductService;

@@ -54,7 +54,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ label, value }) => {
   return (
     <div className="w-full flex flex-col">
       {label && (
-        <label className="text-[14px] font-medium text-[#212b37]">
+        <label className="text-[14px] font-bold text-[#212b37]">
           {label}
         </label>
       )}
