@@ -1,4 +1,6 @@
-export const notificationVariants = {
+import { Variants } from "framer-motion";
+
+export const notificationVariants: Variants = {
     hidden: {
         opacity: 0,
         y: 20,
@@ -19,7 +21,7 @@ export const notificationVariants = {
     }
 };
 
-export const toolbarVariants = {
+export const toolbarVariants: Variants = {
     hidden: {
         opacity: 0,
         y: 50, // start below the screen
@@ -46,7 +48,7 @@ export const toolbarVariants = {
     },
 };
 
-export const dropdownVariants = {
+export const dropdownVariants: Variants = {
     hidden: {
         opacity: 0,
         y: 8,

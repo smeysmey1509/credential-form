@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { FaRegTrashAlt, FaRegHeart } from "react-icons/fa";
 
 interface Column {
-  header: string;
+  header: string | React.ReactNode;
   accessor: string;
   width?: string;
   color?: string;

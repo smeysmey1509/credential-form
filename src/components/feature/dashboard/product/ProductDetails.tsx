@@ -183,7 +183,29 @@ const ProductDetails = () => {
       console.error("Error Fetch Product Relationship", err);
     }
   };
-  
+
+  if (!id) {
+    return (
+      <div className="flex flex-col items-center justify-center gap-4 rounded bg-white p-4 text-center shadow-[0px_6px_16px_2px_rgba(0,0,0,0.05)]">
+        <h2 className="text-2xl font-semibold text-[#202947]">
+          Select a product to view its details
+        </h2>
+        <p className="max-w-md text-sm text-[#6E829F]">
+          Use the product list to choose an item first. Once selected, you can
+          view full information, specifications, reviews, and related products
+          here.
+        </p>
+        <button
+          type="button"
+          onClick={() => navigate("/dashboard/product/listproduct")}
+          className="rounded bg-[#5C67F7] px-5 py-2 text-sm font-semibold text-white transition hover:bg-[#4b55d6]"
+        >
+          Go to Product List
+        </button>
+      </div>
+    );
+  }
+
   console.log("relatedProduct", relatedProducts);
 
   return (

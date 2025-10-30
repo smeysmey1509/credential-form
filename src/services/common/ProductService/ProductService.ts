@@ -4,16 +4,17 @@ import {
   Product,
   Inventory,
   Dimensions,
+  ProductListResponse,
 } from "../../../types/ProductType";
 import { AxiosResponse } from "axios";
 
 const ProductService = {
   getAllProducts: () =>
-    axiosClient.get<ProductVariant[] | Product[] | Inventory[] | Dimensions[]>(
+    axiosClient.get<Product[]>(
       "/product"
     ),
   getProduct: (page = 1, limit = 10) =>
-    axiosClient.get<Product[]>(`/products?page=${page}&limit=${limit}`),
+    axiosClient.get<ProductListResponse>(`/products?page=${page}&limit=${limit}`),
   getProductById: (id: string): Promise<AxiosResponse<Product>> =>
     axiosClient.get<Product>(`/product/${id}`),
   recommendationsProduct: (id: string): Promise<AxiosResponse<Product>> =>

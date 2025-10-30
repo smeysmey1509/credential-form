@@ -1,7 +1,12 @@
 import { CategoryType } from "./Category";
-import { BrandStats, BrandType } from "./BrandType";
+import { Seller } from "./SellerType";
 
 export type PublishStatus = "Published" | "Unpublished";
+
+export interface ProductListResponse {
+  products: Product[];
+  pagination: Pagination;
+}
 
 export interface Pagination {
   total?: number;
@@ -65,7 +70,7 @@ export interface Product {
   currency?: string;
   stock?: number;
   category?: CategoryType;
-  seller?: string;
+  seller?: Seller;
   status?: PublishStatus;
   tag?: string[];
   productType?: string;

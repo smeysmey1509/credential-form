@@ -1,5 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
-import Logo from "../../../../assets/react.svg";
+import React, { useEffect, useState, useRef, ReactNode } from "react";
 import { CiEdit } from "react-icons/ci";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 import { RiDeleteBinLine } from "react-icons/ri";
@@ -12,19 +11,30 @@ import {
   dropdownVariants,
 } from "../../../../animation/animation";
 import { useNavigate } from "react-router-dom";
+import FormInput from "../../../common/FormField/FormField";
+import DynamicTable from "../../../common/DynamicTable/DynamicTable";
+import CheckBox from "../../../common/CheckBox/CheckBox";
 
-export interface ProductListResponse {
-  products: Product[];
-  pagination: Pagination;
+interface FormattedProduct {
+  _id?: string;
+  check: ReactNode;
+  product: { _id: string; name: string; image: string };
+  category: string;
+  price?: number | string;
+  stock?: number;
+  status: string;
+  seller: { name: string; image: string };
+  published: string;
 }
 
 const ListProduct: React.FC = () => {
-  const [products, setProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<FormattedProduct[]>([]);
   const [selectedProductIds, setSelectedProductIds] = useState<string[]>([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalItems, setTotalItems] = useState<number>(0);
   const [itemsPerPage, setItemsPerPage] = useState<number>(10);
   const [totalPerPage, setTotalPerPage] = useState<number>(10);
+  const [page, setPage] = useState<number>(0);
   const [changeStatus, setChangeStatus] = useState<boolean>(true);
   const [selectionToolbar, setSelectionToolbar] = useState<boolean>(false);
   const [searchInput, setSearchInput] = useState({
@@ -38,8 +48,8 @@ const ListProduct: React.FC = () => {
     const handleCreated = (newProduct: Product) => {
       if (!newProduct || !newProduct._id || !newProduct.name) return; // Validate
 
-      setProducts((prev) => {
-        const exists = prev.some((p) => p._id === newProduct._id);
+      setProducts((prev: any) => {
+        const exists = prev.some((p: any) => p._id === newProduct._id);
         if (exists) return prev;
 
         // Insert only on first page
@@ -56,8 +66,8 @@ const ListProduct: React.FC = () => {
     const handleProductUpdated = (
       updatedProduct: Partial<Product> & { _id: string }
     ) => {
-      setProducts((prevProducts) =>
-        prevProducts.map((p) =>
+      setProducts((prevProducts: any) =>
+        prevProducts.map((p: any) =>
           p._id === updatedProduct._id ? { ...p, ...updatedProduct } : p
         )
       );
@@ -81,39 +91,210 @@ const ListProduct: React.FC = () => {
     };
   }, [currentPage, itemsPerPage]);
 
+  const columns = [
+    {
+      header: <CheckBox />,
+      accessor: "check",
+      width: "2%",
+      color: "!font-semibold",
+      bodyColor: "!text-[13px] !text-[#212b37] !font-medium",
+    },
+    {
+      header: "Product",
+      accessor: "product",
+      width: "13%",
+      bodyColor: "!text-[#5C67F7] !text-[13px] !font-normal !py-4",
+      color: "!font-bold",
+      render: (value: any) => {
+        if (!value) return <span className="text-gray-400">No Product</span>;
+
+        const { _id, name, image } = value || {};
+        return (
+          <div className="w-full flex items-center gap-2">
+            <span
+              className={
+                "w-[40px] h-[40px] bg-[#F9F9FA] dark:bg-[#2A2F31] rounded"
+              }
+            >
+              <img
+                src={
+                  image
+                    ? image
+                    : "https://upload.wikimedia.org/wikipedia/commons/f/fd/Jisoo_of_Blackpink_at_a_Dior_event%2C_April_18%2C_2025_%283%29.png"
+                }
+                alt="product-img"
+                className="p-1 w-full h-full object-cover rounded-[50%]"
+              />
+            </span>
+            <div>
+              <p
+                className={
+                  "text-[#000000] dark:text-white text-[14px] font-bold flex items-center cursor-pointer"
+                }
+                onClick={() =>
+                  navigate(`/dashboard/product/productdetails/${value._id}`)
+                }
+              >
+                {name}
+              </p>
+              <p className={"text-[12px] text-[#6e829f]"}>SoundWave</p>
+            </div>
+          </div>
+        );
+      },
+    },
+    {
+      header: "Category",
+      accessor: "category",
+      width: "5%",
+      color: "!font-semibold",
+      bodyColor: "!text-[13px] !text-[#212b37] !font-medium",
+      editable: true,
+    },
+    {
+      header: "Price",
+      accessor: "price",
+      width: "4%",
+      color: "!font-semibold",
+      bodyColor: "!text-[13px] !text-[#212b37] !font-medium",
+      editable: true,
+    },
+    {
+      header: "Stock",
+      accessor: "stock",
+      width: "4%",
+      color: "!font-semibold",
+      bodyColor: "!text-[13px] !text-[#212b37] !font-medium",
+      editable: true,
+    },
+    {
+      header: "Status",
+      accessor: "status",
+      width: "6%",
+      color: "!font-semibold",
+      bodyColor: "!text-[13px] !text-[#212b37] !font-medium",
+      render: (value: any) => (
+        <span className="!px-[7.2px] !py-[4px] !font-semibold rounded text-[11px] !bg-[#5C67F71A] !text-[#5C67F7]">
+          {value}
+        </span>
+      ),
+    },
+    {
+      header: "Seller",
+      accessor: "seller",
+      width: "9%",
+      color: "!font-semibold",
+      bodyColor: "!text-[13px] !text-[#212b37]",
+      render: (value: any) => {
+        if (!value) return <span className="text-gray-400">No Seller</span>;
+
+        const { image, name } = value || {};
+
+        return (
+          <div className="flex items-center gap-2">
+            <div className="w-[28px] h-[28px] rounded-full overflow-hidden border border-gray-200 bg-[#F7F7FE]">
+              <img
+                src={
+                  image ||
+                  "https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png"
+                }
+                alt={name || "Seller"}
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <span className="text-[13px] font-bold text-[#212b37] dark:text-white">
+              {name || "Unknown Seller"}
+            </span>
+          </div>
+        );
+      },
+    },
+    {
+      header: "Published",
+      accessor: "published",
+      width: "7%",
+      color: "!font-semibold",
+      bodyColor: "!text-[13px] !text-[#212b37] !font-medium",
+      editable: true,
+    },
+    {
+      header: "Action",
+      accessor: "action",
+      width: "5%",
+      color: "!font-semibold",
+      bodyColor: "!text-[13px] !text-[#212b37]",
+      editable: true,
+    },
+  ];
+
   const handleFoundProduct = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setSearchInput((prev) => ({ ...prev, query: value }));
 
-    if (debounceTimeout.current) clearTimeout(debounceTimeout.current);
-
-    debounceTimeout.current = setTimeout(async () => {
-      if (value.trim() === "") {
-        await handleFetchProducts();
-        return;
-      }
-      try {
-        const res = await ProductService.searchProduct(value);
-        setProducts(res.data.products);
-        setTotalItems(res.data.total || 0);
-      } catch (err) {
-        console.error("Search failed:", err);
-      }
-    }, 300);
+    try {
+      const res = await ProductService?.searchProduct(value);
+      setProducts(res.data.products);
+      setTotalItems(res.data.total || 0);
+    } catch (err) {
+      console.error("Search failed:", err);
+    }
   };
 
-  const handleFetchProducts = async () => {
+  const handleFetchProducts = async (): Promise<void> => {
     try {
-      const response = await ProductService.getProduct(
-        currentPage,
-        itemsPerPage
-      );
+      const res = await ProductService.getProduct(currentPage, itemsPerPage);
+      const { products, pagination } = res?.data;
 
-      const { products, pagination } = response?.data as ProductListResponse;
-      setProducts(products);
-      setTotalItems(pagination?.total);
-      setItemsPerPage(pagination?.perPage);
-      setTotalPerPage(pagination?.totalPages);
+      const formattedData = products.map((p: Product) => {
+        // ✅ Handle date formatting properly
+        const createdAt = p?.createdAt ? new Date(p.createdAt) : null;
+
+        const formattedDate = createdAt
+          ? createdAt.toLocaleString("en-US", {
+              day: "2-digit",
+              month: "short",
+              year: "numeric",
+              hour: "2-digit",
+              minute: "2-digit",
+              hour12: true,
+            })
+          : "—";
+
+        // ✅ Handle image safely
+        const imageUrl =
+          typeof p.primaryImageIndex === "number" &&
+          Array.isArray(p.images) &&
+          p.images[p.primaryImageIndex]
+            ? p.images[p.primaryImageIndex]
+            : p.images?.[0] || "";
+
+        return {
+          _id: p._id ?? "",
+          check: <CheckBox />,
+          product: {
+            _id: p?._id ?? "",
+            name: p.name,
+            image: `https://image.pngaaa.com/13/1887013-middle.png`,
+          },
+          category: p.category?.categoryName || "—",
+          price: p.cost,
+          stock: p.stock,
+          status: p.status || "—",
+          seller: {
+            name: p.seller?.name || "Unknown Seller",
+            image: p.seller?._id
+              ? `https://api.dicebear.com/9.x/thumbs/svg?seed=${p.seller.name}`
+              : "https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png",
+          },
+          published: formattedDate,
+        };
+      });
+
+      setProducts(formattedData);
+      setTotalItems(pagination.total ?? 0);
+      setItemsPerPage(pagination?.perPage ?? 10);
+      setPage(pagination?.page ?? 1);
+      setTotalPerPage(pagination?.totalPages ?? 1);
     } catch (e) {
       console.error("Failed to fetch products:", e);
     }
@@ -147,7 +328,9 @@ const ListProduct: React.FC = () => {
 
       // Update UI
       setProducts((prev) =>
-        prev.filter((product) => !selectedProductIds.includes(product?._id))
+        prev.filter(
+          (product) => !selectedProductIds.includes(product?._id || "")
+        )
       );
       setSelectedProductIds([]);
       setSelectionToolbar(false);
@@ -157,223 +340,38 @@ const ListProduct: React.FC = () => {
     }
   };
 
-  function formatDateDMY(dateString: string | Date | undefined | null): string {
-    if (!dateString) return "";
-
-    const date = new Date(dateString);
-    if (isNaN(date.getTime())) return "";
-
-    const day = String(date.getDate()).padStart(2, "0");
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const year = date.getFullYear();
-
-    return `${day}-${month}-${year}`;
-  }
-
   return (
     <div className="w-full h-full bg-white dark:bg-[#19191C] shadow rounded-lg p-6">
       <div className="w-full h-fit flex">
-        <input
-          className="w-3/10 bg-transparent placeholder:text-slate-400 text-white text-sm border border-slate-200 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow"
+        <FormInput
+          className="w-[320px]"
           type="text"
-          placeholder="Serach ur product"
-          value={searchInput.query}
+          placeholder="Search product here..."
           onChange={handleFoundProduct}
+          value={searchInput.query}
         />
       </div>
       <div className={"w-full h-[600px] overflow-x-auto mt-5"}>
-        <table className="table-fixed w-full max-h-full text-[0.85rem] font-normal text-left border-collapse">
-          <thead className="text-sm sticky top-0 z-10 bg-[#fff] dark:bg-[#19191C]">
-            <tr className="border-b dark:border-gray-700 border-gray-200">
-              <th scope="col" className="w-10 h-full py-2 text-center">
-                <label className="relative inline-flex items-center cursor-pointer">
-                  <input
-                    type="checkbox"
-                    value=""
-                    className="peer appearance-none w-[1rem] h-[1rem] border border-[#dee7f1] rounded-sm accent-border-2 accent-bg-[#5C67F7] checked:bg-[#5C67F7] dark:border-[#ffffff1a]"
-                  />
-                  <span
-                    className="pointer-events-none absolute left-0 top-0 w-[1rem] h-[1rem]
-                              before:content-[''] before:absolute before:inset-0 before:bg-transparent before:rounded-sm peer-checked:before:bg-[#5C67F7]
-                              after:content-['✓'] after:absolute after:inset-0 after:flex after:items-center after:justify-center after:text-white after:text-xs peer-checked:after:opacity-100 after:opacity-0"
-                  ></span>
-                </label>
-              </th>
-              <th scope="col" className="w-[20%] px-6 py-2">
-                Product
-              </th>
-              <th scope="col" className="px-6 py-2">
-                Category
-              </th>
-              <th scope="col" className="px-6 py-2">
-                Price
-              </th>
-              <th scope="col" className="px-6 py-2">
-                Stock
-              </th>
-              <th scope="col" className="px-4 py-2">
-                Status
-              </th>
-              <th scope="col" className="px-6 py-2">
-                Seller
-              </th>
-              <th scope="col" className="w-[15%] px-6 py-2">
-                Published
-              </th>
-              <th scope="col" className="px-6 py-2">
-                Action
-              </th>
-            </tr>
-          </thead>
-          <tbody className={"table-auto"}>
-            {products?.map((product, index) => (
-              <tr
-                key={index}
-                className="w-[100%] bg-white border-b dark:bg-[#19191C] dark:border-gray-700 border-gray-200"
-              >
-                <td scope="col" className="w-10 h-full py-2 text-center">
-                  <label className="relative inline-flex items-center cursor-pointer">
-                    <input
-                      type="checkbox"
-                      value=""
-                      checked={selectedProductIds.includes(product._id)}
-                      onChange={(e) => {
-                        if (e.target.checked) {
-                          setSelectedProductIds([
-                            ...selectedProductIds,
-                            product._id,
-                          ]);
-                          setSelectionToolbar(true);
-                          setChangeStatus(false);
-                        } else {
-                          setSelectedProductIds(
-                            selectedProductIds.filter(
-                              (id) => id !== product._id
-                            )
-                          );
-                          if (selectedProductIds.length === 1) {
-                            setSelectionToolbar(false);
-                            setChangeStatus(false);
-                          }
-                        }
-                      }}
-                      className="peer appearance-none w-[1rem] h-[1rem] border border-[#dee7f1] rounded-sm accent-border-2 accent-bg-[#5C67F7] checked:bg-[#5C67F7] dark:border-[#ffffff1a]"
-                    />
-                    <span
-                      className="pointer-events-none absolute left-0 top-0 w-[1rem] h-[1rem]
-                                       before:content-[''] before:absolute before:inset-0 before:bg-transparent before:rounded-sm peer-checked:before:bg-[#5C67F7]
-                                       after:content-['✓'] after:absolute after:inset-0 after:flex after:items-center after:justify-center after:text-white after:text-xs peer-checked:after:opacity-100 after:opacity-0"
-                    ></span>
-                  </label>
-                </td>
-                <td
-                  className="px-6 py-4  cursor-pointer"
-                  scope="row"
-                  onClick={() =>
-                    navigate(`/dashboard/product/productdetails/${product._id}`)
-                  }
-                >
-                  <div className="w-full flex items-center gap-2">
-                    <span
-                      className={
-                        "w-[40px] h-[40px] bg-[#F9F9FA] dark:bg-[#2A2F31] rounded"
-                      }
-                    >
-                      <img
-                        src={
-                          product?.images?.[0]
-                            ? `http://localhost:5002${product.images[0]}`
-                            : "https://upload.wikimedia.org/wikipedia/commons/f/fd/Jisoo_of_Blackpink_at_a_Dior_event%2C_April_18%2C_2025_%283%29.png"
-                        }
-                        alt="product-img"
-                        className="p-1 w-full h-full object-cover rounded-[50%]"
-                      />
-                    </span>
-                    <div>
-                      <p
-                        className={
-                          "text-[#000000] dark:text-white text-[14px] font-bold flex items-center"
-                        }
-                      >
-                        {product?.name}
-                      </p>
-                      <p className={"text-[12px] text-[#6e829f]"}>SoundWave</p>
-                    </div>
-                  </div>
-                </td>
-                <td className="px-6 py-4 dark:text-[#FFFFFFCC]" scope="row">
-                  {product.category?.categoryName}
-                </td>
-                <td className="px-6 py-4 dark:text-[#FFFFFFCC]" scope="row">
-                  ${product.cost}
-                </td>
-                <td className="px-6 py-4 dark:text-[#FFFFFFCC]" scope="row">
-                  {product.stock}
-                </td>
-                <td className="px-4 py-2" scope="row">
-                  <span
-                    className={
-                      "bg-[#5c67f71a] px-2 py-1 rounded-md text-[11px] text-[#5c67f7]"
-                    }
-                  >
-                    {product?.status}
-                  </span>
-                  {/*<span*/}
-                  {/*    className={'bg-[#fb42421a] px-2 py-1 rounded-md text-[11px] text-[#fb4242]'}>Published</span>*/}
-                </td>
-                <td className="px-6 py-4" scope="row">
-                  <div className={"flex items-center gap-2 font-semibold"}>
-                    <span
-                      className={
-                        "w-[1.5rem] h-[1.5rem] p-1 rounded-full bg-white dark:bg-[#2A2F31] flex items-center"
-                      }
-                    >
-                      <img
-                        src={Logo}
-                        alt={"product-img"}
-                        className="w-full h-full"
-                      />
-                    </span>
-                    <p
-                      className={
-                        "text-[13px] font-semibold dark:text-[#F5F0F8] text-black"
-                      }
-                    >
-                      {product?.seller?.name}
-                    </p>
-                  </div>
-                </td>
-                <td
-                  className="px-6 py-4 text-[#212B37] dark:text-[#FFFFFFCC]"
-                  scope="row"
-                >
-                  {formatDateDMY(product?.createdAt)}
-                </td>
-                <td className="px-6 py-4" scope="row">
-                  <div className={"flex items-center gap-2"} onClick={() =>
-                    navigate(`/dashboard/product/editproducts/${product._id}`)
-                  }>
-                    <span
-                      className={
-                        "p-2 bg-[#5c67f71a] rounded-md text-[#5c67f7] hover:bg-[#5c67f7] hover:text-white cursor-pointer"
-                      }
-                    >
-                      <CiEdit />
-                    </span>
-                    <span
-                      className={
-                        "p-2 bg-[#fb42421a] rounded-md text-[#fb4242] hover:bg-[#fb4242] hover:text-white cursor-pointer"
-                      }
-                      onClick={() => handleDeleteProduct(product?._id || "")}
-                    >
-                      <RiDeleteBinLine />
-                    </span>
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <DynamicTable
+          classname="!max-h-full !overflow-y-auto"
+          columns={columns}
+          data={products}
+          actions={{
+            edit: {
+              icon: <CiEdit />,
+              colorClass:
+                "!p-2 !bg-[#5C67F71A] hover:!bg-[#5C67F7] !text-[#5C67F7] hover:!text-[#fff]",
+              onClick: (row) =>
+                navigate(`/dashboard/product/editproducts/${row._id}`),
+            },
+            delete: {
+              icon: <RiDeleteBinLine />,
+              colorClass:
+                "!p-2 !bg-[#FB42421A] hover:!bg-[#fb4242] !text-[#FB4242] hover:!text-[#fff]",
+              onClick: (row) => handleDeleteProduct(row?._id),
+            },
+          }}
+        />
       </div>
       <nav
         className="relative w-full h-fit flex items-center flex-column flex-wrap md:flex-row justify-between pt-4"

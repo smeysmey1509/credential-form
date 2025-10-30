@@ -1,5 +1,5 @@
 import React, { FormEvent, useEffect, useMemo, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import FormField from "../../../common/FormField/FormField";
 import SelectItemField, {
   OptionType,
@@ -20,6 +20,7 @@ import { usePopup } from "../../../../context/PopupContext";
 
 const EditProducts = () => {
   const { id } = useParams<{ id: string | undefined }>();
+  const navigate = useNavigate();
 
   // product fields
   const [productId, setProductId] = useState<string>("");
@@ -52,13 +53,43 @@ const EditProducts = () => {
   const { showPopup, hidePopup } = usePopup();
 
   useEffect(() => {
-    if (id) getProductByID(id);
+    if (id) {
+      getProductByID(id);
+    } else {
+      resetProductState();
+    }
   }, [id]);
 
   useEffect(() => {
     getCategories();
     getBrands();
   }, []);
+
+  const resetProductState = () => {
+    setProductId("");
+    setName("");
+    setDescription("");
+    setCost("");
+    setActualPrice(0);
+    setDealerPrice(0);
+    setTotalStock(0);
+    setFeature("");
+    setStatus("Published");
+    setCompareAtPrice(0);
+    setCurrency("");
+    setSelectedCategoryId("");
+    setSelectedBrandId("");
+    setProductType("");
+    setTag([]);
+    setImages([]);
+    setRating(0);
+    setWeight(0);
+    setColorOptions([]);
+    setPrimaryImage("");
+    setUpdatedDate("");
+    setUpdatedTime("");
+    setVaraints([]);
+  };
 
   const getCategories = async () => {
     try {
@@ -238,6 +269,28 @@ const EditProducts = () => {
     const val = e.target.value.replace(/[^0-9.]/g, ""); // remove non-numerics
     setCost(val);
   };
+
+  if (!id) {
+    return (
+      <div className="flex h-full flex-col items-center justify-center gap-4 rounded bg-white p-8 text-center shadow-[0px_6px_16px_2px_rgba(0,0,0,0.05)]">
+        <h2 className="text-2xl font-semibold text-[#202947]">
+          Choose a product to edit
+        </h2>
+        <p className="max-w-xl text-sm text-[#6E829F]">
+          Open the product list and select an item to load its information here.
+          You can then review and update pricing, inventory, and other details
+          before saving your changes.
+        </p>
+        <button
+          type="button"
+          onClick={() => navigate("/dashboard/product/listproduct")}
+          className="rounded bg-[#5C67F7] px-5 py-2 text-sm font-semibold text-white transition hover:bg-[#4b55d6]"
+        >
+          Go to Product List
+        </button>
+      </div>
+    );
+  }
 
   return (
     <>
