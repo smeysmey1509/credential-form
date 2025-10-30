@@ -47,6 +47,8 @@ const ListProduct: React.FC = () => {
   const [searchInput, setSearchInput] = useState({
     query: "",
   });
+
+  const [debouncedQuery, setDebouncedQuery] = useState<string>("");
   const debounceTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
   const latestSearchRef = useRef<string>("");
 
@@ -161,6 +163,57 @@ const ListProduct: React.FC = () => {
     }
   }, [currentPage, itemsPerPage, formatProducts]);
 
+  const fetchSearchResults = useCallback(
+    async (query: string, pageToFetch = 1): Promise<void> => {
+      if (!query) return;
+
+      try {
+        const res = await ProductService.searchProduct(
+          query,
+          pageToFetch,
+          itemsPerPage
+        );
+
+        const { results = [], pagination, total } = res?.data ?? {};
+
+        if (latestSearchRef.current !== query) {
+          return;
+        }
+
+        const formattedProducts = formatProducts(results);
+
+        setProducts(formattedProducts);
+        setTotalItems(
+          (typeof total === "number" ? total : undefined) ??
+            pagination?.total ??
+            results.length ??
+            0
+        );
+        setItemsPerPage((prev) =>
+          pagination?.perPage && pagination.perPage > 0
+            ? pagination.perPage
+            : prev
+        );
+
+        const resolvedPage =
+          pagination?.page && pagination.page > 0
+            ? pagination.page
+            : pageToFetch;
+
+        setCurrentPage(resolvedPage);
+        setPage(resolvedPage);
+        setTotalPerPage(
+          pagination?.totalPages && pagination.totalPages > 0
+            ? pagination.totalPages
+            : 1
+        );
+      } catch (err) {
+        console.error("Search failed:", err);
+      }
+    },
+    [formatProducts, itemsPerPage]
+  );
+
   useEffect(() => {
     if (!searchInput.query.trim()) {
       handleFetchProducts();
@@ -168,12 +221,14 @@ const ListProduct: React.FC = () => {
   }, [searchInput.query, handleFetchProducts]);
 
   useEffect(() => {
-    return () => {
-      if (debounceTimeout.current) {
-        clearTimeout(debounceTimeout.current);
-      }
-    };
-  }, []);
+    if (!debouncedQuery) {
+      latestSearchRef.current = "";
+      return;
+    }
+
+    latestSearchRef.current = debouncedQuery;
+    fetchSearchResults(debouncedQuery, currentPage);
+  }, [debouncedQuery, currentPage, fetchSearchResults]);
 
   const columns = [
     {
@@ -314,39 +369,30 @@ const ListProduct: React.FC = () => {
 
   const handleFoundProduct = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
+    const trimmedValue = value.trim();
+
     setSearchInput((prev) => ({ ...prev, query: value }));
-    latestSearchRef.current = value.trim();
 
     if (debounceTimeout.current) {
       clearTimeout(debounceTimeout.current);
+      debounceTimeout.current = null;
     }
 
-    debounceTimeout.current = setTimeout(async () => {
-      const trimmedValue = value.trim();
+    latestSearchRef.current = trimmedValue;
 
-      if (!trimmedValue) {
-        setCurrentPage(1);
-        setPage(1);
-        return;
-      }
+    if (!trimmedValue) {
+      setDebouncedQuery("");
+      setCurrentPage(1);
+      setPage(1);
+      return;
+    }
 
-      try {
-        const res = await ProductService?.searchProduct(trimmedValue);
-        const searchedProducts: Product[] = res?.data?.results ?? [];
-        const formattedProducts = formatProducts(searchedProducts);
+    setCurrentPage(1);
+    setPage(1);
 
-        if (latestSearchRef.current !== trimmedValue) {
-          return;
-        }
-
-        setProducts(formattedProducts);
-        setCurrentPage(1);
-        setPage(1);
-        setTotalItems(res?.data?.total ?? searchedProducts.length);
-        setTotalPerPage(1);
-      } catch (err) {
-        console.error("Search failed:", err);
-      }
+    debounceTimeout.current = setTimeout(() => {
+      setDebouncedQuery(trimmedValue);
+      debounceTimeout.current = null;
     }, 400);
   };
 

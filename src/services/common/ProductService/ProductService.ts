@@ -42,8 +42,8 @@ const ProductService = {
   deleteProduct: (id: string) => axiosClient.delete(`/product/delete/${id}`),
   multiDeleteProduct: (ids: string[]) =>
     axiosClient.post(`/product/delete`, { ids }),
-  searchProduct: (query: string) =>
-    axiosClient.get("/products/search", { params: { query } }),
+  searchProduct: (query: string, page = 1, limit = 10) =>
+    axiosClient.get("/products/search", { params: { query, page, limit } }),
   //Sort price low to high
   priceLowToHigh: (sort?: string, page?: number, limit?: number) =>
     axiosClient.get<ProductVariant[] | Product[] | Inventory[] | Dimensions[]>(
