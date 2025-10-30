@@ -161,11 +161,9 @@ const ListProduct: React.FC = () => {
   }, [currentPage, itemsPerPage, formatProducts]);
 
   useEffect(() => {
-    if (searchInput.query.trim()) {
-      return;
+    if (!searchInput.query.trim()) {
+      handleFetchProducts();
     }
-
-    handleFetchProducts();
   }, [searchInput.query, handleFetchProducts]);
 
   useEffect(() => {
