@@ -21,6 +21,7 @@ const CreateProduct = () => {
   const [name, setName] = useState<string>("");
   const [description, setDescription] = useState<string>("");
   const [actualPrice, setActualPrice] = useState<number>(0);
+  const [discount, setDiscount] = useState<string>("")
   const [stock, setStock] = useState<number>(0);
   const [status, setStatus] = useState<string>("Published");
   const [categoryOptions, setCategoryOptions] = useState<OptionType[]>([]);
@@ -33,6 +34,7 @@ const CreateProduct = () => {
   const [weight, setWeight] = useState<string>("");
   const [tag, setTag] = useState<string[]>([]);
   const [publishDate, setPublishDate] = useState<string>("");
+  const [feature, setFeature] = useState<string>("")
   const [publishTime, setPublishTime] = useState<string>("");
   const [stockAvailability, setStockAvailability] = useState<string>("");
   const [images, setImages] = useState<File[]>([]);
@@ -106,14 +108,17 @@ const CreateProduct = () => {
       formData.append("stock", stock.toString());
       formData.append("category", selectedCategoryId);
       formData.append("status", status);
-      formData.append("publishDate", publishDate);
+      formData.append("discount", discount);
+      formData.append("publishDate", publishDate);  
       formData.append("publishTime", publishTime);
       formData.append("cost", cost);
       formData.append("brand", selectedBrandId);
-      formData.append("category", selectedCategoryId);
+      formData.append("category", "68e4ab0b228596d481704988");
       formData.append("currency", currency);
-      formData.append("stockAvailability", stockAvailability);
+      formData.append("actualPrice", actualPrice.toString())
+      // formData.append("s", stockAvailability);
       formData.append("weight", weight);
+      formData.append("feature", feature)
       formData.append("productType", productType);
       formData.append("seller", "685ab59e33f273e409dc3eac")
 
@@ -235,7 +240,7 @@ const CreateProduct = () => {
           </div>
           <div className="w-1/2 h-full grid grid-cols-6 gap-x-6 gap-y-4">
             <div className="col-span-6 row-span-3">
-              <RichTextEditor label="Product Feature" />
+              <RichTextEditor label="Product Feature" value={feature}/>
             </div>
             <div className="col-span-6 row-start-4">
               <ProductImageInput label="Warranty Documents:" />
@@ -259,7 +264,7 @@ const CreateProduct = () => {
               />
             </div>
             <div className="col-span-2 col-start-5 row-start-5">
-              <FormField label="Discount" placeholder="Discount" />
+              <FormField label="Discount" placeholder="Discount" value={discount} onChange={(val) => setDiscount(val.target.value)}/>
             </div>
             <div className="col-span-3 row-start-6">
               <PublishDateInput
