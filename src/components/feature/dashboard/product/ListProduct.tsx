@@ -1,9 +1,15 @@
-import React, { useEffect, useState, useRef, ReactNode } from "react";
+import React, {
+  useEffect,
+  useState,
+  useRef,
+  ReactNode,
+  useCallback,
+} from "react";
 import { CiEdit } from "react-icons/ci";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 import { RiDeleteBinLine } from "react-icons/ri";
 import ProductService from "../../../../services/common/ProductService/ProductService";
-import { Pagination, Product } from "../../../../types/ProductType";
+import { Product } from "../../../../types/ProductType";
 import { motion, AnimatePresence } from "framer-motion";
 import socket from "../../../../services/socket/socket";
 import {
@@ -14,6 +20,7 @@ import { useNavigate } from "react-router-dom";
 import FormInput from "../../../common/FormField/FormField";
 import DynamicTable from "../../../common/DynamicTable/DynamicTable";
 import CheckBox from "../../../common/CheckBox/CheckBox";
+import SelectionFilter from "../../../common/SelectionFilter/SelectionFilter";
 
 interface FormattedProduct {
   _id?: string;
@@ -40,7 +47,7 @@ const ListProduct: React.FC = () => {
   const [searchInput, setSearchInput] = useState({
     query: "",
   });
-  const debounceTimeout = useRef<NodeJS.Timeout | null>(null);
+  const debounceTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const navigate = useNavigate();
 
@@ -78,8 +85,6 @@ const ListProduct: React.FC = () => {
       setTotalItems((prev) => prev - 1);
     };
 
-    handleFetchProducts();
-
     socket.on("product:created", handleCreated);
     socket.on("product:edited", handleProductUpdated);
     socket.on("product:deleted", handleDeleted);
@@ -90,6 +95,86 @@ const ListProduct: React.FC = () => {
       socket.off("product:deleted", handleDeleted);
     };
   }, [currentPage, itemsPerPage]);
+
+  const formatProducts = useCallback(
+    (productList: Product[]): FormattedProduct[] =>
+      productList.map((p: Product) => {
+        const createdAt = p?.createdAt ? new Date(p.createdAt) : null;
+
+        const formattedDate = createdAt
+          ? createdAt.toLocaleString("en-US", {
+              day: "2-digit",
+              month: "short",
+              year: "numeric",
+              hour: "2-digit",
+              minute: "2-digit",
+              hour12: true,
+            })
+          : "—";
+
+        const imageUrl =
+          typeof p.primaryImageIndex === "number" &&
+          Array.isArray(p.images) &&
+          p.images[p.primaryImageIndex]
+            ? p.images[p.primaryImageIndex]
+            : p.images?.[0] || "";
+
+        return {
+          _id: p._id ?? "",
+          check: <CheckBox />,
+          product: {
+            _id: p?._id ?? "",
+            name: p.name,
+            image: imageUrl || `https://image.pngaaa.com/13/1887013-middle.png`,
+          },
+          category: p.category?.categoryName || "—",
+          price: p.cost,
+          stock: p.stock,
+          status: p.status || "—",
+          seller: {
+            name: p.seller?.name || "Unknown Seller",
+            image: p.seller?._id
+              ? `https://api.dicebear.com/9.x/thumbs/svg?seed=${p.seller.name}`
+              : "https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png",
+          },
+          published: formattedDate,
+        };
+      }),
+    []
+  );
+
+  const handleFetchProducts = useCallback(async (): Promise<void> => {
+    try {
+      const res = await ProductService.getProduct(currentPage, itemsPerPage);
+      const { products, pagination } = res?.data;
+
+      const formattedData = formatProducts(products);
+
+      setProducts(formattedData);
+      setTotalItems(pagination.total ?? 0);
+      setItemsPerPage(pagination?.perPage ?? 10);
+      setPage(pagination?.page ?? 1);
+      setTotalPerPage(pagination?.totalPages ?? 1);
+    } catch (e) {
+      console.error("Failed to fetch products:", e);
+    }
+  }, [currentPage, itemsPerPage, formatProducts]);
+
+  useEffect(() => {
+    if (searchInput.query.trim()) {
+      return;
+    }
+
+    handleFetchProducts();
+  }, [searchInput.query, handleFetchProducts]);
+
+  useEffect(() => {
+    return () => {
+      if (debounceTimeout.current) {
+        clearTimeout(debounceTimeout.current);
+      }
+    };
+  }, []);
 
   const columns = [
     {
@@ -158,6 +243,7 @@ const ListProduct: React.FC = () => {
       color: "!font-semibold",
       bodyColor: "!text-[13px] !text-[#212b37] !font-medium",
       editable: true,
+      currency: true,
     },
     {
       header: "Stock",
@@ -227,77 +313,35 @@ const ListProduct: React.FC = () => {
     },
   ];
 
-  const handleFoundProduct = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFoundProduct = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setSearchInput((prev) => ({ ...prev, query: value }));
 
-    try {
-      const res = await ProductService?.searchProduct(value);
-      setProducts(res.data.products);
-      setTotalItems(res.data.total || 0);
-    } catch (err) {
-      console.error("Search failed:", err);
+    if (debounceTimeout.current) {
+      clearTimeout(debounceTimeout.current);
     }
-  };
 
-  const handleFetchProducts = async (): Promise<void> => {
-    try {
-      const res = await ProductService.getProduct(currentPage, itemsPerPage);
-      const { products, pagination } = res?.data;
+    debounceTimeout.current = setTimeout(async () => {
+      if (!value.trim()) {
+        setCurrentPage(1);
+        setPage(1);
+        return;
+      }
 
-      const formattedData = products.map((p: Product) => {
-        // ✅ Handle date formatting properly
-        const createdAt = p?.createdAt ? new Date(p.createdAt) : null;
+      try {
+        const res = await ProductService?.searchProduct(value);
+        const searchedProducts: Product[] = res?.data?.products ?? [];
+        const formattedProducts = formatProducts(searchedProducts);
 
-        const formattedDate = createdAt
-          ? createdAt.toLocaleString("en-US", {
-              day: "2-digit",
-              month: "short",
-              year: "numeric",
-              hour: "2-digit",
-              minute: "2-digit",
-              hour12: true,
-            })
-          : "—";
-
-        // ✅ Handle image safely
-        const imageUrl =
-          typeof p.primaryImageIndex === "number" &&
-          Array.isArray(p.images) &&
-          p.images[p.primaryImageIndex]
-            ? p.images[p.primaryImageIndex]
-            : p.images?.[0] || "";
-
-        return {
-          _id: p._id ?? "",
-          check: <CheckBox />,
-          product: {
-            _id: p?._id ?? "",
-            name: p.name,
-            image: `https://image.pngaaa.com/13/1887013-middle.png`,
-          },
-          category: p.category?.categoryName || "—",
-          price: p.cost,
-          stock: p.stock,
-          status: p.status || "—",
-          seller: {
-            name: p.seller?.name || "Unknown Seller",
-            image: p.seller?._id
-              ? `https://api.dicebear.com/9.x/thumbs/svg?seed=${p.seller.name}`
-              : "https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png",
-          },
-          published: formattedDate,
-        };
-      });
-
-      setProducts(formattedData);
-      setTotalItems(pagination.total ?? 0);
-      setItemsPerPage(pagination?.perPage ?? 10);
-      setPage(pagination?.page ?? 1);
-      setTotalPerPage(pagination?.totalPages ?? 1);
-    } catch (e) {
-      console.error("Failed to fetch products:", e);
-    }
+        setProducts(formattedProducts);
+        setCurrentPage(1);
+        setPage(1);
+        setTotalItems(res?.data?.total ?? searchedProducts.length);
+        setTotalPerPage(1);
+      } catch (err) {
+        console.error("Search failed:", err);
+      }
+    }, 400);
   };
 
   const handleDeleteProduct = async (productId: string) => {
@@ -342,7 +386,7 @@ const ListProduct: React.FC = () => {
 
   return (
     <div className="w-full h-full bg-white dark:bg-[#19191C] shadow rounded-lg p-6">
-      <div className="w-full h-fit flex">
+      <div className="flex gap-3">
         <FormInput
           className="w-[320px]"
           type="text"
@@ -350,6 +394,7 @@ const ListProduct: React.FC = () => {
           onChange={handleFoundProduct}
           value={searchInput.query}
         />
+        <SelectionFilter classname="" />
       </div>
       <div className={"w-full h-[600px] overflow-x-auto mt-5"}>
         <DynamicTable

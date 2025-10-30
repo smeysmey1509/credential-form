@@ -13,9 +13,13 @@ const options = [
 
 interface SelectionFilterProps {
   onSortChange?: (sortBy: string) => void;
+  classname?: string;
 }
 
-const SelectionFilter: React.FC<SelectionFilterProps> = ({ onSortChange }) => {
+const SelectionFilter: React.FC<SelectionFilterProps> = ({
+  onSortChange,
+  classname,
+}) => {
   const [open, setOpen] = useState<boolean>(false);
   const [selectedOption, setSelectedOption] = useState<string>(
     options[options.length - 1].label
@@ -51,15 +55,20 @@ const SelectionFilter: React.FC<SelectionFilterProps> = ({ onSortChange }) => {
   };
 
   return (
-    <div ref={wrapperRef} className="relative inline-block text-left">
+    <div
+      ref={wrapperRef}
+      className={`relative w-fit h-fit flex justify-center items-center ${classname}`}
+    >
       <button
         onClick={() => setOpen(!open)}
-        className="w-full flex items-center gap-1 text-[#212B37] border border-[#ecf3fb] rounded px-[0.75rem] py-[0.45rem] text-[14px] font-semibold cursor-pointer hover:bg-[#F9F9FA]"
+        className="w-fit h-fit flex items-center justify-center gap-2 text-[#212B37] border border-[#ecf3fb] rounded px-[0.75rem] py-[0.45rem] text-[14px] font-semibold cursor-pointer hover:bg-[#F9F9FA] select-none"
         aria-haspopup="true"
         aria-expanded={open}
       >
         <LuArrowDownWideNarrow />
-        <span className="font-bold">{selectedOption}</span>
+        <span className="font-semibold text-center whitespace-nowrap">
+          {selectedOption}
+        </span>
         <MdOutlineKeyboardArrowDown
           className={`transition-transform ${open ? "rotate-180" : ""}`}
         />
