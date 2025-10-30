@@ -48,6 +48,7 @@ const ListProduct: React.FC = () => {
     query: "",
   });
   const debounceTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const latestSearchRef = useRef<string>("");
 
   const navigate = useNavigate();
 
@@ -314,22 +315,29 @@ const ListProduct: React.FC = () => {
   const handleFoundProduct = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setSearchInput((prev) => ({ ...prev, query: value }));
+    latestSearchRef.current = value.trim();
 
     if (debounceTimeout.current) {
       clearTimeout(debounceTimeout.current);
     }
 
     debounceTimeout.current = setTimeout(async () => {
-      if (!value.trim()) {
+      const trimmedValue = value.trim();
+
+      if (!trimmedValue) {
         setCurrentPage(1);
         setPage(1);
         return;
       }
 
       try {
-        const res = await ProductService?.searchProduct(value);
-        const searchedProducts: Product[] = res?.data?.products ?? [];
+        const res = await ProductService?.searchProduct(trimmedValue);
+        const searchedProducts: Product[] = res?.data?.results ?? [];
         const formattedProducts = formatProducts(searchedProducts);
+
+        if (latestSearchRef.current !== trimmedValue) {
+          return;
+        }
 
         setProducts(formattedProducts);
         setCurrentPage(1);
