@@ -8,19 +8,19 @@ import React, {
 import { CiEdit } from "react-icons/ci";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 import { RiDeleteBinLine } from "react-icons/ri";
-import ProductService from "../../../../services/common/ProductService/ProductService";
-import { Product } from "../../../../types/ProductType";
+import ProductService from "../../../services/common/ProductService/ProductService";
+import { Product } from "../../../types/ProductType";
 import { motion, AnimatePresence } from "framer-motion";
-import socket from "../../../../services/socket/socket";
+import socket from "../../../services/socket/socket";
 import {
   toolbarVariants,
   dropdownVariants,
-} from "../../../../animation/animation";
+} from "../../../animation/animation";
 import { useNavigate } from "react-router-dom";
-import FormInput from "../../../common/FormField/FormField";
-import DynamicTable from "../../../common/DynamicTable/DynamicTable";
-import CheckBox from "../../../common/CheckBox/CheckBox";
-import SelectionFilter from "../../../common/SelectionFilter/SelectionFilter";
+import FormInput from "../../../components/common/FormField/FormField";
+import DynamicTable from "../../../components/common/DynamicTable/DynamicTable";
+import CheckBox from "../../../components/common/CheckBox/CheckBox";
+import SelectionFilter from "../../../components/common/SelectionFilter/SelectionFilter";
 
 interface FormattedProduct {
   _id?: string;

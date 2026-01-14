@@ -1,6 +1,6 @@
 import React from "react";
 import ImageLogo from "../../assets/illustration.png";
-import {RegisterForm} from "../../components/feature/auth/RegisterForm";
+import {RegisterForm} from "../../features/auth/RegisterForm";
 
 const RegisterPage = () => {
     return (

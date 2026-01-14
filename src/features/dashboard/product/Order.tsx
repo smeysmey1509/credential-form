@@ -1,9 +1,9 @@
 import React from "react";
-import DynamicTable from "../../../common/DynamicTable/DynamicTable";
-import SelectionFilter from "../../../common/SelectionFilter/SelectionFilter";
-import SearchField from "../../../common/SearchField/SearchField";
-import Pagination from "../../../common/Pagination/Pagination";
-import NumberPagination from "../../../common/Pagination/NumberPagination";
+import DynamicTable from "../../../components/common/DynamicTable/DynamicTable";
+import SelectionFilter from "../../../components/common/SelectionFilter/SelectionFilter";
+import SearchField from "../../../components/common/SearchField/SearchField";
+import Pagination from "../../../components/common/Pagination/Pagination";
+import NumberPagination from "../../../components/common/Pagination/NumberPagination";
 
 const columns = [
   {

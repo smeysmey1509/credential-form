@@ -1,10 +1,10 @@
 import React from "react";
-import DynamicTable from "../../../common/DynamicTable/DynamicTable";
+import DynamicTable from "../../../components/common/DynamicTable/DynamicTable";
 import { color } from "framer-motion";
-import ButtonWithEmoji from "../../../Button/ButtonWithEmoji/ButtonWithEmoji";
+import ButtonWithEmoji from "../../../components/Button/ButtonWithEmoji/ButtonWithEmoji";
 import { RiPrinterLine, RiShareForwardLine } from "react-icons/ri";
-import Tracking from "../../../common/Tracking/Tracking";
-import OrderSummary from "../../../common/OrderSummary/OrderSummary";
+import Tracking from "../../../components/common/Tracking/Tracking";
+import OrderSummary from "../../../components/common/OrderSummary/OrderSummary";
 
 const columns = [
   {

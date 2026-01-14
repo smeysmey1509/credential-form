@@ -3,28 +3,28 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import { lazy, Suspense } from "react";
 import Work from "./Work/Work";
 import ProtectedRoute from "./routes/ProtectedRoute";
-import Cart from "./components/feature/dashboard/product/Cart";
-import Wishlist from "./components/feature/dashboard/product/Wishlist";
-import Products from "./components/feature/dashboard/product/Products";
-import Checkout from "./components/feature/dashboard/product/Checkout";
-import ProductDetails from "./components/feature/dashboard/product/ProductDetails";
-import Orders from "./components/feature/dashboard/product/Order";
-import EditProducts from "./components/feature/dashboard/product/EditProducts";
-import OrderDetails from "./components/feature/dashboard/product/OrderDetails";
+import Cart from "./features/dashboard/product/Cart";
+import Wishlist from "./features/dashboard/product/Wishlist";
+import Products from "./features/dashboard/product/Products";
+import Checkout from "./features/dashboard/product/Checkout";
+import ProductDetails from "./features/dashboard/product/ProductDetails";
+import Orders from "./features/dashboard/product/Order";
+import EditProducts from "./features/dashboard/product/EditProducts";
+import OrderDetails from "./features/dashboard/product/OrderDetails";
 
 const LoginPage = lazy(() => import("./pages/auth/LoginPage"));
 const HomePage = lazy(() => import("./pages/auth/HomePage"));
 const RegisterPage = lazy(() => import("./pages/auth/RegisterPage"));
-const Dashboard = lazy(() => import("./components/feature/dashboard/Layout"));
+const Dashboard = lazy(() => import("./features/dashboard/Layout"));
 const PublicRoute = lazy(() => import("./routes/PublicRoute"));
 const Product = lazy(
-  () => import("./components/feature/dashboard/product/ListProduct")
+  () => import("./features/dashboard/product/ListProduct")
 );
 const CreateProduct = lazy(
-  () => import("./components/feature/dashboard/product/CreateProduct")
+  () => import("./features/dashboard/product/CreateProduct")
 );
 const ListProduct = lazy(
-  () => import("./components/feature/dashboard/product/ListProduct")
+  () => import("./features/dashboard/product/ListProduct")
 );
 
 function App() {

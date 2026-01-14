@@ -1,22 +1,22 @@
 import React, { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import FormField from "../../../common/FormField/FormField";
+import FormField from "../../../components/common/FormField/FormField";
 import SelectItemField, {
   OptionType,
-} from "../../../common/SelectItemField/SelectItemField";
-import MultiSelect from "../../../common/MultiSelect/MultiSelect";
-import ProductDescriptionInput from "../../../common/ProductDescriptionInput/ProductDescriptionInput";
-import ProductImageInput from "../../../common/ProductImageInput/ProductImageInput";
-import PublishDateInput from "../../../common/DateForm/DateForm";
-import RichTextEditor from "../../../common/RichTextEditor/RichTextEditor";
-import ButtonWithEmoji from "../../../Button/ButtonWithEmoji/ButtonWithEmoji";
+} from "../../../components/common/SelectItemField/SelectItemField";
+import MultiSelect from "../../../components/common/MultiSelect/MultiSelect";
+import ProductDescriptionInput from "../../../components/common/ProductDescriptionInput/ProductDescriptionInput";
+import ProductImageInput from "../../../components/common/ProductImageInput/ProductImageInput";
+import PublishDateInput from "../../../components/common/DateForm/DateForm";
+import RichTextEditor from "../../../components/common/RichTextEditor/RichTextEditor";
+import ButtonWithEmoji from "../../../components/Button/ButtonWithEmoji/ButtonWithEmoji";
 import { GoPlus, GoDownload } from "react-icons/go";
-import ProductService from "../../../../services/common/ProductService/ProductService";
-import { Product, ProductVariant } from "../../../../types/ProductType";
-import CategoryService from "../../../../services/common/Category/CategoryService";
-import BrandService from "../../../../services/common/BrandService/BrandService";
-import Varaint from "../../../common/Varaint/Varaint";
-import { usePopup } from "../../../../context/PopupContext";
+import ProductService from "../../../services/common/ProductService/ProductService";
+import { Product, ProductVariant } from "../../../types/ProductType";
+import CategoryService from "../../../services/common/Category/CategoryService";
+import BrandService from "../../../services/common/BrandService/BrandService";
+import Varaint from "../../../components/common/Varaint/Varaint";
+import { usePopup } from "../../../context/PopupContext";
 
 const EditProducts = () => {
   const { id } = useParams<{ id: string | undefined }>();
