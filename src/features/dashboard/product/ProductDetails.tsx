@@ -1,16 +1,16 @@
 import React, { useEffect, useRef, useState } from "react";
-import DetailCard from "../../../common/DetailCard/DetailCard";
-import DetailCardInformation from "../../../common/DetailCardInformation/DetailCardInformation";
-import Tabs from "../../../common/Tabs/Tabs";
-import Review from "../../../common/Review/Review";
-import FeatureCard from "../../../common/FeatureCard/FeatureCard";
-import ProductCard from "../../../common/Card/ProductCard";
+import DetailCard from "../../../components/common/DetailCard/DetailCard";
+import DetailCardInformation from "../../../components/common/DetailCardInformation/DetailCardInformation";
+import Tabs from "../../../components/common/Tabs/Tabs";
+import Review from "../../../components/common/Review/Review";
+import FeatureCard from "../../../components/common/FeatureCard/FeatureCard";
+import ProductCard from "../../../components/common/Card/ProductCard";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { useNavigate, useParams } from "react-router-dom";
-import ProductService from "../../../../services/common/ProductService/ProductService";
-import { Product } from "../../../../types/ProductType";
-import CartService from "../../../../services/common/CartService/CartService";
-import { colorNameToDynamicHex } from "../../../../utils/colorUtils";
+import ProductService from "../../../services/common/ProductService/ProductService";
+import { Product } from "../../../types/ProductType";
+import CartService from "../../../services/common/CartService/CartService";
+import { colorNameToDynamicHex } from "../../../utils/colorUtils";
 
 interface ColorItem {
   name: string;

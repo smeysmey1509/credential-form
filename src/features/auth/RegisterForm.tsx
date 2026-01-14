@@ -1,8 +1,8 @@
 import React, {useState} from "react";
-import Group from "../../../assets/group.png";
+import Group from "../../assets/group.png";
 import axios from "axios";
 import {useNavigate} from "react-router-dom";
-import {setCookie} from "../../../utils/cookie";
+import {setCookie} from "../../utils/cookie";
 
 export const RegisterForm = () => {
     const [name, setName] = useState<string>("");

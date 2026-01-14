@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import ButtonWithEmoji from "../../../Button/ButtonWithEmoji/ButtonWithEmoji";
+import ButtonWithEmoji from "../../../components/Button/ButtonWithEmoji/ButtonWithEmoji";
 import {
   MdOutlineLocalShipping,
   MdPayment,
@@ -9,14 +9,14 @@ import {
 import { IoCartOutline } from "react-icons/io5";
 import { BsPerson } from "react-icons/bs";
 import { motion, AnimatePresence } from "framer-motion";
-import ShippingCard from "../../../common/ShippingCard/ShippingCard";
-import ShipAddress from "../../../common/ShipAddress/ShipAddress";
-import PersonalDetail from "../../../Button/PersonalDetail/PersonalDetail";
-import FormInput from "../../../common/FormField/FormField";
-import CheckBox from "../../../common/CheckBox/CheckBox";
-import CheckBoxRedius from "../../../common/CheckBoxRedius/CheckBoxRedius";
-import CreditCard from "../../../common/CreditCard/CreditCard";
-import SummaryCard from "../../../common/SummaryCard/SummaryCard";
+import ShippingCard from "../../../components/common/ShippingCard/ShippingCard";
+import ShipAddress from "../../../components/common/ShipAddress/ShipAddress";
+import PersonalDetail from "../../../components/Button/PersonalDetail/PersonalDetail";
+import FormInput from "../../../components/common/FormField/FormField";
+import CheckBox from "../../../components/common/CheckBox/CheckBox";
+import CheckBoxRedius from "../../../components/common/CheckBoxRedius/CheckBoxRedius";
+import CreditCard from "../../../components/common/CreditCard/CreditCard";
+import SummaryCard from "../../../components/common/SummaryCard/SummaryCard";
 
 const Checkout = () => {
   const [activeTab, setActiveTab] = useState(0);

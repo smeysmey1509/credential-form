@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
-import SearchBox from "../../../common/SearchBox/SearchBox";
-import Filter from "../../../common/SelectionFilter/Filter";
+import SearchBox from "../../../components/common/SearchBox/SearchBox";
+import Filter from "../../../components/common/SelectionFilter/Filter";
 import { IoArrowForward } from "react-icons/io5";
-import WishlistItem from "../../../common/WishlistItem/WishlistItem";
-import NumberPagination from "../../../common/Pagination/NumberPagination";
-import { Product } from "../../../../types/ProductType";
-import type { Wishlist } from "../../../../types/WishlistType";
-import WishlistService from "../../../../services/common/WishlistService/WishlistService";
-import DetailPagination from "../../../common/Pagination/DetailPagination";
-import CartService from "../../../../services/common/CartService/CartService";
-import { useToast } from "../../../../context/ToasterContext";
+import WishlistItem from "../../../components/common/WishlistItem/WishlistItem";
+import NumberPagination from "../../../components/common/Pagination/NumberPagination";
+import { Product } from "../../../types/ProductType";
+import type { Wishlist } from "../../../types/WishlistType";
+import WishlistService from "../../../services/common/WishlistService/WishlistService";
+import DetailPagination from "../../../components/common/Pagination/DetailPagination";
+import CartService from "../../../services/common/CartService/CartService";
+import { useToast } from "../../../context/ToasterContext";
 import { title } from "process";
 
 const Wishlist = () => {

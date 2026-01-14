@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import Header from "../../layout/Header/Header";
-import Sidebar from "../../layout/Sidebar/Sidebar";
-import Content from "../../layout/Content/Content";
-import Footer from "../../layout/Footer/Footer";
-import axiosClient from "../../../services/api/axiosClient";
+import Header from "../../components/layout/Header/Header";
+import Sidebar from "../../components/layout/Sidebar/Sidebar";
+import Content from "../../components/layout/Content/Content";
+import Footer from "../../components/layout/Footer/Footer";
+import axiosClient from "../../services/api/axiosClient";
 
 const Layout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);

@@ -1,5 +1,5 @@
 import React from "react";
-import LoginForm from "../../components/feature/auth/LoginForm";
+import LoginForm from "../../features/auth/LoginForm";
 import ImageLogo from "../../assets/illustration.png";
 
 const LoginPage = () => {

@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
-import DynamicTable from "../../../common/DynamicTable/DynamicTable";
-import QuantityInput from "../../../common/QuantityInput/QuantityInput";
-import CartService from "../../../../services/common/CartService/CartService";
-import PrimaryButton from "../../../Button/PrimaryButton/PrimaryButton";
-import FormField from "../../../common/FormField/FormField";
-import PromoCodeService from "../../../../services/common/PromoCode/PromoCode";
+import DynamicTable from "../../../components/common/DynamicTable/DynamicTable";
+import QuantityInput from "../../../components/common/QuantityInput/QuantityInput";
+import CartService from "../../../services/common/CartService/CartService";
+import PrimaryButton from "../../../components/Button/PrimaryButton/PrimaryButton";
+import FormField from "../../../components/common/FormField/FormField";
+import PromoCodeService from "../../../services/common/PromoCode/PromoCode";
 import { BsFillExclamationCircleFill } from "react-icons/bs";
 import { AnimatePresence, motion } from "framer-motion";
-import { toAbs, getPrimaryUrl } from "../../../../utils/image";
+import { toAbs, getPrimaryUrl } from "../../../utils/image";
 import { FaRegHeart, FaRegTrashAlt } from "react-icons/fa";
 
 const Cart = () => {

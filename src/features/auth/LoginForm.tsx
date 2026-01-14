@@ -1,8 +1,8 @@
 import React, {useState} from "react";
-import Group from "../../../assets/group.png";
+import Group from "../../assets/group.png";
 import {useNavigate} from "react-router-dom";
 import axios from "axios";
-import {setCookie} from "../../../utils/cookie";
+import {setCookie} from "../../utils/cookie";
 
 const LoginForm = () => {
     const [name, setName] = useState("");
