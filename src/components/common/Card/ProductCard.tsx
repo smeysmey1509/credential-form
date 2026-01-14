@@ -46,6 +46,7 @@ export default function ProductCard({
   userClick,
 }: ProductCardProps) {
   const imgSrc = getPrimaryImageURL(product, productVariant);
+  const productName = product?.name || "Product Name";
 
   return (
     <div className="group/card flex flex-col shadow-[0px_6px_16px_2px_rgba(0,0,0,0.05)] rounded">
@@ -113,8 +114,12 @@ export default function ProductCard({
       </div>
       <div className="w-full bg-white p-4 rounded">
         <h6 className="font-bold text-[1.1rem] text-[#0A0A0A]">
-          <a href="#" className="decoration-none">
-            {product?.name || "Product Name"}
+          <a
+            href="#"
+            className="decoration-none block truncate"
+            title={productName}
+          >
+            {productName}
           </a>
         </h6>
 
