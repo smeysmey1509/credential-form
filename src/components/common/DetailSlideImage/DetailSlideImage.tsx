@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import ButtonWithEmoji from "../../Button/ButtonWithEmoji/ButtonWithEmoji";
 import { CgClose } from "react-icons/cg";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
+import { toAbs } from "../../../utils/image";
 
 interface DetailSlideImageProp {
   onClose?: () => void;
@@ -81,7 +82,7 @@ const DetailSlideImage: React.FC<DetailSlideImageProp> = ({
             className="min-w-full flex justify-center items-center flex-col"
           >
             <img
-              src={`http://localhost:5002${src}`}
+              src={toAbs(src)}
               alt={`Slide ${i + 1}`}
               className="max-h-[calc(100vh-100px)] object-contain rounded-lg shadow-lg select-none"
             />

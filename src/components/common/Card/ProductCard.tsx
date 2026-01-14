@@ -7,6 +7,7 @@ import { ImContrast } from "react-icons/im";
 import CardButton from "../Button/CardButton/CardButton";
 import Rate from "../Rate/Rate";
 import { Product, ProductVariant } from "../../../types/ProductType";
+import { toAbs } from "../../../utils/image";
 
 interface ProductCardProps {
   product: Product;
@@ -23,7 +24,7 @@ const fmt = (n?: number) => (typeof n === "number" ? `$${n}` : "");
 
 function getPrimaryImageURL(p: Product, v?: ProductVariant): string {
   // 1) backend virtual (if present)
-  if (p.primaryImage) return p.primaryImage;
+  if (p.primaryImage) return toAbs(p.primaryImage);
 
   // 2) product.images[primaryImageIndex] -> images[0]
   const idx =
@@ -36,7 +37,7 @@ function getPrimaryImageURL(p: Product, v?: ProductVariant): string {
   const varImg = v?.images?.[0];
 
   // final fallback: empty string (no image)
-  return prodImg || varImg || "";
+  return toAbs(prodImg || varImg || "");
 }
 
 export default function ProductCard({

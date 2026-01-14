@@ -12,6 +12,7 @@ import ProductService from "../../../services/common/ProductService/ProductServi
 import { Product } from "../../../types/ProductType";
 import { motion, AnimatePresence } from "framer-motion";
 import socket from "../../../services/socket/socket";
+import { DEFAULT_IMG, toAbs } from "../../../utils/image";
 import {
   toolbarVariants,
   dropdownVariants,
@@ -154,7 +155,7 @@ const ListProduct: React.FC = () => {
           product: {
             _id: p?._id ?? "",
             name: p.name,
-            image: imageUrl || `https://image.pngaaa.com/13/1887013-middle.png`,
+            image: toAbs(imageUrl) || DEFAULT_IMG,
           },
           category: p.category?.categoryName || "—",
           price: p.cost,

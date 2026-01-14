@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { FaRegTrashAlt, FaRegHeart } from "react-icons/fa";
+import { DEFAULT_IMG, toAbs } from "../../../utils/image";
 
 interface Column {
   header: string | React.ReactNode;
@@ -86,10 +87,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                         <div className="flex items-center gap-2 py-2">
                           <div className="w-[80px] h-[80px] rounded-sm bg-[#F9F9FA] leading-[5rem] p-2">
                             <img
-                              src={
-                                row?.image ||
-                                "https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg"
-                              }
+                              src={toAbs(row?.image) || DEFAULT_IMG}
                               alt={row?.image || "No image available"}
                               className="w-full h-full object-cover rounded"
                             />
@@ -138,10 +136,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                         <div className="flex items-center gap-2 py-2">
                           <div className="w-[80px] h-[80px] rounded-sm bg-[#F9F9FA] leading-[5rem] p-2">
                             <img
-                              src={
-                                row?.image ||
-                                "https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg"
-                              }
+                              src={toAbs(row?.image) || DEFAULT_IMG}
                               alt={row?.image || "No image available"}
                               className="w-full h-full object-cover rounded"
                             />
