@@ -1,7 +1,6 @@
 import "./App.css";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { lazy, Suspense } from "react";
-import Work from "./Work/Work";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import Cart from "./features/dashboard/product/Cart";
 import Wishlist from "./features/dashboard/product/Wishlist";
@@ -84,7 +83,6 @@ function App() {
           <Route path="product/orderdetails" element={<OrderDetails />} />
           <Route path="product/orders" element={<Orders />} />
         </Route>
-        <Route path="work" element={<Work />} />
         <Route
           path="*"
           element={
