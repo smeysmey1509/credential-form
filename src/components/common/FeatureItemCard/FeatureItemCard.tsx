@@ -1,6 +1,7 @@
 import React from "react";
 import Rate from "../Rate/Rate";
 import ButtonWithEmoji from "../../Button/ButtonWithEmoji/ButtonWithEmoji";
+import { DEFAULT_IMG, toAbs } from "../../../utils/image";
 
 interface FeatureItemCardProp {
   productImg?: string;
@@ -26,9 +27,7 @@ const FeatureItemCard: React.FC<FeatureItemCardProp> = ({
       <div className="w-[80px] h-[80px] rounded-sm bg-[#F7F7FE] leading-[5rem] p-2">
         <img
           src={
-            productImg
-              ? `http://localhost:5002${productImg}`
-              : `https://sprukomarket.com/products/html/bootstrap/xintra/dist/assets/images/ecommerce/png/29.png`
+            productImg ? toAbs(productImg) : DEFAULT_IMG
           }
           alt={"No image available"}
           className="w-full h-full object-cover rounded"

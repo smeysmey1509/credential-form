@@ -4,6 +4,7 @@ import ButtonWithEmoji from "../../Button/ButtonWithEmoji/ButtonWithEmoji";
 import { FaCartPlus, FaRegCreditCard } from "react-icons/fa";
 import { usePopup } from "../../../context/PopupContext";
 import DetailSlideImage from "../DetailSlideImage/DetailSlideImage";
+import { DEFAULT_IMG, toAbs } from "../../../utils/image";
 
 interface DetailCardProp {
   productName?: string;
@@ -11,7 +12,11 @@ interface DetailCardProp {
   primaryImage?: string;
 }
 
-const DetailCard: React.FC<DetailCardProp> = ({ productName, images, primaryImage }) => {
+const DetailCard: React.FC<DetailCardProp> = ({
+  productName,
+  images,
+  primaryImage,
+}) => {
   const { showPopup, hidePopup } = usePopup();
   return (
     <div className="w-full h-fit flex flex-col justify-between items-center">
@@ -26,13 +31,10 @@ const DetailCard: React.FC<DetailCardProp> = ({ productName, images, primaryImag
 
           <img
             src={
-              primaryImage
-                ? `http://localhost:5002${primaryImage}`
-                : "https://static.vecteezy.com/system/resources/previews/022/059/000/non_2x/no-image-available-icon-vector.jpg"
+              primaryImage ? toAbs(primaryImage) : DEFAULT_IMG
             }
             alt={
-              primaryImage ||
-              "https://static.vecteezy.com/system/resources/previews/022/059/000/non_2x/no-image-available-icon-vector.jpg"
+              primaryImage || "No image available"
             }
             className="w-fit h-fit object-cover transition-transform duration-500 group-hover:scale-100"
           />
