@@ -16,12 +16,13 @@ import ButtonWithEmoji from "../../../Button/ButtonWithEmoji/ButtonWithEmoji";
 import Varaint from "../../../common/Varaint/Varaint";
 import { usePopup } from "../../../../context/PopupContext";
 import { BrandType } from "../../../../types/BrandType";
+import { useToast } from "../../../../context/ToasterContext";
 
 const CreateProduct = () => {
   const [name, setName] = useState<string>("");
   const [description, setDescription] = useState<string>("");
   const [actualPrice, setActualPrice] = useState<number>(0);
-  const [discount, setDiscount] = useState<string>("")
+  const [discount, setDiscount] = useState<string>("");
   const [stock, setStock] = useState<number>(0);
   const [status, setStatus] = useState<string>("Published");
   const [categoryOptions, setCategoryOptions] = useState<OptionType[]>([]);
@@ -34,12 +35,13 @@ const CreateProduct = () => {
   const [weight, setWeight] = useState<string>("");
   const [tag, setTag] = useState<string[]>([]);
   const [publishDate, setPublishDate] = useState<string>("");
-  const [feature, setFeature] = useState<string>("")
+  const [feature, setFeature] = useState<string>("");
   const [publishTime, setPublishTime] = useState<string>("");
   const [stockAvailability, setStockAvailability] = useState<string>("");
   const [images, setImages] = useState<File[]>([]);
 
   const { showPopup, hidePopup } = usePopup();
+  const { showToast } = useToast();
 
   useEffect(() => {
     fetchCategories();
@@ -109,18 +111,17 @@ const CreateProduct = () => {
       formData.append("category", selectedCategoryId);
       formData.append("status", status);
       formData.append("discount", discount);
-      formData.append("publishDate", publishDate);  
+      formData.append("publishDate", publishDate);
       formData.append("publishTime", publishTime);
       formData.append("cost", cost);
       formData.append("brand", selectedBrandId);
-      formData.append("category", "68e4ab0b228596d481704988");
       formData.append("currency", currency);
-      formData.append("actualPrice", actualPrice.toString())
-      // formData.append("s", stockAvailability);
+      formData.append("actualPrice", actualPrice.toString());
+      formData.append("stockAvailability", stockAvailability);
       formData.append("weight", weight);
-      formData.append("feature", feature)
+      formData.append("feature", feature);
       formData.append("productType", productType);
-      formData.append("seller", "685ab59e33f273e409dc3eac")
+      formData.append("seller", "685ab59e33f273e409dc3eac");
 
       tag.forEach((t) => formData.append("tag", t));
 
@@ -128,18 +129,52 @@ const CreateProduct = () => {
         formData.append("images", image);
       });
 
-      const response = await ProductService.createProduct(formData);
-      console.log("Product created successfully:", response.data);
+      await ProductService.createProduct(formData);
+
+      showToast({
+        title: "Create Successfully",
+        description: "Your item was created successfully.",
+        type: "success",
+      });
+
+      // ✅ Reset all form fields after creation
+      setName("");
+      setDescription("");
+      setActualPrice(0);
+      setStock(0);
+      setSelectedCategoryId("");
+      setStatus("draft"); // or your default
+      setDiscount("");
+      setPublishDate("");
+      setPublishTime("");
+      setCost("");
+      setSelectedBrandId("");
+      setCurrency("USD");
+      setStockAvailability("");
+      setWeight("");
+      setFeature("");
+      setProductType("");
+      setTag([]);
+      setImages([]);
     } catch (error) {
-      console.error("Error creating product:", error);
+      showToast({
+        title: "Create Failed",
+        description: "Your item was created failed.",
+        type: "danger",
+      });
     }
   };
 
-  console.log('selectedBrandId', selectedBrandId);
-  console.log('selectedCategoryId', selectedCategoryId);
+  const hanldeTestToaster = () => {
+    showToast({
+      title: "Create Successfully",
+      description: "Your item was created successfully.",
+      type: "danger",
+    });
+  };
 
   return (
-    <div className="w-full h-full bg-white dark:bg-[#19191C] shadow rounded-lg p-6">
+    <div className="relative w-full h-full bg-white dark:bg-[#19191C] shadow rounded-lg p-6">
       <form onSubmit={handleSubmit} method="POST">
         <div className="w-full h-full flex justify-center gap-4">
           <div className="w-1/2 h-full grid grid-cols-2 gap-x-6 gap-y-4">
@@ -240,7 +275,7 @@ const CreateProduct = () => {
           </div>
           <div className="w-1/2 h-full grid grid-cols-6 gap-x-6 gap-y-4">
             <div className="col-span-6 row-span-3">
-              <RichTextEditor label="Product Feature" value={feature}/>
+              <RichTextEditor label="Product Feature" value={feature} />
             </div>
             <div className="col-span-6 row-start-4">
               <ProductImageInput label="Warranty Documents:" />
@@ -264,7 +299,12 @@ const CreateProduct = () => {
               />
             </div>
             <div className="col-span-2 col-start-5 row-start-5">
-              <FormField label="Discount" placeholder="Discount" value={discount} onChange={(val) => setDiscount(val.target.value)}/>
+              <FormField
+                label="Discount"
+                placeholder="Discount"
+                value={discount}
+                onChange={(val) => setDiscount(val.target.value)}
+              />
             </div>
             <div className="col-span-3 row-start-6">
               <PublishDateInput
@@ -311,6 +351,9 @@ const CreateProduct = () => {
           <PrimaryButton type="submit" label="Save Product" />
         </div>
       </form>
+      <div>
+        <ButtonWithEmoji label="Toaster" onClick={hanldeTestToaster} />
+      </div>
     </div>
   );
 };

@@ -6,13 +6,16 @@ import "./styles/global.css";
 import { BrowserRouter } from "react-router-dom";
 import { SidebarTitleProvider } from "./context/SidebarTitleContext";
 import { PopupProvider } from "./context/PopupContext";
+import { ToastProvider } from "./context/ToasterContext";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <BrowserRouter>
       <SidebarTitleProvider>
         <PopupProvider>
-          <App />
+          <ToastProvider>
+            <App />
+          </ToastProvider>
         </PopupProvider>
       </SidebarTitleProvider>
     </BrowserRouter>

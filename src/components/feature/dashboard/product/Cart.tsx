@@ -31,21 +31,6 @@ const Cart = () => {
     handleFetchCart();
   }, []);
 
-  useEffect(() => {
-    if (cart) {
-      const updatedSubTotal = cart.reduce(
-        (acc, curr) => acc + (curr.total || 0),
-        0
-      );
-      setCalSubTotal(updatedSubTotal);
-    }
-  }, [cart]);
-
-  useEffect(() => {
-    const calculatedTotal = calSubTotal - discount + serviceTax - deliveryFee;
-    setTotal(calculatedTotal);
-  }, [calSubTotal, discount, serviceTax, deliveryFee]);
-
   const columns = [
     {
       header: "Product Name",
@@ -56,6 +41,7 @@ const Cart = () => {
       header: "Price",
       accessor: "price",
       width: "15%",
+      currency: true
     },
     {
       header: "Quantity",
@@ -74,6 +60,7 @@ const Cart = () => {
       header: "Total",
       accessor: "total",
       width: "15%",
+      currency: true
     },
     {
       header: "Action",
@@ -93,6 +80,7 @@ const Cart = () => {
 
     try {
       await CartService.updateQuantity(row.productId, newQty);
+      handleFetchCart();
     } catch (err) {
       console.error("Failed to update quantity:", err);
       handleFetchCart();
@@ -139,6 +127,7 @@ const Cart = () => {
       setDeliveryMethod(response?.data?.delivery?.method || "");
       setPickUpCode(response?.data?.delivery?.code || null);
       setEstimatedDeliveryTime(response?.data?.delivery?.estimatedDays || null);
+      setTotal(response?.data?.summary?.total)
       setCart(cartItems);
     } catch (err) {
       console.error("Error fetching cart:", err);
@@ -342,7 +331,7 @@ const Cart = () => {
                 transition={{ duration: 0.25, ease: "easeOut" }}
                 className="text-[#000] font-semibold font-sans text-[16px]"
               >
-                ${calSubTotal}
+                ${calSubTotal ?? "00"}
               </motion.span>
             </AnimatePresence>
           </div>
@@ -363,8 +352,8 @@ const Cart = () => {
                 {discountType === "percentage"
                   ? `${discount}% - $${discountAmount}`
                   : discountType === "fixed"
-                  ? `$${discount}`
-                  : `$${discount}`}
+                  ? `$${discount ?? "0"}`
+                  : `$${discount ?? "0"}`}
               </motion.span>
             </AnimatePresence>
           </div>
@@ -382,7 +371,7 @@ const Cart = () => {
                 transition={{ duration: 0.25, ease: "easeOut" }}
                 className="text-[#FB4242] font-semibold font-sans text-[16px]"
               >
-                - ${deliveryFee}
+                - ${deliveryFee ?? "00"}
               </motion.span>
             </AnimatePresence>
           </div>
@@ -400,7 +389,7 @@ const Cart = () => {
                 transition={{ duration: 0.25, ease: "easeOut" }}
                 className="font-medium text-[#000] font-sans text-[0.875rem]"
               >
-                - ${serviceTax}
+                - ${serviceTax ?? "00"}
               </motion.span>
             </AnimatePresence>
           </div>
@@ -418,7 +407,7 @@ const Cart = () => {
                 transition={{ duration: 0.25, ease: "easeOut" }}
                 className="text-[#000] font-semibold font-sans text-[16px]"
               >
-                ${total}
+                ${total ?? "00"}
               </motion.span>
             </AnimatePresence>
           </div>

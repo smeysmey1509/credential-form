@@ -19,8 +19,8 @@ const NumberPagination = ({ classname }: NumberPaginationProps) => {
       <Pagination
         page={1}
         totalPages={6}
-        boundaryCount={1}
-        siblingCount={1}
+        boundaryCount={0}
+        siblingCount={0}
         onChange={setPage}
       />
     </div>

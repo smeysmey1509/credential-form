@@ -434,11 +434,19 @@ const ListProduct: React.FC = () => {
       width: "6%",
       color: "!font-semibold",
       bodyColor: "!text-[13px] !text-[#212b37] !font-medium",
-      render: (value: any) => (
-        <span className="!px-[7.2px] !py-[4px] !font-semibold rounded text-[11px] !bg-[#5C67F71A] !text-[#5C67F7]">
-          {value}
-        </span>
-      ),
+      render: (value: any) => {
+        const isUnpublished = value?.toLowerCase() === "unpublished";
+        const bgColor = isUnpublished ? "!bg-red-100" : "!bg-[#5C67F71A]";
+        const textColor = isUnpublished ? "!text-red-600" : "!text-[#5C67F7]";
+
+        return (
+          <span
+            className={`!px-[7.2px] !py-[4px] !font-semibold rounded text-[11px] ${bgColor} ${textColor}`}
+          >
+            {value}
+          </span>
+        );
+      },
     },
     {
       header: "Seller",

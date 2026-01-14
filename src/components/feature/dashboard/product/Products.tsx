@@ -13,6 +13,9 @@ import BrandService from "../../../../services/common/BrandService/BrandService"
 import { BrandStats } from "../../../../types/BrandType";
 import { discountData, sizeData } from "../../../../dummyData/dummyData";
 import Pagination from "../../../common/Pagination/Pagination";
+import { useToast } from "../../../../context/ToasterContext";
+import WishlistService from "../../../../services/common/WishlistService/WishlistService";
+import { AxiosError } from "axios";
 
 type SortKey = "" | "price_asc" | "price_desc";
 
@@ -32,7 +35,7 @@ const Products = () => {
   const [brand, setBrand] = useState<BrandStats["brands"]>([]);
   const [sortBy, setSortBy] = useState<string>("");
   const [page, setPage] = useState<number>(1);
-  const navigate = useNavigate();
+  const { showToast } = useToast();
 
   useEffect(() => {
     (async () => {
@@ -93,9 +96,32 @@ const Products = () => {
   const handleAddToCart = async (productId: string) => {
     try {
       const responseAddToCart = await CartService.addToCart(productId);
+      showToast({
+        title: `Added`,
+        description: `Add Successfull`,
+        type: "success",
+      });
       console.log("Add to cart response:", responseAddToCart);
     } catch (err) {
       console.log(err);
+    }
+  };
+
+  const handleAddWishlist = async (id: string, name: string) => {
+    try {
+      await WishlistService?.addWishlist(id);
+      showToast({
+        title: "Add Wishlist Success",
+        description: `${name} added to wishlist successfully.`,
+        type: "success",
+      });
+    } catch (err) {
+      const error = err as AxiosError<{ code?: string; error?: string }>;
+      showToast({
+        title: error?.response?.data?.code,
+        description: error?.response?.data?.error,
+        type: "danger",
+      });
     }
   };
 
@@ -145,7 +171,7 @@ const Products = () => {
                   addToCart: () => handleAddToCart(product?._id || ""),
                   quickView: () => alert(product.productId + " quick view"),
                   addToWishlist: () =>
-                    alert(product.productId + " added to wishlist"),
+                    handleAddWishlist(product._id || "", product?.name),
                   compare: () => alert(product.productId + " compare"),
                 }}
               />
