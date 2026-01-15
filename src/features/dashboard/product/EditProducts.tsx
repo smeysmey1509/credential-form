@@ -12,7 +12,8 @@ import RichTextEditor from "../../../components/common/RichTextEditor/RichTextEd
 import ButtonWithEmoji from "../../../components/Button/ButtonWithEmoji/ButtonWithEmoji";
 import { GoPlus, GoDownload } from "react-icons/go";
 import ProductService from "../../../services/common/ProductService/ProductService";
-import { Product, ProductVariant } from "../../../types/ProductType";
+import { FormImage, Product, ProductVariant } from "../../../types/ProductType";
+import { toAbs } from "../../../utils/image";
 import CategoryService from "../../../services/common/Category/CategoryService";
 import BrandService from "../../../services/common/BrandService/BrandService";
 import Varaint from "../../../components/common/Varaint/Varaint";
@@ -40,7 +41,7 @@ const EditProducts = () => {
   const [selectedBrandId, setSelectedBrandId] = useState<string>("");
   const [productType, setProductType] = useState<string>("");
   const [tag, setTag] = useState<string[]>([]);
-  const [images, setImages] = useState<File[]>([]);
+  const [images, setImages] = useState<FormImage[]>([]);
   const [rating, setRating] = useState<number>(0);
   const [weight, setWeight] = useState<number>(0);
   const [colorOptions, setColorOptions] = useState<string[]>([]);
@@ -141,7 +142,13 @@ const EditProducts = () => {
       setSelectedCategoryId(product?.category?._id || "");
       setSelectedBrandId(product?.brand?._id || "");
       setTag(product.tag || []);
-      setImages([]);
+      const productImages =
+        product.images && product.images.length > 0
+          ? product.images
+          : product.primaryImage
+            ? [product.primaryImage]
+            : [];
+      setImages(productImages.map((image) => toAbs(image)));
       setPrimaryImage(product.primaryImage || "");
       setUpdatedDate(product.updatedDate || "");
       setUpdatedTime(product.updatedTime || "");
@@ -182,7 +189,7 @@ const EditProducts = () => {
       compareAtPrice,
       discount: 12,
       productId,
-      primaryImage: `http://localhost:5002${primaryImage}`,
+      primaryImage: toAbs(primaryImage),
       ratingCount: rating,
       variants: displayVariants,
     }),
