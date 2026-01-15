@@ -1,14 +1,35 @@
-import React, {useRef, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
+import { FormImage } from "../../../types/ProductType";
 
 interface ProductImageInputProps {
     label?: string;
-    value?: File[];
+    value?: FormImage[];
     onChange?: (files: File[]) => void;
 }
 
 const ProductImageInput: React.FC<ProductImageInputProps> = ({label, onChange, value}) => {
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [selectedImages, setSelectedImages] = useState<string[]>([]);
+
+    useEffect(() => {
+        if (!value || value.length === 0) {
+            setSelectedImages([]);
+            return;
+        }
+
+        const urls = value.map((item) =>
+            typeof item === "string" ? item : URL.createObjectURL(item)
+        );
+        setSelectedImages(urls);
+
+        return () => {
+            urls.forEach((url, index) => {
+                if (typeof value[index] !== "string") {
+                    URL.revokeObjectURL(url);
+                }
+            });
+        };
+    }, [value]);
 
     const handleClick = () => {
         fileInputRef.current?.click();
@@ -23,11 +44,6 @@ const ProductImageInput: React.FC<ProductImageInputProps> = ({label, onChange, v
             if (onChange) {
                 onChange(fileArray);
             }
-
-            const imageUrls = fileArray.map((file) =>
-                URL.createObjectURL(file)
-            );
-            setSelectedImages(imageUrls);
 
             console.log("Selected files:", files);
             // Handle file uploads here if needed
