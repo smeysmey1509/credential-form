@@ -66,6 +66,15 @@ const ProductImageInput: React.FC<ProductImageInputProps> = ({
     onChange?.(nextImages);
   };
 
+  const handleRemoveImageById = (id: string) => {
+    const index = selectedImages.findIndex((entry) => entry.src === id);
+    if (index === -1) {
+      return;
+    }
+
+    handleRemoveImage(index);
+  };
+
   return (
     <div className="w-full flex flex-col gap-2">
       <label className="text-[14px] font-bold text-[#212b37] dark:text-white">
@@ -95,7 +104,7 @@ const ProductImageInput: React.FC<ProductImageInputProps> = ({
               name: entry.src,
               sizeLabel: "1.3 MB",
             }))}
-            onRemove={(id) => setSelectedImages((prev) => prev.filter((f) => f.src !== id))}
+            onRemove={handleRemoveImageById}
           />
         </div>
       </div>
