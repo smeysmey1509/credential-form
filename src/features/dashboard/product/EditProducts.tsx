@@ -141,17 +141,17 @@ const EditProducts = () => {
       setProductType(product?.productType || "");
       setSelectedCategoryId(product?.category?._id || "");
       setSelectedBrandId(product?.brand?._id || "");
-      setTag(product.tag || []);
+      setTag(product?.tag || []);
       const productImages =
-        product.images && product.images.length > 0
+        product?.images && product?.images?.length > 0
           ? product.images
-          : product.primaryImage
-            ? [product.primaryImage]
+          : product?.primaryImage
+            ? [product?.primaryImage]
             : [];
-      setImages(productImages.map((image) => toAbs(image)));
-      setPrimaryImage(product.primaryImage || "");
-      setUpdatedDate(product.updatedDate || "");
-      setUpdatedTime(product.updatedTime || "");
+      setImages(productImages?.map((image) => toAbs(image)));
+      setPrimaryImage(product?.primaryImage || "");
+      setUpdatedDate(product?.updatedDate || "");
+      setUpdatedTime(product?.updatedTime || "");
 
       const colorList =
         response?.data?.variants
@@ -428,7 +428,7 @@ const EditProducts = () => {
                 <PublishDateInput label="Publish Date" value={updatedDate} />
               </div>
               <div className="col-span-6 row-start-8">
-                <PublishDateInput label="Publish Time" value={updatedTime} />
+                <PublishDateInput label="Publish Time" type="time" value={updatedTime} />
               </div>
               <div className="col-span-6 row-start-9">
                 <SelectItemField
