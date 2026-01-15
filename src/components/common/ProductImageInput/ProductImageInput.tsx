@@ -75,7 +75,7 @@ const ProductImageInput: React.FC<ProductImageInputProps> = ({
     handleRemoveImage(index);
   };
 
-   const formatBytes = (bytes: number) => {
+  const formatBytes = (bytes: number) => {
     if (bytes === 0) {
       return "0 B";
     }
@@ -86,6 +86,7 @@ const ProductImageInput: React.FC<ProductImageInputProps> = ({
     return `${value} ${sizes[i]}`;
   };
 
+  const shouldScroll = selectedImages.length > 4;
 
   return (
     <div className="w-full flex flex-col gap-2">
@@ -109,11 +110,15 @@ const ProductImageInput: React.FC<ProductImageInputProps> = ({
           onChange={handleFileChange}
           className="hidden"
         />
-        <div className="w-full mt-5 flex flex-col items-start gap-2">
+        <div
+          className={`w-full mt-5 flex flex-col items-start gap-2 ${
+            shouldScroll ? "max-h-64 overflow-y-auto pr-2" : ""
+          }`}
+        >
           <UploadList
             files={selectedImages.map((entry) => ({
               id: entry.src,
-             name:
+              name:
                 typeof entry.image === "string" ? entry.src : entry.image.name,
               sizeLabel:
                 typeof entry.image === "string"
