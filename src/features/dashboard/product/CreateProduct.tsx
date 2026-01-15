@@ -162,6 +162,7 @@ const CreateProduct = () => {
         description: "Your item was created failed.",
         type: "danger",
       });
+      console.error("Error creating product:", error);
     }
   };
 

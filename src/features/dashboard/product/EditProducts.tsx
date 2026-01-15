@@ -155,9 +155,9 @@ const EditProducts = () => {
 
       const colorList =
         response?.data?.variants
-          ?.map((v: any) => v?.attributes?.color)
+          ?.map((v) => v?.attributes?.color)
           ?.filter(Boolean) ?? [];
-      setColorOptions(colorList);
+      setColorOptions(colorList as string[]);
     } catch (error) {
       console.error("❌ Failed to fetch product data:", error);
     }
@@ -380,7 +380,7 @@ const EditProducts = () => {
               </div>
             </div>
             {/* RIGHT SECTION */}
-            <div className="w-1/2 h-full grid grid-cols-6 grid-rows-11 gap-4">
+            <div className="w-1/2 h-full grid grid-cols-6 gap-4">
               <div className="col-span-2">
                 <FormField
                   label="Actual Price"
