@@ -75,6 +75,18 @@ const ProductImageInput: React.FC<ProductImageInputProps> = ({
     handleRemoveImage(index);
   };
 
+   const formatBytes = (bytes: number) => {
+    if (bytes === 0) {
+      return "0 B";
+    }
+    const k = 1024;
+    const sizes = ["B", "KB", "MB", "GB", "TB"];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    const value = parseFloat((bytes / Math.pow(k, i)).toFixed(1));
+    return `${value} ${sizes[i]}`;
+  };
+
+
   return (
     <div className="w-full flex flex-col gap-2">
       <label className="text-[14px] font-bold text-[#212b37] dark:text-white">
@@ -101,8 +113,12 @@ const ProductImageInput: React.FC<ProductImageInputProps> = ({
           <UploadList
             files={selectedImages.map((entry) => ({
               id: entry.src,
-              name: entry.src,
-              sizeLabel: "1.3 MB",
+             name:
+                typeof entry.image === "string" ? entry.src : entry.image.name,
+              sizeLabel:
+                typeof entry.image === "string"
+                  ? "—"
+                  : formatBytes(entry.image.size),
             }))}
             onRemove={handleRemoveImageById}
           />
