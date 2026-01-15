@@ -16,6 +16,7 @@ import ButtonWithEmoji from "../../../components/Button/ButtonWithEmoji/ButtonWi
 import Varaint from "../../../components/common/Varaint/Varaint";
 import { usePopup } from "../../../context/PopupContext";
 import { BrandType } from "../../../types/BrandType";
+import { FormImage } from "../../../types/ProductType";
 import { useToast } from "../../../context/ToasterContext";
 
 const CreateProduct = () => {
@@ -38,7 +39,7 @@ const CreateProduct = () => {
   const [feature, setFeature] = useState<string>("");
   const [publishTime, setPublishTime] = useState<string>("");
   const [stockAvailability, setStockAvailability] = useState<string>("");
-  const [images, setImages] = useState<File[]>([]);
+  const [images, setImages] = useState<FormImage[]>([]);
 
   const { showPopup, hidePopup } = usePopup();
   const { showToast } = useToast();
@@ -126,7 +127,9 @@ const CreateProduct = () => {
       tag.forEach((t) => formData.append("tag", t));
 
       images.forEach((image) => {
-        formData.append("images", image);
+        if (image instanceof File) {
+          formData.append("images", image);
+        }
       });
 
       await ProductService.createProduct(formData);
