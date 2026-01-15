@@ -146,8 +146,8 @@ const EditProducts = () => {
         product?.images && product?.images?.length > 0
           ? product.images
           : product?.primaryImage
-            ? [product?.primaryImage]
-            : [];
+          ? [product?.primaryImage]
+          : [];
       setImages(productImages?.map((image) => toAbs(image)));
       setPrimaryImage(product?.primaryImage || "");
       setUpdatedDate(product?.updatedDate || "");
@@ -428,7 +428,11 @@ const EditProducts = () => {
                 <PublishDateInput label="Publish Date" value={updatedDate} />
               </div>
               <div className="col-span-6 row-start-8">
-                <PublishDateInput label="Publish Time" type="time" value={updatedTime} />
+                <PublishDateInput
+                  label="Publish Time"
+                  type="time"
+                  value={updatedTime}
+                />
               </div>
               <div className="col-span-6 row-start-9">
                 <SelectItemField

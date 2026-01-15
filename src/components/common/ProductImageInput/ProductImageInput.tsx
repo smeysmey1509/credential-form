@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { FormImage } from "../../../types/ProductType";
+import { UploadList } from "../Card/uploadItemCard";
 
 interface ProductImageInputProps {
   label?: string;
@@ -72,7 +73,7 @@ const ProductImageInput: React.FC<ProductImageInputProps> = ({
       </label>
 
       <div
-        className="h-[80px] border border-dashed border-[#dee7f1] dark:border-gray-700 rounded-lg p-4 flex flex-col items-center justify-center cursor-pointer hover:border-[#5c67f7] transition"
+        className="min-h-[80px] max-h-fit border border-dashed border-[#dee7f1] dark:border-gray-700 rounded-lg p-4 flex flex-col items-center justify-center cursor-pointer hover:border-[#5c67f7] transition"
         onClick={handleClick}
       >
         <p className="text-sm text-gray-500">
@@ -87,6 +88,16 @@ const ProductImageInput: React.FC<ProductImageInputProps> = ({
           onChange={handleFileChange}
           className="hidden"
         />
+        <div className="w-full mt-5 flex flex-col items-start gap-2">
+          <UploadList
+            files={selectedImages.map((entry) => ({
+              id: entry.src,
+              name: entry.src,
+              sizeLabel: "1.3 MB",
+            }))}
+            onRemove={(id) => setSelectedImages((prev) => prev.filter((f) => f.src !== id))}
+          />
+        </div>
       </div>
 
       {selectedImages.length > 0 && (
