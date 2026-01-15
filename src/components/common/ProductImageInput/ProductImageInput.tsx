@@ -109,31 +109,6 @@ const ProductImageInput: React.FC<ProductImageInputProps> = ({
         </div>
       </div>
 
-      {selectedImages.length > 0 && (
-        <div className="grid grid-cols-3 gap-2 mt-2">
-          {selectedImages.map((entry, index) => (
-            <div
-              key={`${entry.src}-${index}`}
-              className="relative w-full h-[100px] rounded border overflow-hidden group"
-            >
-              <img
-                src={entry.src}
-                alt={`Selected ${index}`}
-                className="w-full h-full object-cover"
-              />
-              <button
-                type="button"
-                onClick={() => handleRemoveImage(index)}
-                className="absolute right-2 top-2 rounded-full bg-black/70 px-2 py-1 text-xs text-white opacity-0 transition group-hover:opacity-100"
-                aria-label={`Remove image ${index + 1}`}
-              >
-                Remove
-              </button>
-            </div>
-          ))}
-        </div>
-      )}
-
       <label
         htmlFor="product-description-add"
         className="text-[12px] font-normal text-[#6e829f] mt-1"
