@@ -1,101 +1,128 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { FormImage } from "../../../types/ProductType";
 
 interface ProductImageInputProps {
-    label?: string;
-    value?: FormImage[];
-    onChange?: (files: File[]) => void;
+  label?: string;
+  value?: FormImage[];
+  onChange?: (files: FormImage[]) => void;
 }
 
-const ProductImageInput: React.FC<ProductImageInputProps> = ({label, onChange, value}) => {
-    const fileInputRef = useRef<HTMLInputElement>(null);
-    const [selectedImages, setSelectedImages] = useState<string[]>([]);
+const ProductImageInput: React.FC<ProductImageInputProps> = ({
+  label,
+  onChange,
+  value,
+}) => {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [selectedImages, setSelectedImages] = useState<
+    { src: string; image: FormImage }[]
+  >([]);
 
-    useEffect(() => {
-        if (!value || value.length === 0) {
-            setSelectedImages([]);
-            return;
+  useEffect(() => {
+    if (!value || value.length === 0) {
+      setSelectedImages([]);
+      return;
+    }
+
+    const urls = value.map((item) => ({
+      src: typeof item === "string" ? item : URL.createObjectURL(item),
+      image: item,
+    }));
+    setSelectedImages(urls);
+
+    return () => {
+      urls.forEach((entry) => {
+        if (typeof entry.image !== "string") {
+          URL.revokeObjectURL(entry.src);
         }
-
-        const urls = value.map((item) =>
-            typeof item === "string" ? item : URL.createObjectURL(item)
-        );
-        setSelectedImages(urls);
-
-        return () => {
-            urls.forEach((url, index) => {
-                if (typeof value[index] !== "string") {
-                    URL.revokeObjectURL(url);
-                }
-            });
-        };
-    }, [value]);
-
-    const handleClick = () => {
-        fileInputRef.current?.click();
+      });
     };
+  }, [value]);
 
-    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const files = event.target.files;
-        if (files) {
-            const fileArray = Array.from(files);
+  const handleClick = () => {
+    fileInputRef.current?.click();
+  };
 
-            // Call the parent's onChange with File[]
-            if (onChange) {
-                onChange(fileArray);
-            }
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    if (!files) {
+      return;
+    }
 
-            console.log("Selected files:", files);
-            // Handle file uploads here if needed
-        }
-    };
+    const fileArray = Array.from(files);
+    const nextImages = [...(value ?? []), ...fileArray];
 
-    return (
-        <div className="w-full flex flex-col gap-2">
-            <label className="text-[14px] font-bold text-[#212b37] dark:text-white">
-                {label}
-            </label>
+    if (onChange) {
+      onChange(nextImages);
+    }
 
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
+
+  const handleRemoveImage = (index: number) => {
+    const nextImages = (value ?? []).filter((_, idx) => idx !== index);
+    onChange?.(nextImages);
+  };
+
+  return (
+    <div className="w-full flex flex-col gap-2">
+      <label className="text-[14px] font-bold text-[#212b37] dark:text-white">
+        {label}
+      </label>
+
+      <div
+        className="h-[80px] border border-dashed border-[#dee7f1] dark:border-gray-700 rounded-lg p-4 flex flex-col items-center justify-center cursor-pointer hover:border-[#5c67f7] transition"
+        onClick={handleClick}
+      >
+        <p className="text-sm text-gray-500">
+          Drag & Drop your files or{" "}
+          <span className="text-[#5c67f7] font-medium">Browse</span>
+        </p>
+        <input
+          type="file"
+          multiple
+          accept="image/*"
+          ref={fileInputRef}
+          onChange={handleFileChange}
+          className="hidden"
+        />
+      </div>
+
+      {selectedImages.length > 0 && (
+        <div className="grid grid-cols-3 gap-2 mt-2">
+          {selectedImages.map((entry, index) => (
             <div
-                className="h-[80px] border border-dashed border-[#dee7f1] dark:border-gray-700 rounded-lg p-4 flex flex-col items-center justify-center cursor-pointer hover:border-[#5c67f7] transition"
-                onClick={handleClick}
+              key={`${entry.src}-${index}`}
+              className="relative w-full h-[100px] rounded border overflow-hidden group"
             >
-                <p className="text-sm text-gray-500">
-                    Drag & Drop your files or{" "}
-                    <span className="text-[#5c67f7] font-medium">Browse</span>
-                </p>
-                <input
-                    type="file"
-                    multiple
-                    accept="image/*"
-                    ref={fileInputRef}
-                    onChange={handleFileChange}
-                    className="hidden"
-                />
+              <img
+                src={entry.src}
+                alt={`Selected ${index}`}
+                className="w-full h-full object-cover"
+              />
+              <button
+                type="button"
+                onClick={() => handleRemoveImage(index)}
+                className="absolute right-2 top-2 rounded-full bg-black/70 px-2 py-1 text-xs text-white opacity-0 transition group-hover:opacity-100"
+                aria-label={`Remove image ${index + 1}`}
+              >
+                Remove
+              </button>
             </div>
-
-            {selectedImages.length > 0 && (
-                <div className="grid grid-cols-3 gap-2 mt-2">
-                    {selectedImages.map((src, index) => (
-                        <img
-                            key={index}
-                            src={src}
-                            alt={`Selected ${index}`}
-                            className="w-full h-[100px] object-cover rounded border"
-                        />
-                    ))}
-                </div>
-            )}
-
-            <label
-                htmlFor="product-description-add"
-                className="text-[12px] font-normal text-[#6e829f] mt-1"
-            >
-                * Minimum of 6 images need to be uploaded, all images should be uniformly maintained, width and
-                height to the container.
-            </label>
+          ))}
         </div>
-    );
+      )}
+
+      <label
+        htmlFor="product-description-add"
+        className="text-[12px] font-normal text-[#6e829f] mt-1"
+      >
+        * Minimum of 6 images need to be uploaded, all images should be
+        uniformly maintained, width and height to the container.
+      </label>
+    </div>
+  );
 };
 
 export default ProductImageInput;
