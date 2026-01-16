@@ -13,7 +13,15 @@ body {
     box-sizing: border-box;
     font-family: "Nunito", sans-serif;
     font-style: normal;
+    background-color: var(--background-color);
+    color: var(--text-color);
     /* user-select: none; */
+}
+
+#root {
+    min-height: 100vh;
+    background-color: var(--background-color);
+    color: var(--text-color);
 }
 
 /* Applies to all scrollbars */
