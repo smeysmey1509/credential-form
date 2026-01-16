@@ -8,7 +8,7 @@ import {
 } from "react-icons/md";
 import { IoCartOutline } from "react-icons/io5";
 import { BsPerson } from "react-icons/bs";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import ShippingCard from "../../../components/common/ShippingCard/ShippingCard";
 import ShipAddress from "../../../components/common/ShipAddress/ShipAddress";
 import PersonalDetail from "../../../components/Button/PersonalDetail/PersonalDetail";
@@ -39,20 +39,18 @@ const Checkout = () => {
             <li
               key={index}
               onClick={() => setActiveTab(index)}
-              className={`group relative p-3 cursor-pointer transition-colors duration-300 ${
-                activeTab === index
-                  ? "border-b-[#5C67F7]"
-                  : "hover:border-b-[#5C67F7]"
-              }`}
+              className={`group relative p-3 cursor-pointer transition-colors duration-300 ${activeTab === index
+                ? "border-b-[#5C67F7]"
+                : "hover:border-b-[#5C67F7]"
+                }`}
             >
               <ButtonWithEmoji
                 emoji={tab.icon}
                 label={tab.label}
                 btnClass={`!bg-transparent text-[13px] font-sans font-semibold transition-colors duration-300 
-                  ${
-                    activeTab === index
-                      ? "!text-[#5C67F7]"
-                      : "!text-[#212b37] group-hover:!text-[#5C67F7]"
+                  ${activeTab === index
+                    ? "!text-[#5C67F7]"
+                    : "!text-[#212b37] group-hover:!text-[#5C67F7]"
                   }`}
               />
               <span

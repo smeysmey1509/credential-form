@@ -9,8 +9,10 @@ import { BsFillExclamationCircleFill } from "react-icons/bs";
 import { AnimatePresence, motion } from "framer-motion";
 import { toAbs, getPrimaryUrl } from "../../../utils/image";
 import { FaRegHeart, FaRegTrashAlt } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 const Cart = () => {
+  const navigator = useNavigate();
   const [cart, setCart] = useState<any[] | null>(null);
   const [promoCode, setPromoCode] = useState<string>("");
   const [discountType, setDiscountType] = useState<string>("");
@@ -415,7 +417,7 @@ const Cart = () => {
             <PrimaryButton
               label="Process To Checkout"
               className="!w-full !bg-[#5C67FC] !text-white !rounded !text-[13.6px] !font-semibold !px-4 !py-2 hover:!bg-[rgba(92,103,247,0.9)] mt-4"
-              onClick={() => alert("Proceeding to checkout...")}
+              onClick={() => navigator("/dashboard/product/checkout")}
             />
             <PrimaryButton
               label="Continue Shopping"
