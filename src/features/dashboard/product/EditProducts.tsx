@@ -146,8 +146,8 @@ const EditProducts = () => {
         product?.images && product?.images?.length > 0
           ? product.images
           : product?.primaryImage
-          ? [product?.primaryImage]
-          : [];
+            ? [product?.primaryImage]
+            : [];
       setImages(productImages?.map((image) => toAbs(image)));
       setPrimaryImage(product?.primaryImage || "");
       setUpdatedDate(product?.updatedDate || "");
