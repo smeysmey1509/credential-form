@@ -31,7 +31,7 @@ const Varaint: React.FC<VaraintProp> = ({
       accessor: "images",
       width: "6%",
       color: "!font-bold",
-      bodyColor: "!text-[13px] !text-[#212b37] !font-medium",
+      bodyColor: "!text-[13px] !text-[#212b37] dark:!text-[#e5e7eb] !font-medium",
       editable: false,
       render: (value: any, row: any) => (
         <div className="w-[32px] h-[32px]">
@@ -56,7 +56,7 @@ const Varaint: React.FC<VaraintProp> = ({
       accessor: "price",
       width: "8%",
       color: "!font-bold",
-      bodyColor: "!text-[13px] !text-[#212b37]",
+      bodyColor: "!text-[13px] !text-[#212b37] dark:!text-[#e5e7eb]",
       currency: true,
       editable: true,
     },
@@ -65,7 +65,7 @@ const Varaint: React.FC<VaraintProp> = ({
       accessor: "stock",
       width: "7%",
       color: "!font-bold",
-      bodyColor: "!text-[13px] !text-[#212b37]",
+      bodyColor: "!text-[13px] !text-[#212b37] dark:!text-[#e5e7eb]",
       editable: true,
     },
     {
@@ -73,7 +73,7 @@ const Varaint: React.FC<VaraintProp> = ({
       accessor: "onHand",
       width: "7%",
       color: "!font-bold",
-      bodyColor: "!text-[13px] !text-[#212b37]",
+      bodyColor: "!text-[13px] !text-[#212b37] dark:!text-[#e5e7eb]",
       editable: true,
     },
     {
@@ -81,7 +81,7 @@ const Varaint: React.FC<VaraintProp> = ({
       accessor: "reserved",
       width: "7%",
       color: "!font-bold",
-      bodyColor: "!text-[13px] !text-[#212b37]",
+      bodyColor: "!text-[13px] !text-[#212b37] dark:!text-[#e5e7eb]",
       editable: true,
     },
     {
@@ -89,7 +89,7 @@ const Varaint: React.FC<VaraintProp> = ({
       accessor: "safetyStock",
       width: "7%",
       color: "!font-bold",
-      bodyColor: "!text-[13px] !text-[#212b37]",
+      bodyColor: "!text-[13px] !text-[#212b37] dark:!text-[#e5e7eb]",
       editable: true,
     },
     {
@@ -97,7 +97,7 @@ const Varaint: React.FC<VaraintProp> = ({
       accessor: "color",
       width: "12%",
       color: "!font-bold",
-      bodyColor: "!text-[13px] !text-[#212b37]",
+      bodyColor: "!text-[13px] !text-[#212b37] dark:!text-[#e5e7eb]",
       editable: true,
     },
     {
@@ -105,7 +105,7 @@ const Varaint: React.FC<VaraintProp> = ({
       accessor: "storage",
       width: "8%",
       color: "!font-bold",
-      bodyColor: "!text-[13px] !text-[#212b37]",
+      bodyColor: "!text-[13px] !text-[#212b37] dark:!text-[#e5e7eb]",
       editable: true,
     },
     {
@@ -113,7 +113,7 @@ const Varaint: React.FC<VaraintProp> = ({
       accessor: "status",
       width: "10%",
       color: "!font-bold",
-      bodyColor: "!text-[13px] !text-[#212b37]",
+      bodyColor: "!text-[13px] !text-[#212b37] dark:!text-[#e5e7eb]",
       render: (value: any) => (
         <button className="bg-blue-600 text-white py-1 px-4 rounded cursor-pointer">
           {value}
@@ -140,19 +140,19 @@ const Varaint: React.FC<VaraintProp> = ({
   };
 
   return (
-    <div className="w-[80%] h-fit bg-white rounded">
-      <div className="head w-full h-fit flex justify-between items-center p-4 border-b border-b-[#ecf3fb]">
-        <h4 className="text-lg font-sans font-semibold">Varaint</h4>
+    <div className="w-[80%] h-fit bg-white dark:bg-[#19191C] rounded">
+      <div className="head w-full h-fit flex justify-between items-center p-4 border-b border-b-[#ecf3fb] dark:border-b-[#2d3748]">
+        <h4 className="text-lg font-sans font-semibold text-[#212b37] dark:text-white">Varaint</h4>
         <div
           onClick={onClose}
-          className="w-8 h-8 flex items-center justify-center bg-white/70 hover:bg-white/90 text-[#212B37] border border-gray-200 rounded-full shadow-sm hover:shadow-md cursor-pointer transition-all duration-200"
+          className="w-8 h-8 flex items-center justify-center bg-white/70 dark:bg-[#111827] hover:bg-white/90 dark:hover:bg-[#1f2937] text-[#212B37] dark:text-white border border-gray-200 dark:border-[#374151] rounded-full shadow-sm hover:shadow-md cursor-pointer transition-all duration-200"
         >
           <IoClose className="text-[18px]" />
         </div>
       </div>
       <div className="body w-full h-fit flex flex-col items-center gap-2">
         <div className="w-full h-full flex justify-between p-4 gap-4">
-          <div className="w-[40%] h-[220px] rounded bg-[#EFF1FE]">
+          <div className="w-[40%] h-[220px] rounded bg-[#EFF1FE] dark:bg-[#1f2937]">
             <img
               src={fullDataVaraint?.primaryImage}
               alt={fullDataVaraint?.primaryImage}
@@ -160,13 +160,13 @@ const Varaint: React.FC<VaraintProp> = ({
             />
           </div>
           <div className="w-[60%] flex flex-col justify-start items-start gap-3">
-            <h4 className="text-[#212B37] text-2xl font-sans font-semibold">
+            <h4 className="text-[#212B37] dark:text-white text-2xl font-sans font-semibold">
               {fullDataVaraint?.name}
             </h4>
-            <p className="text-[#212B37] text-md font-medium leading-none">
+            <p className="text-[#212B37] dark:text-[#cbd5f5] text-md font-medium leading-none">
               {fullDataVaraint?.description}
             </p>
-            <p className="text-[#212B37] text-3xl font-sans font-medium">
+            <p className="text-[#212B37] dark:text-white text-3xl font-sans font-medium">
               ${fullDataVaraint?.cost}
               <span className="ml-4 font-normal text-[#7e7d7f] text-xl line-through">
                 ${fullDataVaraint?.compareAtPrice}
@@ -175,7 +175,7 @@ const Varaint: React.FC<VaraintProp> = ({
                 -%{fullDataVaraint?.discount}
               </span>
             </p>
-            <p className="text-[#212B37] text-lg font-sans font-light">
+            <p className="text-[#212B37] dark:text-[#cbd5f5] text-lg font-sans font-light">
               ID: {fullDataVaraint?.productId}
             </p>
             <Rate
@@ -198,7 +198,7 @@ const Varaint: React.FC<VaraintProp> = ({
           />
           <ButtonWithEmoji type="submit" label={"Save"} onClick={onClick} />
         </div>
-        <div className="w-full h-[400px] rounded bg-white overflow-auto">
+        <div className="w-full h-[400px] rounded bg-white dark:bg-[#19191C] overflow-auto">
           <DynamicTable
             columns={columns}
             data={fullDataVaraint?.variants || []}

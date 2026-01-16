@@ -232,7 +232,7 @@ const ProductDetails = () => {
             onAddToCart={() => handleAddToCart(id || "")}
           />
         </div>
-        <div className="col-span-3 row-start-2 bg-white shadow-[0px_6px_16px_2px_rgba(0,0,0,0.05)] rounded">
+        <div className="col-span-3 row-start-2 bg-white dark:bg-[#19191C] shadow-[0px_6px_16px_2px_rgba(0,0,0,0.05)] rounded">
           <Tabs
             productDetails={{
               productName: product?.brand?.name,
@@ -243,29 +243,29 @@ const ProductDetails = () => {
             }}
           />
         </div>
-        <div className="col-span-2 row-span-2 col-start-4 row-start-2 bg-white shadow-[0px_6px_16px_2px_rgba(0,0,0,0.05)] rounded">
+        <div className="col-span-2 row-span-2 col-start-4 row-start-2 bg-white dark:bg-[#19191C] shadow-[0px_6px_16px_2px_rgba(0,0,0,0.05)] rounded">
           <FeatureCard
             featureItems={featuredProduct}
             onClick={() => alert("View All")}
           />
         </div>
-        <div className="col-span-3 row-start-3 bg-white shadow-[0px_6px_16px_2px_rgba(0,0,0,0.05)] rounded">
+        <div className="col-span-3 row-start-3 bg-white dark:bg-[#19191C] shadow-[0px_6px_16px_2px_rgba(0,0,0,0.05)] rounded">
           <Review />
         </div>
       </div>
-      <h5 className="text-[#212b37] font-sans font-semibold text-[20px] mt-4">
+      <h5 className="text-[#212b37] dark:text-white font-sans font-semibold text-[20px] mt-4">
         Related Products
       </h5>
-      <span className="text-[212b37] font-sans font-normal text-[13px]">
+      <span className="text-[#212b37] dark:text-[#cbd5f5] font-sans font-normal text-[13px]">
         Explore more products similar to this one, dolore magna aliqua.
       </span>
       <div className="relative w-full h-fit mt-4">
         {/* Prev Button */}
         <button
           onClick={handlePrev}
-          className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white shadow-md border border-gray-200 rounded-full p-2 hover:bg-gray-50 cursor-pointer"
+          className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white dark:bg-[#111827] shadow-md border border-gray-200 dark:border-[#374151] rounded-full p-2 hover:bg-gray-50 dark:hover:bg-[#1f2937] cursor-pointer"
         >
-          <IoIosArrowBack className="text-gray-700 text-lg" />
+          <IoIosArrowBack className="text-gray-700 dark:text-gray-200 text-lg" />
         </button>
 
         {/* Scrollable Container */}
@@ -277,7 +277,7 @@ const ProductDetails = () => {
           {relatedProducts.map((p, i) => (
             <div
               key={`${p._id}-${i}`}
-              className="flex-shrink-0 w-[19%] bg-white rounded"
+              className="flex-shrink-0 w-[19%] bg-white dark:bg-[#19191C] rounded"
             >
               <ProductCard
                 product={p as Product} // 👈 cast if needed
@@ -295,9 +295,9 @@ const ProductDetails = () => {
         {/* Next Button */}
         <button
           onClick={handleNext}
-          className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white shadow-md border border-gray-200 rounded-full p-2 hover:bg-gray-50 cursor-pointer"
+          className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white dark:bg-[#111827] shadow-md border border-gray-200 dark:border-[#374151] rounded-full p-2 hover:bg-gray-50 dark:hover:bg-[#1f2937] cursor-pointer"
         >
-          <IoIosArrowForward className="text-gray-700 text-lg" />
+          <IoIosArrowForward className="text-gray-700 dark:text-gray-200 text-lg" />
         </button>
       </div>
     </div>

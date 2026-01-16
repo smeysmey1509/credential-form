@@ -39,9 +39,9 @@ function GenericSelect<T>({
   const displayed = showAll ? data : data.slice(0, limit);
 
   return (
-    <div className="w-full flex flex-col p-[16px] border-b border-b-gray-200">
+    <div className="w-full flex flex-col p-[16px] border-b border-b-gray-200 dark:border-b-[#2d3748]">
       {label && (
-        <h6 className="w-full text-[16px] text-[#212B37] font-semibold font-sans">
+        <h6 className="w-full text-[16px] text-[#212B37] dark:text-white font-semibold font-sans">
           {label}
         </h6>
       )}
@@ -65,12 +65,12 @@ function GenericSelect<T>({
               }`}
             >
               <p
-                className="text-[14px] text-[#212B37] font-semibold cursor-pointer"
+                className="text-[14px] text-[#212B37] dark:text-white font-semibold cursor-pointer"
                 onClick={() => toggle(id, disabled)}
               >
                 {name}
                 {showCount && (
-                  <span className="text-[#6e829f] text-[0.6875rem] ml-1 font-semibold font-sans">
+                  <span className="text-[#6e829f] dark:text-[#cbd5f5] text-[0.6875rem] ml-1 font-semibold font-sans">
                     ({count})
                   </span>
                 )}
@@ -87,7 +87,7 @@ function GenericSelect<T>({
       {data.length > limit && (
         <div
           onClick={() => setShowAll(!showAll)}
-          className="w-full flex justify-between items-center py-[10px] px-[9px] rounded-[0.3rem] mt-4 bg-[#EFF1FE] cursor-pointer"
+          className="w-full flex justify-between items-center py-[10px] px-[9px] rounded-[0.3rem] mt-4 bg-[#EFF1FE] dark:bg-[#1f2937] cursor-pointer"
         >
           <p className="text-[11px] font-sans font-semibold text-[#5C67F7]">
             {showAll ? "LESS" : "MORE"}

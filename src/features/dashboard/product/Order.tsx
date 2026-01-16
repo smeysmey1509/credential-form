@@ -21,20 +21,20 @@ const columns = [
     header: "Price",
     accessor: "price",
     width: "15%",
-    bodyColor: "!text-[15px] !text-[#212b37] !font-bold",
+    bodyColor: "!text-[15px] !text-[#212b37] dark:!text-[#e5e7eb] !font-bold",
     currency: true,
   },
   {
     header: "Quantity",
     accessor: "quantity",
     width: "15%",
-    bodyColor: "!text-[13px] !text-[#212b37] !font-medium",
+    bodyColor: "!text-[13px] !text-[#212b37] dark:!text-[#e5e7eb] !font-medium",
   },
   {
     header: "Total Price",
     accessor: "totalPrice",
     width: "15%",
-    bodyColor: "!text-[13px] !text-[#212b37] !font-medium",
+    bodyColor: "!text-[13px] !text-[#212b37] dark:!text-[#e5e7eb] !font-medium",
     currency: true,
   },
 ];
@@ -84,9 +84,11 @@ const data = [
 
 const Orders = () => {
   return (
-    <div className="w-full h-fit flex flex-col bg-white shadow-[0px_6px_16px_2px_rgba(0,0,0,0.05)] rounded-lg">
+    <div className="w-full h-fit flex flex-col bg-white dark:bg-[#19191C] shadow-[0px_6px_16px_2px_rgba(0,0,0,0.05)] rounded-lg">
       <div className="p-4 flex justify-between items-center">
-        <h2 className="text-lg font-semibold">Order List</h2>
+        <h2 className="text-lg font-semibold text-[#212b37] dark:text-white">
+          Order List
+        </h2>
         <div className="flex gap-3">
           <SelectionFilter />
           <SearchField />

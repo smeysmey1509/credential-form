@@ -33,16 +33,17 @@ const Checkout = () => {
 
   return (
     <div className="w-full h-fit flex justify-between gap-4">
-      <div className="basis-9/12 h-fit flex flex-col bg-white shadow-[0px_6px_16px_2px_rgba(0,0,0,0.05)] p-[1rem] rounded">
-        <ul className="w-full h-fit block sm:flex justify-around border border-[#ecf3fb] border-dashed border-b-0 bg-[#F9F9FA] rounded-t transform scale-x-100">
+      <div className="basis-9/12 h-fit flex flex-col bg-white dark:bg-[#19191C] shadow-[0px_6px_16px_2px_rgba(0,0,0,0.05)] p-[1rem] rounded">
+        <ul className="w-full h-fit block sm:flex justify-around border border-[#ecf3fb] dark:border-[#2d3748] border-dashed border-b-0 bg-[#F9F9FA] dark:bg-[#1f2937] rounded-t transform scale-x-100">
           {tabs.map((tab, index) => (
             <li
               key={index}
               onClick={() => setActiveTab(index)}
-              className={`group relative p-3 cursor-pointer transition-colors duration-300 ${activeTab === index
-                ? "border-b-[#5C67F7]"
-                : "hover:border-b-[#5C67F7]"
-                }`}
+              className={`group relative p-3 cursor-pointer transition-colors duration-300 ${
+                activeTab === index
+                  ? "border-b-[#5C67F7]"
+                  : "hover:border-b-[#5C67F7]"
+              }`}
             >
               <ButtonWithEmoji
                 emoji={tab.icon}
@@ -50,7 +51,7 @@ const Checkout = () => {
                 btnClass={`!bg-transparent text-[13px] font-sans font-semibold transition-colors duration-300 
                   ${activeTab === index
                     ? "!text-[#5C67F7]"
-                    : "!text-[#212b37] group-hover:!text-[#5C67F7]"
+                    : "!text-[#212b37] dark:!text-[#e5e7eb] group-hover:!text-[#5C67F7]"
                   }`}
               />
               <span
@@ -68,14 +69,14 @@ const Checkout = () => {
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 1 }}
             transition={{ duration: 0.3, ease: "easeOut" }}
-            className="w-full h-fit flex flex-col items-center border border-[#ecf3fb] border-dashed"
+            className="w-full h-fit flex flex-col items-center border border-[#ecf3fb] dark:border-[#2d3748] border-dashed"
           >
             <div className="w-full p-3">
-              <p className="text-[#6e829f] text-[1.25rem] opacity-50 font-semibold font-sans">
+              <p className="text-[#6e829f] dark:text-[#cbd5f5] text-[1.25rem] opacity-50 font-semibold font-sans">
                 01
               </p>
               <div className="w-full h-fit grid grid-cols-2 gap-4">
-                <p className="col-span-2 row-start-1 row-end-2 text-[0.9375rem] font-semibold font-sans">
+                <p className="col-span-2 row-start-1 row-end-2 text-[0.9375rem] font-semibold font-sans text-[#212b37] dark:text-white">
                   Shipping Methods :
                 </p>
                 <div className="col-start-1 col-end-2 row-start-2 row-end-3">
@@ -102,7 +103,7 @@ const Checkout = () => {
                 </div>
               </div>
               <div className="w-full h-fit grid grid-cols-2 gap-4 mt-3">
-                <p className="col-span-2 text-[0.9375rem] font-semibold font-sans">
+                <p className="col-span-2 text-[0.9375rem] font-semibold font-sans text-[#212b37] dark:text-white">
                   Shipping Address :
                 </p>
                 <div className="col-start-1 col-end-2 row-start-2 row-end-3">
@@ -123,7 +124,7 @@ const Checkout = () => {
                 </div>
               </div>
             </div>
-            <div className="w-full p-3 flex justify-end items-end border border-[#ecf3fb] border-b-0 border-r-0 border-l-0 border-dashed">
+            <div className="w-full p-3 flex justify-end items-end border border-[#ecf3fb] dark:border-[#2d3748] border-b-0 border-r-0 border-l-0 border-dashed">
               <PersonalDetail
                 label="Personal Details"
                 emoji={<BsPerson />}
@@ -139,14 +140,14 @@ const Checkout = () => {
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 1 }}
             transition={{ duration: 0.3, ease: "easeOut" }}
-            className="w-full h-fit flex flex-col items-center border border-[#ecf3fb] border-dashed"
+            className="w-full h-fit flex flex-col items-center border border-[#ecf3fb] dark:border-[#2d3748] border-dashed"
           >
             <div className="w-full p-3">
-              <p className="text-[#6e829f] text-[1.25rem] opacity-50 font-semibold font-sans">
+              <p className="text-[#6e829f] dark:text-[#cbd5f5] text-[1.25rem] opacity-50 font-semibold font-sans">
                 02
               </p>
               <div className="w-full h-fit grid grid-cols-2 gap-4">
-                <p className="col-span-2 row-start-1 row-end-2 text-[0.9375rem] font-semibold font-sans">
+                <p className="col-span-2 row-start-1 row-end-2 text-[0.9375rem] font-semibold font-sans text-[#212b37] dark:text-white">
                   Personal Details :
                 </p>
                 <div className="col-span-2 grid grid-cols-2 gap-4">
@@ -168,12 +169,12 @@ const Checkout = () => {
                 </div>
               </div>
             </div>
-            <div className="w-full p-3 flex justify-between items-center border border-b-0 border-r-0 border-l-0 border-[#ecf3fb] border-dashed">
+            <div className="w-full p-3 flex justify-between items-center border border-b-0 border-r-0 border-l-0 border-[#ecf3fb] dark:border-[#2d3748] border-dashed">
               <PersonalDetail
                 label="Back To Shipping"
                 emoji={<MdOutlineLocalShipping />}
                 onClick={() => alert(123)}
-                classname="flex-row-reverse border-none hover:border-black !bg-[#EFF1FE] !text-[#5C67F7] hover:!bg-[#5C67F7] hover:!text-[#fff]"
+                classname="flex-row-reverse border-none hover:border-black !bg-[#EFF1FE] dark:!bg-[#1f2937] !text-[#5C67F7] hover:!bg-[#5C67F7] hover:!text-[#fff]"
               />
               <PersonalDetail
                 label="Continue To Payment"
@@ -190,14 +191,14 @@ const Checkout = () => {
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 1 }}
             transition={{ duration: 0.3, ease: "easeOut" }}
-            className="w-full h-fit flex flex-col items-center border border-[#ecf3fb] border-dashed"
+            className="w-full h-fit flex flex-col items-center border border-[#ecf3fb] dark:border-[#2d3748] border-dashed"
           >
             <div className="w-full p-3">
-              <p className="text-[#6e829f] text-[1.25rem] opacity-50 font-semibold font-sans">
+              <p className="text-[#6e829f] dark:text-[#cbd5f5] text-[1.25rem] opacity-50 font-semibold font-sans">
                 03
               </p>
               <div className="w-full h-fit flex flex-col gap-4">
-                <p className="col-span-2 row-start-1 row-end-2 text-[0.9375rem] font-semibold font-sans">
+                <p className="col-span-2 row-start-1 row-end-2 text-[0.9375rem] font-semibold font-sans text-[#212b37] dark:text-white">
                   Payment Details :
                 </p>
                 <div className="w-full flex items-center gap-3">
@@ -256,7 +257,7 @@ const Checkout = () => {
                 </div>
               </div>
               <div className="w-full h-fit grid grid-cols-2 gap-4 mt-3">
-                <p className="col-span-2 row-start-1 row-end-2 text-[0.9375rem] font-semibold font-sans">
+                <p className="col-span-2 row-start-1 row-end-2 text-[0.9375rem] font-semibold font-sans text-[#212b37] dark:text-white">
                   Saved Card :
                 </p>
                 <div className="col-start-1 col-end-2 row-start-2 row-end-3">
@@ -275,12 +276,12 @@ const Checkout = () => {
                 </div>
               </div>
             </div>
-            <div className="w-full p-3 flex justify-between items-center border border-b-0 border-r-0 border-l-0 border-[#ecf3fb] border-dashed">
+            <div className="w-full p-3 flex justify-between items-center border border-b-0 border-r-0 border-l-0 border-[#ecf3fb] dark:border-[#2d3748] border-dashed">
               <PersonalDetail
                 label="Back To Personal Info"
                 emoji={<MdOutlineLocalShipping />}
                 onClick={() => alert(123)}
-                classname="flex-row-reverse border-none hover:border-black !bg-[#EFF1FE] !text-[#5C67F7] hover:!bg-[#5C67F7] hover:!text-[#fff]"
+                classname="flex-row-reverse border-none hover:border-black !bg-[#EFF1FE] dark:!bg-[#1f2937] !text-[#5C67F7] hover:!bg-[#5C67F7] hover:!text-[#fff]"
               />
               <PersonalDetail
                 label="Continue Payment"
@@ -297,7 +298,7 @@ const Checkout = () => {
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 1 }}
             transition={{ duration: 0.3, ease: "easeOut" }}
-            className="w-full h-fit flex flex-col items-center border border-[#ecf3fb] border-dashed"
+            className="w-full h-fit flex flex-col items-center border border-[#ecf3fb] dark:border-[#2d3748] border-dashed"
           >
             <div className="flex flex-col justify-center items-center p-3 my-3">
               <div className="mb-4">
@@ -313,13 +314,13 @@ const Checkout = () => {
                 />
               </div>
               <div className="mb-4">
-                <p className="mb-1 text-[#212B37] text-[14px] font-medium font-sans">
+                <p className="mb-1 text-[#212B37] dark:text-white text-[14px] font-medium font-sans">
                   You can track your order with Order Id <b>SPK#1FR</b> from{" "}
                   <a href="" className="underline text-[#e354D4]">
                     Trank Order
                   </a>
                 </p>
-                <p className="mb-1 text-center text-[#6E829F] text-[13px] font-normal font-sans">
+                <p className="mb-1 text-center text-[#6E829F] dark:text-[#cbd5f5] text-[13px] font-normal font-sans">
                   Thanks for supporting us.
                 </p>
               </div>
@@ -334,9 +335,9 @@ const Checkout = () => {
           </motion.div>
         )}
       </div>
-      <div className="basis-3/12 h-fit flex flex-col bg-white shadow-[0px_6px_16px_2px_rgba(0,0,0,0.05)] rounded">
+      <div className="basis-3/12 h-fit flex flex-col bg-white dark:bg-[#19191C] shadow-[0px_6px_16px_2px_rgba(0,0,0,0.05)] rounded">
         <div className="flex gap-[0.25rem] p-3 items-center">
-          <div className="text-[#212B37] text-[15.2px] font-medium font-sans">
+          <div className="text-[#212B37] dark:text-white text-[15.2px] font-medium font-sans">
             Order Summary
           </div>
           <span className="flex justify-center items-center text-center text-[#5C67F7] text-[11px] font-medium font-sans bg-[rgba(92,103,247,0.1)] py-[0.25rem] px-[0.45rem] rounded-[50rem]">
@@ -345,14 +346,14 @@ const Checkout = () => {
         </div>
         <div className="p-0">
           <ul className="mb-0 border-0 p-0 list-none flex flex-col">
-            <li className="p-3 border border-[#ecf3fb] border-t-0 border-r-0 border-l-0">
+            <li className="p-3 border border-[#ecf3fb] dark:border-[#2d3748] border-t-0 border-r-0 border-l-0">
               <SummaryCard />
             </li>
-            <li className="p-3 border border-[#ecf3fb] border-t-0 border-r-0 border-l-0 border-dashed">
+            <li className="p-3 border border-[#ecf3fb] dark:border-[#2d3748] border-t-0 border-r-0 border-l-0 border-dashed">
               <SummaryCard />
             </li>
           </ul>
-          <div className="p-3 border border-[#ecf3fb] border-t-0 border-r-0 border-l-0 border-dashed">
+          <div className="p-3 border border-[#ecf3fb] dark:border-[#2d3748] border-t-0 border-r-0 border-l-0 border-dashed">
             <div className="w-full h-fit flex justify-between items-center gap-3">
               <p className="text-[#5C67F7] text-[12px] py-[0.25rem] px-[0.45rem] rounded bg-[rgba(92,103,247,0.1)] font-semibold font-sans">
                 Subtotal :
@@ -362,17 +363,17 @@ const Checkout = () => {
               </p>
             </div>
           </div>
-          <div className="p-3 border border-[#ecf3fb] border-t-0 border-r-0 border-l-0 border-dashed">
+          <div className="p-3 border border-[#ecf3fb] dark:border-[#2d3748] border-t-0 border-r-0 border-l-0 border-dashed">
             <div className="w-full h-fit flex justify-between items-center gap-3 mb-3">
-              <p className="text-[#6e829f] text-[13px] font-normal font-sans">
+              <p className="text-[#6e829f] dark:text-[#cbd5f5] text-[13px] font-normal font-sans">
                 Total
               </p>
-              <p className="text-[#212B37] text-[14px] font-bold font-sans">
+              <p className="text-[#212B37] dark:text-white text-[14px] font-bold font-sans">
                 $189
               </p>
             </div>
             <div className="w-full h-fit flex justify-between items-center gap-3 mb-3">
-              <p className="text-[#6e829f] text-[13px] font-normal font-sans">
+              <p className="text-[#6e829f] dark:text-[#cbd5f5] text-[13px] font-normal font-sans">
                 Discount
               </p>
               <p className="text-[#21Ce9E] text-[14px] font-bold font-sans">
@@ -380,7 +381,7 @@ const Checkout = () => {
               </p>
             </div>
             <div className="w-full h-fit flex justify-between items-center gap-3 mb-3">
-              <p className="text-[#6e829f] text-[13px] font-normal font-sans">
+              <p className="text-[#6e829f] dark:text-[#cbd5f5] text-[13px] font-normal font-sans">
                 Delivery Charge
               </p>
               <p className="text-[#Fb4242] text-[14px] font-bold font-sans">
@@ -388,20 +389,20 @@ const Checkout = () => {
               </p>
             </div>
             <div className="w-full h-fit flex justify-between items-center gap-3">
-              <p className="text-[#6e829f] text-[13px] font-normal font-sans">
+              <p className="text-[#6e829f] dark:text-[#cbd5f5] text-[13px] font-normal font-sans">
                 Service Tax (18%)
               </p>
-              <p className="text-[#212B37] text-[14px] font-bold font-sans">
+              <p className="text-[#212B37] dark:text-white text-[14px] font-bold font-sans">
                 - $45
               </p>
             </div>
           </div>
           <div className="p-3">
             <div className="w-full h-fit flex justify-between items-center gap-3">
-              <p className="text-[#212B37] text-[15px] font-normal font-sans">
+              <p className="text-[#212B37] dark:text-white text-[15px] font-normal font-sans">
                 Total :
               </p>
-              <p className="text-[#212B37] text-[16px] font-bold font-sans">
+              <p className="text-[#212B37] dark:text-white text-[16px] font-bold font-sans">
                 $189
               </p>
             </div>

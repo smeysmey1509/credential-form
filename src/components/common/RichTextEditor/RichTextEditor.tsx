@@ -54,7 +54,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ label, value }) => {
   return (
     <div className="w-full flex flex-col">
       {label && (
-        <label className="text-[14px] font-bold text-[#212b37]">
+        <label className="text-[14px] font-bold text-[#212b37] dark:text-white">
           {label}
         </label>
       )}
@@ -65,7 +65,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ label, value }) => {
             type="button"
             onClick={() => editor.chain().focus().toggleBold().run()}
             className={`px-2 ${
-              editor.isActive("bold") ? "font-bold bg-gray-200" : ""
+              editor.isActive("bold") ? "font-bold bg-gray-200 dark:bg-gray-700" : ""
             }`}
           >
             Bold
@@ -74,7 +74,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ label, value }) => {
             type="button"
             onClick={() => editor.chain().focus().toggleItalic().run()}
             className={`px-2 ${
-              editor.isActive("italic") ? "italic bg-gray-200" : ""
+              editor.isActive("italic") ? "italic bg-gray-200 dark:bg-gray-700" : ""
             }`}
           >
             Italic
@@ -83,7 +83,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ label, value }) => {
             type="button"
             onClick={() => editor.chain().focus().toggleUnderline().run()}
             className={`px-2 ${
-              editor.isActive("underline") ? "underline bg-gray-200" : ""
+              editor.isActive("underline") ? "underline bg-gray-200 dark:bg-gray-700" : ""
             }`}
           >
             Underline

@@ -86,10 +86,10 @@ const Wishlist = () => {
 
   return (
     <div className="w-full h-fit flex flex-col gap-6">
-      <div className="w-full h-fit bg-white p-4 shadow-[0px_6px_16px_2px_rgba(0,0,0,0.05)] rounded">
+      <div className="w-full h-fit bg-white dark:bg-[#19191C] p-4 shadow-[0px_6px_16px_2px_rgba(0,0,0,0.05)] rounded">
         <div className="w-full h-fit flex justify-between items-center">
           <div className="w-fit h-fit">
-            <h4 className="font-semibold text-[15.2px] font-sans text-[#212B37]">
+            <h4 className="font-semibold text-[15.2px] font-sans text-[#212B37] dark:text-white">
               My Wishlists
             </h4>
           </div>
@@ -99,8 +99,8 @@ const Wishlist = () => {
           </div>
         </div>
         <div className="w-full h-fit mt-4">
-          <div className="w-full h-fit flex justify-between items-center p-2 bg-[#F9F9FA] rounded">
-            <p className="text-[0.9375rem] text-[#212B37] font-sans ml-2">
+          <div className="w-full h-fit flex justify-between items-center p-2 bg-[#F9F9FA] dark:bg-[#1f2937] rounded">
+            <p className="text-[0.9375rem] text-[#212B37] dark:text-white font-sans ml-2">
               Adding{" "}
               <span className="text-[#E354D4] font-bold">
                 {pagination?.totalItem} items
@@ -109,7 +109,7 @@ const Wishlist = () => {
             </p>
             <a
               href=""
-              className="flex justify-center items-center gap-2 text-[#9E5Cf7] font-semibold text-[13.6px] bg-[rgba(158,92,247,0.1)] py-[6px] px-[12px] rounded"
+              className="flex justify-center items-center gap-2 text-[#9E5Cf7] font-semibold text-[13.6px] bg-[rgba(158,92,247,0.1)] dark:bg-[rgba(158,92,247,0.2)] py-[6px] px-[12px] rounded"
             >
               Checkout All
               <IoArrowForward />

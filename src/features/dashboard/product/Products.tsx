@@ -146,9 +146,9 @@ const Products = () => {
 
   return (
     <div className="w-full h-full flex flex-col justify-between gap-6">
-      <div className="flex justify-between items-center p-[16px] bg-white shadow rounded-lg">
+      <div className="flex justify-between items-center p-[16px] bg-white dark:bg-[#19191C] shadow rounded-lg">
         <div className="flex justify-between">
-          <h6 className="text-[16px] text-[#212B37] font-bold rounded-full">
+          <h6 className="text-[16px] text-[#212B37] dark:text-white font-bold rounded-full">
             Total{" "}
             <span className="text-[16px] text-[#E354D4] font-bold">
               {products.length}
@@ -189,9 +189,9 @@ const Products = () => {
             </div>
           )}
         </div>
-        <div className="w-[25%] h-fit grid bg-white shadow rounded-lg">
+        <div className="w-[25%] h-fit grid bg-white dark:bg-[#19191C] shadow rounded-lg">
           <div className="flex justify-between px-[16px] pt-[16px]">
-            <h6 className="text-[16px] text-[#212B37] font-semibold">Filter</h6>
+            <h6 className="text-[16px] text-[#212B37] dark:text-white font-semibold">Filter</h6>
             <button
               className="text-[#FF5D9F] text-[13px] font-sans font-normal cursor-pointer underline"
               onClick={() => alert("Clear all filters")}

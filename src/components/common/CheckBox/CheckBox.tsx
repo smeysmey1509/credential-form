@@ -19,14 +19,14 @@ const CheckBox: React.FC<CheckBoxProps> = ({
       <div className="relative inline-flex items-center cursor-pointer">
         <input
           type="checkbox"
-          className={`peer appearance-none w-[15px] h-[15px] border border-gray-300 rounded bg-white checked:bg-[#5C67F7] checked:border-[#5C67F7] cursor-pointer ${classname}`}
+          className={`peer appearance-none w-[15px] h-[15px] border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-[#111827] checked:bg-[#5C67F7] checked:border-[#5C67F7] cursor-pointer ${classname}`}
           checked={checked}
           onChange={(e) => onChange?.(e.target.checked)}
         />
         <CgCheck className="absolute text-white text-[18px] hidden peer-checked:block pointer-events-none top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
       </div>
       {label && (
-        <label htmlFor="" className="text-[#212b37] text-[13px] font-sans">
+        <label htmlFor="" className="text-[#212b37] dark:text-white text-[13px] font-sans">
           {label}
         </label>
       )}

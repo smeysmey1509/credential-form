@@ -28,8 +28,9 @@ const Layout = () => {
       <Sidebar isSidebarOpen={isSidebarOpen} />
 
       <div
-        className={`relative flex flex-col min-h-screen bg-[#fff] transition-all duration-300 ease-in-out ${isSidebarOpen ? "w-full ml-0" : "w-[87%] ml-[13%]"
-          }`}
+        className={`relative flex flex-col min-h-screen bg-white text-[#212b37] dark:bg-[#19191C] dark:text-[#FFFFFF] transition-all duration-300 ease-in-out ${
+          isSidebarOpen ? "w-full ml-0" : "w-[87%] ml-[13%]"
+        }`}
       >
         {/* 🧠 Freeze Header */}
         <div className="sticky top-0 z-50">

@@ -154,10 +154,10 @@ const Cart = () => {
     const isActive = deliveryMethod?.toLowerCase() === method?.toLowerCase();
     return `
       !relative overflow-hidden !w-full !rounded !text-[0.85rem] !px-4 !py-2 font-semibold 
-      !bg-[#F7F7FE] transition-colors duration-300 ease-in-out
+      !bg-[#F7F7FE] dark:!bg-[#1f2937] transition-colors duration-300 ease-in-out
       ${isActive
         ? "!text-[#5F6AF7]"
-        : "!text-[#000] hover:bg-[#5C67FC] hover:!text-[#5F6AF7]"
+        : "!text-[#000] dark:!text-white hover:bg-[#5C67FC] hover:!text-[#5F6AF7]"
       }
       before:content-[''] before:absolute before:bottom-0 before:left-1/2 before:h-[2px] 
       before:bg-[#5F6AF7] before:transition-all before:duration-300 before:ease-in-out
@@ -213,7 +213,7 @@ const Cart = () => {
   return (
     <div className="w-full flex justify-between items-stretch gap-6 h-full">
       <div className="w-3/4 flex flex-col bg-white dark:bg-[#19191C] shadow rounded-lg overflow-hidden">
-        <h2 className="p-4 text-[15.2px] text-[#212B37] font-sans font-semibold">
+        <h2 className="p-4 text-[15.2px] text-[#212B37] dark:text-white font-sans font-semibold">
           Cart Items
         </h2>
         <div className="flex-grow overflow-hidden">
@@ -240,11 +240,11 @@ const Cart = () => {
       </div>
 
       <div className="flex-none basis-auto w-1/4 h-full flex-col bg-white dark:bg-[#19191C] shadow rounded-lg p-4 gap-8">
-        <h4 className="font-medium text-[0.95rem] text-black">Order Summary</h4>
+        <h4 className="font-medium text-[0.95rem] text-black dark:text-white">Order Summary</h4>
 
         <div className="flex flex-col mt-4">
-          <label className="font-sans text-[13px]">Have a Promo Code?</label>
-          <span className="text-[#6e829f] text-[0.6875rem]">
+          <label className="font-sans text-[13px] text-[#212b37] dark:text-white">Have a Promo Code?</label>
+          <span className="text-[#6e829f] dark:text-[#cbd5f5] text-[0.6875rem]">
             Apply Your Promo Code for an Instant Discount!
           </span>
         </div>
@@ -287,7 +287,7 @@ const Cart = () => {
         </div>
 
         <div className="flex flex-col mt-4">
-          <h4 className="font-semibold font-sans text-[13px]">Delivery:</h4>
+          <h4 className="font-semibold font-sans text-[13px] text-[#212b37] dark:text-white">Delivery:</h4>
           <div className="w-full flex items-center justify-between gap-2 mt-2">
             <PrimaryButton
               label="Standard"
@@ -308,7 +308,7 @@ const Cart = () => {
         </div>
 
         <div className="flex flex-col mt-4">
-          <div className="flex items-center gap-1 font-medium text-[#6e829f] font-sans text-[0.75rem]">
+          <div className="flex items-center gap-1 font-medium text-[#6e829f] dark:text-[#cbd5f5] font-sans text-[0.75rem]">
             <BsFillExclamationCircleFill />
             <span>
               {deliveryMethod === "Express"
@@ -320,7 +320,7 @@ const Cart = () => {
           </div>
 
           <div className="w-full h-auto flex items-center justify-between mt-4">
-            <span className="font-medium text-[#6e829f] font-sans text-[0.75rem]">
+            <span className="font-medium text-[#6e829f] dark:text-[#cbd5f5] font-sans text-[0.75rem]">
               Sub Total
             </span>
             <AnimatePresence mode="wait">
@@ -330,7 +330,7 @@ const Cart = () => {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
                 transition={{ duration: 0.25, ease: "easeOut" }}
-                className="text-[#000] font-semibold font-sans text-[16px]"
+                className="text-[#000] dark:text-white font-semibold font-sans text-[16px]"
               >
                 ${calSubTotal ?? "00"}
               </motion.span>
@@ -338,7 +338,7 @@ const Cart = () => {
           </div>
 
           <div className="w-full h-auto flex items-center justify-between mt-4">
-            <span className="font-medium text-[#6e829f] font-sans text-[0.75rem]">
+            <span className="font-medium text-[#6e829f] dark:text-[#cbd5f5] font-sans text-[0.75rem]">
               Discount
             </span>
             <AnimatePresence mode="wait">
@@ -360,7 +360,7 @@ const Cart = () => {
           </div>
 
           <div className="w-full h-auto flex items-center justify-between mt-4">
-            <span className="font-medium text-[#6e829f] font-sans text-[0.75rem]">
+            <span className="font-medium text-[#6e829f] dark:text-[#cbd5f5] font-sans text-[0.75rem]">
               Delivery Charge
             </span>
             <AnimatePresence mode="wait">
@@ -378,7 +378,7 @@ const Cart = () => {
           </div>
 
           <div className="w-full h-auto flex items-center justify-between mt-4">
-            <span className="font-medium text-[#6e829f] font-sans text-[0.75rem]">
+            <span className="font-medium text-[#6e829f] dark:text-[#cbd5f5] font-sans text-[0.75rem]">
               Service Tax (10%)
             </span>
             <AnimatePresence mode="wait">
@@ -388,7 +388,7 @@ const Cart = () => {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
                 transition={{ duration: 0.25, ease: "easeOut" }}
-                className="font-medium text-[#000] font-sans text-[0.875rem]"
+                className="font-medium text-[#000] dark:text-white font-sans text-[0.875rem]"
               >
                 - ${serviceTax ?? "00"}
               </motion.span>
@@ -396,7 +396,7 @@ const Cart = () => {
           </div>
 
           <div className="w-full h-auto flex items-center justify-between mt-4">
-            <span className="font-medium text-[#212B37] font-sans text-[1rem]">
+            <span className="font-medium text-[#212B37] dark:text-white font-sans text-[1rem]">
               Total :
             </span>
             <AnimatePresence mode="wait">
@@ -406,7 +406,7 @@ const Cart = () => {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
                 transition={{ duration: 0.25, ease: "easeOut" }}
-                className="text-[#000] font-semibold font-sans text-[16px]"
+                className="text-[#000] dark:text-white font-semibold font-sans text-[16px]"
               >
                 ${total ?? "00"}
               </motion.span>

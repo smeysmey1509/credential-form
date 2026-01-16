@@ -3,7 +3,14 @@ import {useEffect, useState} from "react";
 export function useTheme() {
     const [theme, setTheme] = useState<'light' | 'dark'>(() => {
         if (typeof window !== 'undefined') {
-            return (localStorage.getItem('theme') as 'light' | 'dark') || 'light';
+            const storedTheme = localStorage.getItem('theme') as 'light' | 'dark' | null;
+            if (storedTheme) {
+                return storedTheme;
+            }
+            if (window.matchMedia?.('(prefers-color-scheme: dark)').matches) {
+                return 'dark';
+            }
+            return 'light';
         }
         return 'light';
     });

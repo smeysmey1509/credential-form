@@ -9,7 +9,7 @@ const SearchField = () => {
         placeholder="Search Orders..."
         className="flex-1 appearance-none bg-transparent font-sans outline-none px-[0.75rem] py-[0.375rem] font-normal text-[13px] text-[#212b37] dark:text-gray-500 dark:placeholder:text-gray-500"
       />
-      <button className="p-2 text-[#6e829f] cursor-pointer">
+      <button className="p-2 text-[#6e829f] dark:text-[#cbd5f5] cursor-pointer">
         <CiSearch className="text-[14px]" />
       </button>
     </div>

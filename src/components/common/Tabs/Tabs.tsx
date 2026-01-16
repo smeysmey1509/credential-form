@@ -19,7 +19,7 @@ const Tabs: React.FC<TabsProp> = ({ productDetails }) => {
     const isActive = activeTab === label;
     return `
       relative overflow-hidden w-fit rounded text-[0.85rem] px-4 py-2 font-sans font-semibold 
-      bg-[#F7F7FE] transition-colors duration-300 ease-in-out
+      bg-[#F7F7FE] dark:bg-[#1f2937] transition-colors duration-300 ease-in-out
       ${
         isActive
           ? "text-[#5F6AF7]"
@@ -112,46 +112,46 @@ const Tabs: React.FC<TabsProp> = ({ productDetails }) => {
       {/* Content Area */}
       <div className="w-full mt-6">
         {activeTab === "Product Details" && (
-          <div className="w-full border border-gray-200 rounded-md overflow-hidden">
+          <div className="w-full border border-gray-200 dark:border-[#2d3748] rounded-md overflow-hidden">
             <table className="w-full border-collapse">
               <tbody>
-                <tr className="border-b border-gray-200">
-                  <td className="w-[100px] px-4 py-3 text-sm font-semibold text-[#0A0A0A] bg-gray-50">
+                <tr className="border-b border-gray-200 dark:border-[#2d3748]">
+                  <td className="w-[100px] px-4 py-3 text-sm font-semibold text-[#0A0A0A] dark:text-white bg-gray-50 dark:bg-[#1f2937]">
                     Brand
                   </td>
-                  <td className="px-4 py-3 text-sm text-gray-700">
+                  <td className="px-4 py-3 text-sm text-gray-700 dark:text-[#e5e7eb]">
                     {productDetails?.productName || ""}
                   </td>
                 </tr>
-                <tr className="border-b border-gray-200">
-                  <td className="w-1/4 px-4 py-3 text-sm font-semibold text-[#0A0A0A] bg-gray-50">
+                <tr className="border-b border-gray-200 dark:border-[#2d3748]">
+                  <td className="w-1/4 px-4 py-3 text-sm font-semibold text-[#0A0A0A] dark:text-white bg-gray-50 dark:bg-[#1f2937]">
                     Model Name
                   </td>
-                  <td className="px-4 py-3 text-sm text-gray-700">
+                  <td className="px-4 py-3 text-sm text-gray-700 dark:text-[#e5e7eb]">
                     {productDetails?.productBrand || ""}
                   </td>
                 </tr>
-                <tr className="border-b border-gray-200">
-                  <td className="w-1/4 px-4 py-3 text-sm font-semibold text-[#0A0A0A] bg-gray-50">
+                <tr className="border-b border-gray-200 dark:border-[#2d3748]">
+                  <td className="w-1/4 px-4 py-3 text-sm font-semibold text-[#0A0A0A] dark:text-white bg-gray-50 dark:bg-[#1f2937]">
                     Display
                   </td>
-                  <td className="px-4 py-3 text-sm text-gray-700">
+                  <td className="px-4 py-3 text-sm text-gray-700 dark:text-[#e5e7eb]">
                     {productDetails?.display}
                   </td>
                 </tr>
-                <tr className="border-b border-gray-200">
-                  <td className="w-1/4 px-4 py-3 text-sm font-semibold text-[#0A0A0A] bg-gray-50">
+                <tr className="border-b border-gray-200 dark:border-[#2d3748]">
+                  <td className="w-1/4 px-4 py-3 text-sm font-semibold text-[#0A0A0A] dark:text-white bg-gray-50 dark:bg-[#1f2937]">
                     Processor
                   </td>
-                  <td className="px-4 py-3 text-sm text-gray-700">
+                  <td className="px-4 py-3 text-sm text-gray-700 dark:text-[#e5e7eb]">
                     {productDetails?.chipset}
                   </td>
                 </tr>
                 <tr>
-                  <td className="w-1/4 px-4 py-3 text-sm font-semibold text-[#0A0A0A] bg-gray-50">
+                  <td className="w-1/4 px-4 py-3 text-sm font-semibold text-[#0A0A0A] dark:text-white bg-gray-50 dark:bg-[#1f2937]">
                     Water Resistance
                   </td>
-                  <td className="px-4 py-3 text-sm text-gray-700">
+                  <td className="px-4 py-3 text-sm text-gray-700 dark:text-[#e5e7eb]">
                     {productDetails?.waterResistance || ""}
                   </td>
                 </tr>
@@ -160,10 +160,10 @@ const Tabs: React.FC<TabsProp> = ({ productDetails }) => {
           </div>
         )}
         {activeTab === "Key Features" && (
-          <ul className="list-none list-inside text-gray-600 text-sm">
+          <ul className="list-none list-inside text-gray-600 dark:text-[#cbd5f5] text-sm">
             {features?.map((feature, item) => (
               <li key={item} className="mb-3 ">
-                <span className="font-semibold text-[#212B37] font-sans text-[13px]">
+                <span className="font-semibold text-[#212B37] dark:text-white font-sans text-[13px]">
                   {feature?.title}
                   {": "}
                 </span>
@@ -173,10 +173,10 @@ const Tabs: React.FC<TabsProp> = ({ productDetails }) => {
           </ul>
         )}
         {activeTab === "Additional Features" && (
-          <ul className="list-none list-inside text-gray-600 text-sm">
+          <ul className="list-none list-inside text-gray-600 dark:text-[#cbd5f5] text-sm">
             {additionalFeatures?.map((feature, item) => (
               <li key={item} className="mb-3 ">
-                <span className="font-semibold text-[#212B37] font-sans text-[13px]">
+                <span className="font-semibold text-[#212B37] dark:text-white font-sans text-[13px]">
                   {feature?.title}
                   {": "}
                 </span>

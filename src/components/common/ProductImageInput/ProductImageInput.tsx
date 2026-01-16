@@ -98,7 +98,7 @@ const ProductImageInput: React.FC<ProductImageInputProps> = ({
         className="min-h-[80px] max-h-fit border border-dashed border-[#dee7f1] dark:border-gray-700 rounded-lg p-4 flex flex-col items-center justify-center cursor-pointer hover:border-[#5c67f7] transition"
         onClick={handleClick}
       >
-        <p className="text-sm text-gray-500">
+        <p className="text-sm text-gray-500 dark:text-gray-300">
           Drag & Drop your files or{" "}
           <span className="text-[#5c67f7] font-medium">Browse</span>
         </p>
@@ -132,7 +132,7 @@ const ProductImageInput: React.FC<ProductImageInputProps> = ({
 
       <label
         htmlFor="product-description-add"
-        className="text-[12px] font-normal text-[#6e829f] mt-1"
+        className="text-[12px] font-normal text-[#6e829f] dark:text-[#cbd5f5] mt-1"
       >
         * Minimum of 6 images need to be uploaded, all images should be
         uniformly maintained, width and height to the container.

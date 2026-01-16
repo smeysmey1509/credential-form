@@ -6,7 +6,7 @@ const FormFieldTracking = () => {
       className="relative w-full h-full flex items-center border border-[#E4E9F2]
              focus-within:border-[#5c67f780]
              focus-within:shadow-[0px_0px_6px_0px_rgba(92,_103,_247,_0.5)]
-             focus-within:bg-[#fff]
+             focus-within:bg-[#fff] dark:focus-within:bg-[#111827]
              dark:bg-[#19191C] dark:border-gray-700
              rounded overflow-hidden transition duration-200"
     >

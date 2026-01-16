@@ -24,7 +24,7 @@ const FeatureItemCard: React.FC<FeatureItemCardProp> = ({
 }) => {
   return (
     <div className="w-full h-fit flex flex-auto items-center gap-2 py-2">
-      <div className="w-[80px] h-[80px] rounded-sm bg-[#F7F7FE] leading-[5rem] p-2">
+      <div className="w-[80px] h-[80px] rounded-sm bg-[#F7F7FE] dark:bg-[#1f2937] leading-[5rem] p-2">
         <img
           src={
             productImg ? toAbs(productImg) : DEFAULT_IMG
@@ -34,13 +34,13 @@ const FeatureItemCard: React.FC<FeatureItemCardProp> = ({
         />
       </div>
       <div className="flex flex-col justify-between gap-2">
-        <h4 className="text-[14px] text-[#0A0A0A] font-semibol font-bold">
+        <h4 className="text-[14px] text-[#0A0A0A] dark:text-white font-semibol font-bold">
           {productName}
         </h4>
         <Rate rating={ratingProduct} ratingCount={ratingCountProduct} />
-        <p className="font-semibold text-[18px] font-sans text-[#0A0A0A]">
+        <p className="font-semibold text-[18px] font-sans text-[#0A0A0A] dark:text-white">
           ${productCost}
-          <s className="font-medium ms-2 text-[13px] font-sans text-[#6e829f]">
+          <s className="font-medium ms-2 text-[13px] font-sans text-[#6e829f] dark:text-[#cbd5f5]">
             ${compareAtPrice}
           </s>
         </p>

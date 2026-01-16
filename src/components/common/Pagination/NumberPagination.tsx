@@ -10,10 +10,10 @@ const NumberPagination = ({ classname }: NumberPaginationProps) => {
   const [page, setPage] = useState<number>(1);
 
   return (
-    <div className={`w-full h-fit flex justify-between items-center text-[#212B37] shadow-[0px_6px_16px_2px_rgba(0,0,0,0.05)] rounded bg-white p-[16px] ${classname}`}>
+    <div className={`w-full h-fit flex justify-between items-center text-[#212B37] dark:text-white shadow-[0px_6px_16px_2px_rgba(0,0,0,0.05)] rounded bg-white dark:bg-[#19191C] p-[16px] ${classname}`}>
       <div className="flex justify-center items-center text-center gap-1 text-[13px] font-sans">
-        Showing <span className="font-bold text-[#212B37]">1</span> to{" "}
-        <span className="font-bold text-[#212B37]">6</span> entries
+        Showing <span className="font-bold text-[#212B37] dark:text-white">1</span> to{" "}
+        <span className="font-bold text-[#212B37] dark:text-white">6</span> entries
         <BsArrowRight className="ml-4 font-semibold font-sans" />
       </div>
       <Pagination

@@ -30,7 +30,7 @@ const ProductDescriptionInput: React.FC<ProductDescriptionInputProps> = ({
       ></textarea>
       <label
         htmlFor="product-description-add"
-        className="text-[12px] font-normal text-[#6e829f] mt-1"
+        className="text-[12px] font-normal text-[#6e829f] dark:text-[#cbd5f5] mt-1"
       >
         {helpText}
       </label>
