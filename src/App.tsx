@@ -12,7 +12,7 @@ import EditProducts from "./features/dashboard/product/EditProducts";
 import OrderDetails from "./features/dashboard/product/OrderDetails";
 
 const LoginPage = lazy(() => import("./pages/auth/LoginPage"));
-const HomePage = lazy(() => import("./pages/auth/HomePage"));
+// const HomePage = lazy(() => import("./pages/auth/HomePage"));
 const RegisterPage = lazy(() => import("./pages/auth/RegisterPage"));
 const Dashboard = lazy(() => import("./features/dashboard/Layout"));
 const PublicRoute = lazy(() => import("./routes/PublicRoute"));

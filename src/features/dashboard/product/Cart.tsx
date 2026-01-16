@@ -153,10 +153,9 @@ const Cart = () => {
     return `
       !relative overflow-hidden !w-full !rounded !text-[0.85rem] !px-4 !py-2 font-semibold 
       !bg-[#F7F7FE] transition-colors duration-300 ease-in-out
-      ${
-        isActive
-          ? "!text-[#5F6AF7]"
-          : "!text-[#000] hover:bg-[#5C67FC] hover:!text-[#5F6AF7]"
+      ${isActive
+        ? "!text-[#5F6AF7]"
+        : "!text-[#000] hover:bg-[#5C67FC] hover:!text-[#5F6AF7]"
       }
       before:content-[''] before:absolute before:bottom-0 before:left-1/2 before:h-[2px] 
       before:bg-[#5F6AF7] before:transition-all before:duration-300 before:ease-in-out
@@ -271,8 +270,8 @@ const Cart = () => {
                   {discountType === "percentage"
                     ? `— ${discount}% (-$${discountAmount || 0})`
                     : discountType === "fixed"
-                    ? `— -$${discount}`
-                    : ""}
+                      ? `— -$${discount}`
+                      : ""}
                 </div>
                 <button
                   className="text-[12px] text-green-700 underline decoration-dotted hover:text-green-900"
@@ -313,8 +312,8 @@ const Cart = () => {
               {deliveryMethod === "Express"
                 ? `Delivered By ${estimatedDeliveryTime} Days`
                 : deliveryMethod === "Pickup"
-                ? `Your Pickup Code: ${pickUpCode}`
-                : `Delivered Within ${estimatedDeliveryTime} Days`}
+                  ? `Your Pickup Code: ${pickUpCode}`
+                  : `Delivered Within ${estimatedDeliveryTime} Days`}
             </span>
           </div>
 
@@ -352,8 +351,8 @@ const Cart = () => {
                 {discountType === "percentage"
                   ? `${discount}% - $${discountAmount}`
                   : discountType === "fixed"
-                  ? `$${discount ?? "0"}`
-                  : `$${discount ?? "0"}`}
+                    ? `$${discount ?? "0"}`
+                    : `$${discount ?? "0"}`}
               </motion.span>
             </AnimatePresence>
           </div>

@@ -1,4 +1,4 @@
-import React, { use } from "react";
+import React from "react";
 import { useLocation, Link } from "react-router-dom";
 import "./Content.css";
 import { Outlet } from "react-router-dom";
@@ -22,9 +22,8 @@ const Content = () => {
                 <li key={index} className="breadcrumb-item">
                   <Link
                     to={routeTo}
-                    className={`text-[#687b94] hover:text-[#000] ${
-                      index === pathnames.length - 1 ? "font-bold" : ""
-                    }`}
+                    className={`text-[#687b94] hover:text-[#000] ${index === pathnames.length - 1 ? "font-bold" : ""
+                      }`}
                   >
                     {value?.charAt(0).toUpperCase() + value?.slice(1)}
                   </Link>
