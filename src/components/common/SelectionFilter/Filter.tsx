@@ -55,7 +55,7 @@ const Filter: React.FC<FilterProps> = ({ onSortChange }) => {
         aria-haspopup="listbox"
         aria-expanded={open}
         onClick={() => setOpen((s) => !s)}
-        className="w-full h-full flex items-center justify-center gap-2 bg-[#5C67F7] rounded cursor-pointer py-[4.16px] px-[8px]"
+        className="w-full h-full flex items-center justify-center gap-2 bg-[#5C67F7] dark:bg-[#4f46e5] rounded cursor-pointer py-[4.16px] px-[8px]"
       >
         <span className="text-white text-[12px] font-semibold font-sans">
           Sort By
@@ -77,7 +77,7 @@ const Filter: React.FC<FilterProps> = ({ onSortChange }) => {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -10, scale: 0.95 }}
             transition={{ duration: 0.2 }}
-            className="absolute top-full right-0 mt-1 w-[180px] text-[#212B37] border border-[#ecf3fb] font-normal text-[0.85rem] bg-white shadow-lg rounded z-10 overflow-hidden"
+            className="absolute top-full right-0 mt-1 w-[180px] text-[#212B37] dark:text-[#e5e7eb] border border-[#ecf3fb] dark:border-[#2d3748] font-normal text-[0.85rem] bg-white dark:bg-[#111827] shadow-lg rounded z-10 overflow-hidden"
           >
             {options.map((option, i) => {
               const active = selectedOption === option.label;
@@ -98,8 +98,10 @@ const Filter: React.FC<FilterProps> = ({ onSortChange }) => {
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: -10 }}
                   transition={{ duration: 0.15, delay: i * 0.05 }}
-                  className={`py-[0.5rem] px-[0.9375rem] font-sans cursor-pointer hover:text-[#0d6efd] hover:bg-[#F9F9FA] ${
-                    active ? "bg-[#F5F7FF] text-[#0d6efd]" : ""
+                  className={`py-[0.5rem] px-[0.9375rem] font-sans cursor-pointer hover:text-[#0d6efd] hover:bg-[#F9F9FA] dark:hover:bg-[#1f2937] ${
+                    active
+                      ? "bg-[#F5F7FF] text-[#0d6efd] dark:bg-[#1f2937]"
+                      : ""
                   }`}
                 >
                   {option.label}

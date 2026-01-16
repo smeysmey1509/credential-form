@@ -49,15 +49,15 @@ const PriceRange: React.FC<PriceRangeProps> = ({
   );
 
   return (
-    <div className={`w-full flex flex-col gap-4 p-[16px] border-b border-b-gray-200 ${className}`}>
+    <div className={`w-full flex flex-col gap-4 p-[16px] border-b border-b-gray-200 dark:border-b-[#2d3748] ${className}`}>
       {label && (
-        <h6 className="w-full text-[16px] text-[#212B37] font-semibold font-sans">
+        <h6 className="w-full text-[16px] text-[#212B37] dark:text-white font-semibold font-sans">
           {label}
         </h6>
       )}
 
       {/* Slider */}
-      <div className="relative w-full h-1 rounded-full bg-[#E8ECF4] cursor-pointer">
+      <div className="relative w-full h-1 rounded-full bg-[#E8ECF4] dark:bg-[#374151] cursor-pointer">
         {/* active (selected) range */}
         <div
           className="absolute h-1 rounded-full"
@@ -114,6 +114,11 @@ const PriceRange: React.FC<PriceRangeProps> = ({
             background-position: center;
             background-size: 14px 14px;
           }
+          .dark input[type="range"]::-webkit-slider-thumb {
+            background-color: #111827;
+            border: 1px solid rgba(148, 163, 184, 0.4);
+            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23E5E7EB' stroke-opacity='0.7' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><path d='M3.75 9h16.5M3.75 15h16.5'/></svg>");
+          }
           input[type="range"]::-webkit-slider-runnable-track {
             height: 2px;
             background: transparent; /* track drawn by divs */
@@ -134,6 +139,11 @@ const PriceRange: React.FC<PriceRangeProps> = ({
             background-position: center;
             background-size: 14px 14px;
           }
+          .dark input[type="range"]::-moz-range-thumb {
+            background-color: #111827;
+            border: 1px solid rgba(148, 163, 184, 0.4);
+            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23E5E7EB' stroke-opacity='0.7' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><path d='M3.75 9h16.5M3.75 15h16.5'/></svg>");
+          }
           input[type="range"]::-moz-range-track {
             height: 2px;
             background: transparent;
@@ -142,7 +152,7 @@ const PriceRange: React.FC<PriceRangeProps> = ({
       </div>
 
       {/* Values */}
-      <p className="text-[16px] font-bold text-[#212B37]">
+      <p className="text-[16px] font-bold text-[#212B37] dark:text-white">
         {formatter.format(minVal)}&nbsp;&nbsp;--&nbsp;&nbsp;
         {formatter.format(maxVal)}
       </p>

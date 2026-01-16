@@ -12,8 +12,8 @@ type PaginationProps = {
 
 const btnBase =
   "relative z-10 text-[13px] font-sans px-[12px] py-[6px] rounded shadow transition-colors duration-200";
-const btnDefault = `${btnBase} text-[#212B37] bg-white border border-[#ecf3fb] cursor-pointer hover:bg-transparent hover:text-[#5C67F7]`;
-const btnDisabled = `${btnBase} text-[#9aa8bd] bg-[#F3F5F8] cursor-not-allowed opacity-60`;
+const btnDefault = `${btnBase} text-[#212B37] dark:text-[#e5e7eb] bg-white dark:bg-[#111827] border border-[#ecf3fb] dark:border-[#2d3748] cursor-pointer hover:bg-transparent hover:text-[#5C67F7]`;
+const btnDisabled = `${btnBase} text-[#9aa8bd] bg-[#F3F5F8] dark:bg-[#1f2937] cursor-not-allowed opacity-60`;
 const activePillClass = "absolute inset-0 rounded bg-[#5C67F7] shadow";
 
 function range(start: number, end: number) {

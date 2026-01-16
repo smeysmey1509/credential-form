@@ -8,7 +8,7 @@ const Review = () => {
   return (
     <div className="w-full h-fit flex flex-col gap-6 p-4">
       <div className="w-full h-fit flex justify-between items-center">
-        <div className="text-[#212B37] text-[15.2px] font-sans font-medium">
+        <div className="text-[#212B37] dark:text-white text-[15.2px] font-sans font-medium">
           {" "}
           Reviews & Ratings{" "}
         </div>
@@ -20,8 +20,8 @@ const Review = () => {
         </a>
       </div>
       <div className="flex items-start gap-6 w-full">
-        <div className="w-full md:w-1/3 flex flex-col justify-center items-center gap-2 p-3 bg-[#F9F9FA] rounded-md">
-          <div className="text-[#212B37] text-[32px] font-sans font-medium ">4.2</div>
+        <div className="w-full md:w-1/3 flex flex-col justify-center items-center gap-2 p-3 bg-[#F9F9FA] dark:bg-[#1f2937] rounded-md">
+          <div className="text-[#212B37] dark:text-white text-[32px] font-sans font-medium ">4.2</div>
           <TagBage label="Very Good" classname="!w-fit"/>
           <Rate />
           <ButtonWithEmoji label="Leave Us a Review" btnClass="!w-full"/>

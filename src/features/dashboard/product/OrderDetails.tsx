@@ -22,20 +22,20 @@ const columns = [
     header: "Price",
     accessor: "price",
     width: "15%",
-    bodyColor: "!text-[15px] !text-[#212b37] !font-bold",
+    bodyColor: "!text-[15px] !text-[#212b37] dark:!text-[#e5e7eb] !font-bold",
     currency: true,
   },
   {
     header: "Quantity",
     accessor: "quantity",
     width: "15%",
-    bodyColor: "!text-[13px] !text-[#212b37] !font-medium",
+    bodyColor: "!text-[13px] !text-[#212b37] dark:!text-[#e5e7eb] !font-medium",
   },
   {
     header: "Total Price",
     accessor: "totalPrice",
     width: "15%",
-    bodyColor: "!text-[13px] !text-[#212b37] !font-medium",
+    bodyColor: "!text-[13px] !text-[#212b37] dark:!text-[#e5e7eb] !font-medium",
     currency: true,
   },
 ];
@@ -86,13 +86,13 @@ const data = [
 const OrderDetails = () => {
   return (
     <div className="w-full h-fit flex gap-4">
-      <div className="flex-[8] flex flex-col justify-between bg-white shadow-[0px_6px_16px_2px_rgba(0,0,0,0.05)] rounded-lg">
+      <div className="flex-[8] flex flex-col justify-between bg-white dark:bg-[#19191C] shadow-[0px_6px_16px_2px_rgba(0,0,0,0.05)] rounded-lg">
         <div>
           <div className="flex justify-between p-4">
-            <div className="font-medium text-[15.2px] font-sans text-[#212B37]">
+            <div className="font-medium text-[15.2px] font-sans text-[#212B37] dark:text-white">
               Order No - <span className="text-[#5C67F7]">#SPK-7832</span>
             </div>
-            <div className="flex justify-center items-center text-[#5C67F7] bg-[#5C67F71A] text-center font-semibold text-[11px] font-sans px-[0.45rem] rounded-sm">
+            <div className="flex justify-center items-center text-[#5C67F7] bg-[#5C67F71A] dark:bg-[#1f2937] text-center font-semibold text-[11px] font-sans px-[0.45rem] rounded-sm">
               Estimated delivery : 30,Nov 2023
             </div>
           </div>
@@ -113,10 +113,10 @@ const OrderDetails = () => {
         </div>
       </div>
       <div className="flex-[4] flex flex-col gap-4">
-        <div className="flex-0 h-fit bg-white shadow-[0px_6px_16px_2px_rgba(0,0,0,0.05)] rounded-lg">
+        <div className="flex-0 h-fit bg-white dark:bg-[#19191C] shadow-[0px_6px_16px_2px_rgba(0,0,0,0.05)] rounded-lg">
           <Tracking />
         </div>
-        <div className="flex-0 h-fit bg-white shadow-[0px_6px_16px_2px_rgba(0,0,0,0.05)] rounded-lg">
+        <div className="flex-0 h-fit bg-white dark:bg-[#19191C] shadow-[0px_6px_16px_2px_rgba(0,0,0,0.05)] rounded-lg">
           <OrderSummary />
         </div>
       </div>

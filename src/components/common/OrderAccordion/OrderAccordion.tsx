@@ -41,13 +41,13 @@ const AccordionItem: FC<AccordionItemProps> = ({
           </div>
           <div className="flex flex-1 items-center justify-between">
             {title && (
-              <div className="text-[14px] font-sans font-medium text-[#212B37]">
+              <div className="text-[14px] font-sans font-medium text-[#212B37] dark:text-white">
                 {title}
               </div>
             )}
             {expectedDate ? (
               // Case 1: expected date/time
-              <div className="text-[12px] font-sans font-normal text-[#6E829F]">
+              <div className="text-[12px] font-sans font-normal text-[#6E829F] dark:text-[#cbd5f5]">
                 {date}
                 {time && `, ${time}`} <span className="italic">(expected)</span>
               </div>
@@ -55,7 +55,9 @@ const AccordionItem: FC<AccordionItemProps> = ({
               // Case 2: has date + time
               <div
                 className={`text-[12px] font-sans font-normal ${
-                  deliveredDate ? "text-[#6E829F]" : "text-[#0A0A0A]"
+                  deliveredDate
+                    ? "text-[#6E829F] dark:text-[#cbd5f5]"
+                    : "text-[#0A0A0A] dark:text-white"
                 }`}
               >
                 {date}, {time}
@@ -80,7 +82,7 @@ const AccordionItem: FC<AccordionItemProps> = ({
             transition={{ duration: 0.25 }}
             className="overflow-hidden"
           >
-            <div className="ps-11 pb-0 text-[13px] font-sans font-normal text-[#6E829F]">
+            <div className="ps-11 pb-0 text-[13px] font-sans font-normal text-[#6E829F] dark:text-[#cbd5f5]">
               {!content ? (
                 content
               ) : (
@@ -92,7 +94,7 @@ const AccordionItem: FC<AccordionItemProps> = ({
                     </span>
                   )}
                   {expectedDate && (
-                    <div className="flex-1 text-[12px] font-sans font-medium text-[#6E829F]">
+                    <div className="flex-1 text-[12px] font-sans font-medium text-[#6E829F] dark:text-[#cbd5f5]">
                       {date}, {time}
                     </div>
                   )}
@@ -153,7 +155,7 @@ const OrderAccordion: FC = () => {
 
   return (
     <div
-      className="relative w-full before:absolute before:left-[1rem] before:top-0 before:h-full before:border-l before:border-dashed before:border-[#E4E9F2] before:content-['']"
+      className="relative w-full before:absolute before:left-[1rem] before:top-0 before:h-full before:border-l before:border-dashed before:border-[#E4E9F2] dark:before:border-[#2d3748] before:content-['']"
       id="basicAccordion"
     >
       {orders.map((order, index) => (

@@ -16,7 +16,7 @@ const ReviewCard = () => {
               className="w-full h-full rounded-[50%]"
             />
           </span>
-          <p className="flex flex-auto items-center gap-2 text-[#212B37] text-[14px] font-sans font-semibold">
+          <p className="flex flex-auto items-center gap-2 text-[#212B37] dark:text-white text-[14px] font-sans font-semibold">
             Phillip John <Rate rating={1} ratingCount={1.2} max={1} />
           </p>
         </div>
@@ -25,10 +25,10 @@ const ReviewCard = () => {
         </div>
       </div>
       <div className="flex-auto items-center">
-        <p className="text-[#212B37] text-[13px] font-sans font-semibold">
+        <p className="text-[#212B37] dark:text-white text-[13px] font-sans font-semibold">
           Powerful Performance, Stunning Display!
         </p>
-        <p className="text-[#212B37] text-[11px] font-sans font-normal">
+        <p className="text-[#212B37] dark:text-[#cbd5f5] text-[11px] font-sans font-normal">
           The TechPro X15 Elite - 2024 Edition is a powerhouse! The 4K UHD
           touchscreen display is stunning.vgwrggerrb grgrgerg{" "}
         </p>
@@ -53,7 +53,7 @@ const ReviewCard = () => {
         <div className="w-full flex justify-end items-center gap-2">
           <ButtonWithEmoji
             label="Report abuse"
-            btnClass="!min-w-fit !bg-[#F9F9FA] hover:!bg-[#F2F2F3] !text-[#212b37] !text-[12px] !font-sans !font-medium"
+            btnClass="!min-w-fit !bg-[#F9F9FA] dark:!bg-[#1f2937] hover:!bg-[#F2F2F3] dark:hover:!bg-[#111827] !text-[#212b37] dark:!text-[#e5e7eb] !text-[12px] !font-sans !font-medium"
           />
           <ButtonWithEmoji
             emoji={<AiOutlineLike />}

@@ -63,13 +63,13 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
   return (
     <div className={`relative h-fit overflow-x-auto ${classname}`}>
       <table className="min-w-full text-sm text-left">
-        <thead className="sticky h-fit top-0 py-4 bg-white border-b border-b-[#ecf3fb]">
+        <thead className="sticky h-fit top-0 py-4 bg-white dark:bg-[#111827] border-b border-b-[#ecf3fb] dark:border-b-[#2d3748]">
           <tr>
             {columns.map((col, i) => (
               <th
                 key={i}
                 style={{ width: col.width }}
-                className={`px-4 py-2 font-medium ${col.color || ""}`}
+                className={`px-4 py-2 font-medium text-[#212b37] dark:text-[#e5e7eb] ${col.color || ""}`}
               >
                 {col.header}
               </th>
@@ -79,13 +79,13 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
         <tbody className="min-h-screen overflow-auto">
           {localData && localData?.length > 0 ? (
             localData.map((row, ri) => (
-              <tr key={ri} className="border-b border-b-[#ecf3fb]">
+              <tr key={ri} className="border-b border-b-[#ecf3fb] dark:border-b-[#2d3748]">
                 {columns.map((col, ci) => {
                   if (col.accessor === "name") {
                     return (
                       <td key={ci} className="px-4 py-2">
                         <div className="flex items-center gap-2 py-2">
-                          <div className="w-[80px] h-[80px] rounded-sm bg-[#F9F9FA] leading-[5rem] p-2">
+                          <div className="w-[80px] h-[80px] rounded-sm bg-[#F9F9FA] dark:bg-[#1f2937] leading-[5rem] p-2">
                             <img
                               src={toAbs(row?.image) || DEFAULT_IMG}
                               alt={row?.image || "No image available"}
@@ -94,7 +94,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                           </div>
                           <div className="flex flex-col">
                             <div className="flex items-center gap-2">
-                              <h4 className="text-[14px] text-[#0A0A0A] font-bold">
+                              <h4 className="text-[14px] text-[#0A0A0A] dark:text-white font-bold">
                                 {row?.name}
                               </h4>
                               <span className="bg-[#FF8E6F] text-center text-white text-[9px] px-[7.2px] py-[4px] rounded-sm">
@@ -102,14 +102,14 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                               </span>
                             </div>
                             <div className="flex items-center gap-4 mt-1">
-                              <span className="text-[#6E829F] text-sm font-bold">
-                                <span className="text-[#212B37] text-sm font-normal">
+                              <span className="text-[#6E829F] dark:text-[#cbd5f5] text-sm font-bold">
+                                <span className="text-[#212B37] dark:text-white text-sm font-normal">
                                   Size :
                                 </span>{" "}
                                 13"
                               </span>
-                              <span className="text-[#6E829F] text-sm font-bold">
-                                <span className="text-[#212B37] text-sm font-normal">
+                              <span className="text-[#6E829F] dark:text-[#cbd5f5] text-sm font-bold">
+                                <span className="text-[#212B37] dark:text-white text-sm font-normal">
                                   Color:
                                 </span>{" "}
                                 Blue
@@ -134,7 +134,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                     return (
                       <td key={ci} className="px-4 py-2">
                         <div className="flex items-center gap-2 py-2">
-                          <div className="w-[80px] h-[80px] rounded-sm bg-[#F9F9FA] leading-[5rem] p-2">
+                          <div className="w-[80px] h-[80px] rounded-sm bg-[#F9F9FA] dark:bg-[#1f2937] leading-[5rem] p-2">
                             <img
                               src={toAbs(row?.image) || DEFAULT_IMG}
                               alt={row?.image || "No image available"}
@@ -143,19 +143,19 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                           </div>
                           <div className="flex flex-col">
                             <div className="flex items-center gap-2">
-                              <h4 className="text-[14px] text-[#0A0A0A] font-bold">
+                              <h4 className="text-[14px] text-[#0A0A0A] dark:text-white font-bold">
                                 {row?.name}
                               </h4>
                             </div>
                             <div className="flex flex-col gap-1 mt-1">
-                              <span className="text-[#6E829F] text-sm font-semibold">
-                                <span className="text-[#212B37] text-sm font-normal">
+                              <span className="text-[#6E829F] dark:text-[#cbd5f5] text-sm font-semibold">
+                                <span className="text-[#212B37] dark:text-white text-sm font-normal">
                                   Size :
                                 </span>{" "}
                                 13"
                               </span>
-                              <span className="text-[#6E829F] text-sm font-semibold">
-                                <span className="text-[#212B37] text-sm font-normal">
+                              <span className="text-[#6E829F] dark:text-[#cbd5f5] text-sm font-semibold">
+                                <span className="text-[#212B37] dark:text-white text-sm font-normal">
                                   Color:
                                 </span>{" "}
                                 Blue
@@ -215,13 +215,13 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                   return (
                     <td
                       key={ci}
-                      className={`px-4 py-2 font-bold text-[#212B37] border-[#dee7f1]
-    focus:border-[#5c67f780] focus:bg-[#fff]
+                      className={`px-4 py-2 font-bold text-[#212B37] dark:text-[#e5e7eb] border-[#dee7f1] dark:border-[#374151]
+    focus:border-[#5c67f780] focus:bg-[#fff] dark:focus:bg-[#111827]
     focus:shadow-[0px_0px_6px_0px_rgba(92,_103,_247,_0.5)]
     dark:placeholder:text-gray-500 outline-none
     transition duration-200 cursor-default ${col.bodyColor || ""} ${
                         isEditMode && col.editable
-                          ? "cursor-pointer hover:bg-[#f9f9fa]"
+                          ? "cursor-pointer hover:bg-[#f9f9fa] dark:hover:bg-[#1f2937]"
                           : ""
                       }`}
                       style={{ width: col.width }}
@@ -245,7 +245,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                             }
                           }}
                           className="w-full border border-transparent rounded px-2 py-1
-                                focus:border-[#5c67f780] focus:bg-[#fff]
+                                focus:border-[#5c67f780] focus:bg-[#fff] dark:focus:bg-[#111827]
                                 focus:shadow-[0px_0px_6px_0px_rgba(92,_103,_247,_0.5)]
                                 dark:placeholder:text-gray-500 outline-none
                                 transition duration-200 text-sm focus:outline-none"

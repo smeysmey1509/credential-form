@@ -352,7 +352,7 @@ const ListProduct: React.FC = () => {
       accessor: "check",
       width: "2%",
       color: "!font-semibold",
-      bodyColor: "!text-[13px] !text-[#212b37] !font-medium",
+      bodyColor: "!text-[13px] !text-[#212b37] dark:!text-[#e5e7eb] !font-medium",
       render: (_: any, row: FormattedProduct) => (
         <CheckBox
           checked={selectedProductIds.includes(row._id || "")}
@@ -398,7 +398,9 @@ const ListProduct: React.FC = () => {
               >
                 {name}
               </p>
-              <p className={"text-[12px] text-[#6e829f]"}>SoundWave</p>
+              <p className={"text-[12px] text-[#6e829f] dark:text-[#cbd5f5]"}>
+                SoundWave
+              </p>
             </div>
           </div>
         );
@@ -409,7 +411,7 @@ const ListProduct: React.FC = () => {
       accessor: "category",
       width: "5%",
       color: "!font-semibold",
-      bodyColor: "!text-[13px] !text-[#212b37] !font-medium",
+      bodyColor: "!text-[13px] !text-[#212b37] dark:!text-[#e5e7eb] !font-medium",
       editable: true,
     },
     {
@@ -417,7 +419,7 @@ const ListProduct: React.FC = () => {
       accessor: "price",
       width: "4%",
       color: "!font-semibold",
-      bodyColor: "!text-[13px] !text-[#212b37] !font-medium",
+      bodyColor: "!text-[13px] !text-[#212b37] dark:!text-[#e5e7eb] !font-medium",
       editable: true,
       currency: true,
     },
@@ -426,7 +428,7 @@ const ListProduct: React.FC = () => {
       accessor: "stock",
       width: "4%",
       color: "!font-semibold",
-      bodyColor: "!text-[13px] !text-[#212b37] !font-medium",
+      bodyColor: "!text-[13px] !text-[#212b37] dark:!text-[#e5e7eb] !font-medium",
       editable: true,
     },
     {
@@ -434,7 +436,7 @@ const ListProduct: React.FC = () => {
       accessor: "status",
       width: "6%",
       color: "!font-semibold",
-      bodyColor: "!text-[13px] !text-[#212b37] !font-medium",
+      bodyColor: "!text-[13px] !text-[#212b37] dark:!text-[#e5e7eb] !font-medium",
       render: (value: any) => {
         const isUnpublished = value?.toLowerCase() === "unpublished";
         const bgColor = isUnpublished ? "!bg-red-100" : "!bg-[#5C67F71A]";
@@ -454,7 +456,7 @@ const ListProduct: React.FC = () => {
       accessor: "seller",
       width: "9%",
       color: "!font-semibold",
-      bodyColor: "!text-[13px] !text-[#212b37]",
+      bodyColor: "!text-[13px] !text-[#212b37] dark:!text-[#e5e7eb]",
       render: (value: any) => {
         if (!value) return <span className="text-gray-400">No Seller</span>;
 
@@ -484,7 +486,7 @@ const ListProduct: React.FC = () => {
       accessor: "published",
       width: "7%",
       color: "!font-semibold",
-      bodyColor: "!text-[13px] !text-[#212b37] !font-medium",
+      bodyColor: "!text-[13px] !text-[#212b37] dark:!text-[#e5e7eb] !font-medium",
       editable: true,
     },
     {
@@ -492,7 +494,7 @@ const ListProduct: React.FC = () => {
       accessor: "action",
       width: "5%",
       color: "!font-semibold",
-      bodyColor: "!text-[13px] !text-[#212b37]",
+      bodyColor: "!text-[13px] !text-[#212b37] dark:!text-[#e5e7eb]",
       editable: true,
     },
   ];

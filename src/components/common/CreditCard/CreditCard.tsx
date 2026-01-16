@@ -17,12 +17,12 @@ const CreditCard: React.FC<CreditCardProp> = ({
   onChange
 }) => {
   return (
-    <div className="w-full flex items-center border border-[#dee7f1] p-[10px] rounded">
+    <div className="w-full flex items-center border border-[#dee7f1] dark:border-[#374151] p-[10px] rounded">
       <div className="w-[40px] h-[40px] mr-2">
         <img src={creditImg} alt="" className="w-full h-full object-contain" />
       </div>
       <div className="w-full">
-        <p className="font-semibold text-[13px] font-sans text-[#212B37]">
+        <p className="font-semibold text-[13px] font-sans text-[#212B37] dark:text-white">
           {creditLabel}
         </p>
       </div>

@@ -45,16 +45,16 @@ const DetailCardInformation: React.FC<DetailCardInformationProp> = ({
 
   return (
     <div className="w-full h-fit flex flex-col gap-4 p-4">
-      <p className="text-[#212B37] text-[20px] font-sans font-semibold ">
+      <p className="text-[#212B37] dark:text-white text-[20px] font-sans font-semibold ">
         {productName}
       </p>
       <Rate rating={ratingAvg} ratingCount={ratingCount} />
       <div className="flex items-center gap-3">
-        <p className="text-[#212B37] text-[32px] font-sans font-bold">
+        <p className="text-[#212B37] dark:text-white text-[32px] font-sans font-bold">
           ${cost}
         </p>
         <div className="flex flex-col justify-center">
-          <p className="text-[#6e829f] text-[12px] font-sans font-semibold line-through">
+          <p className="text-[#6e829f] dark:text-[#cbd5f5] text-[12px] font-sans font-semibold line-through">
             ${compareAtPrice}
           </p>
           <p className="text-[rgba(14,165,232)] text-[15px] font-san font-semibold">
@@ -63,14 +63,18 @@ const DetailCardInformation: React.FC<DetailCardInformationProp> = ({
         </div>
       </div>
       <div className="mb-3">
-        <p className="text-[15px] font-semibold font-sans mb-1">
+        <p className="text-[15px] font-semibold font-sans mb-1 text-[#212b37] dark:text-white">
           Description :
         </p>
-        <p className="text-[#6e829f] text-[13px] mb-0">{description}</p>
+        <p className="text-[#6e829f] dark:text-[#cbd5f5] text-[13px] mb-0">
+          {description}
+        </p>
       </div>
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div className="flex gap-3 items-center">
-          <p className="text-[15px] font-semibold font-sans">Colors :</p>
+          <p className="text-[15px] font-semibold font-sans text-[#212b37] dark:text-white">
+            Colors :
+          </p>
           <p className="mb-0 flex items-center gap-2">
             {colorList?.map((color) => {
               const isSelected = selectedColor === color.name;
@@ -95,11 +99,13 @@ const DetailCardInformation: React.FC<DetailCardInformationProp> = ({
         </div>
         <div className="flex gap-3 items-center">
           <div className="flex gap-3 items-center">
-            <p className="text-[15px] font-semibold font-sans">Storage :</p>
+            <p className="text-[15px] font-semibold font-sans text-[#212b37] dark:text-white">
+              Storage :
+            </p>
             {storageList?.map((item, index) => (
               <div
                 key={index}
-                className="text-[13.6px] rounded px-[0.75rem] py-[0.375rem] shadow-none font-medium bg-[rgba(249,249,250)] hover:bg-[#F2F2F3] border border-[rgba(249,249,250)] text-[#212b37] font-sans transition cursor-pointer"
+                className="text-[13.6px] rounded px-[0.75rem] py-[0.375rem] shadow-none font-medium bg-[rgba(249,249,250)] dark:bg-[#1f2937] hover:bg-[#F2F2F3] dark:hover:bg-[#111827] border border-[rgba(249,249,250)] dark:border-[#2d3748] text-[#212b37] dark:text-white font-sans transition cursor-pointer"
               >
                 {item}
               </div>
@@ -129,7 +135,9 @@ const DetailCardInformation: React.FC<DetailCardInformationProp> = ({
         </p>
       </div>
       <div className="flex items-center gap-2">
-        <p className="text-[15px] font-semibold font-sans mb-1">Quantity :</p>
+        <p className="text-[15px] font-semibold font-sans mb-1 text-[#212b37] dark:text-white">
+          Quantity :
+        </p>
         <QuantityInput
           value={1}
           min={1}

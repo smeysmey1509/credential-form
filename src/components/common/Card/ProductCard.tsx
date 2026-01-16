@@ -50,8 +50,8 @@ export default function ProductCard({
 
   return (
     <div className="group/card flex flex-col shadow-[0px_6px_16px_2px_rgba(0,0,0,0.05)] rounded">
-      <div className="w-full h-full p-2 border-b border-b-gray-200 border-dashed">
-        <div className="relative w-full h-full rounded bg-[#E9EAF7] transition-colors duration-300 ease-out group-hover/card:bg-[#DBDCF7]">
+      <div className="w-full h-full p-2 border-b border-b-gray-200 dark:border-b-[#2d3748] border-dashed">
+        <div className="relative w-full h-full rounded bg-[#E9EAF7] dark:bg-[#1f2937] transition-colors duration-300 ease-out group-hover/card:bg-[#DBDCF7] dark:group-hover/card:bg-[#243447]">
           {imgSrc ? (
             <img
               src={`${imgSrc}`}
@@ -112,8 +112,8 @@ export default function ProductCard({
           </div>
         </div>
       </div>
-      <div className="w-full bg-white p-4 rounded">
-        <h6 className="font-bold text-[1.1rem] text-[#0A0A0A]">
+      <div className="w-full bg-white dark:bg-[#19191C] p-4 rounded">
+        <h6 className="font-bold text-[1.1rem] text-[#0A0A0A] dark:text-white">
           <a
             href="#"
             className="decoration-none block truncate"
@@ -137,7 +137,7 @@ export default function ProductCard({
           <p className="text-[#E354D4] text-[0.8125rem] font-semibold">
             {product?.brand?.name}
           </p>
-          <p className="font-bold text-[#6e829f] text-[0.8125rem] line-through">
+          <p className="font-bold text-[#6e829f] dark:text-[#cbd5f5] text-[0.8125rem] line-through">
             {fmt(product?.compareAtPrice)}
           </p>
         </div>
