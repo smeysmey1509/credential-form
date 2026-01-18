@@ -137,14 +137,44 @@ const Cart = () => {
   };
 
   const handleSwitchDeliveryMethod = async (method: string) => {
+    setDeliveryMethod(method);
+
+    if (method.toLowerCase() !== "pickup") {
+      setPickUpCode(null);
+    }
+
     try {
       const response = await CartService.selectDeliveryMethod(method);
-      setDeliveryMethod(response.data.delivery.method);
+      const delivery = response?.data?.delivery;
+      const summary = response?.data?.summary;
 
-      const pickUpCode = response.data.delivery.code || null;
-      setPickUpCode(pickUpCode);
+      if (!delivery && !summary) {
+        await handleFetchCart();
+        return;
+      }
 
-      await handleFetchCart();
+      if (delivery?.method) {
+        setDeliveryMethod(delivery.method);
+      }
+
+      if ("code" in (delivery ?? {})) {
+        setPickUpCode(delivery?.code || null);
+      }
+
+      if ("estimatedDays" in (delivery ?? {})) {
+        setEstimatedDeliveryTime(delivery?.estimatedDays || null);
+      }
+
+      if ("baseFee" in (delivery ?? {})) {
+        setDeliveryFee(delivery?.baseFee || 0);
+      }
+
+      if (summary) {
+        setServiceTax(summary.serviceTax || 0);
+        setCalSubTotal(summary.subTotal || 0);
+        setDiscount(summary.discount || 0);
+        setTotal(summary.total || 0);
+      }
     } catch (err) {
       console.error("Error switching delivery method:", err);
     }
