@@ -54,7 +54,7 @@ const ListProduct: React.FC = () => {
   const [page, setPage] = useState<number>(0);
   const [hasNextPage, setHasNextPage] = useState<boolean>(false);
   const [hasPrevPage, setHasPrevPage] = useState<boolean>(false);
-  const [changeStatus, setChangeStatus] = useState<boolean>(true);
+  const [changeStatus, setChangeStatus] = useState<boolean>(false);
   const [selectionToolbar, setSelectionToolbar] = useState<boolean>(false);
   const [searchInput, setSearchInput] = useState({
     query: "",
@@ -309,14 +309,23 @@ const ListProduct: React.FC = () => {
   };
 
   useEffect(() => {
-    if (!searchInput.query.trim()) {
-      handleFetchProducts();
-    }
-  }, [searchInput.query, handleFetchProducts]);
+    if (debouncedQuery) return;
 
-  useEffect(() => {
-    handleFilterProductsAdvanced();
-  }, [debouncedQuery, sort, currentPage, handleFilterProductsAdvanced]);
+    if (sort || searchInput.query.trim()) {
+      handleFilterProductsAdvanced();
+      return;
+    }
+
+    handleFetchProducts();
+  }, [
+    debouncedQuery,
+    sort,
+    currentPage,
+    itemsPerPage,
+    searchInput.query,
+    handleFetchProducts,
+    handleFilterProductsAdvanced,
+  ]);
 
   useEffect(() => {
     if (!debouncedQuery) {
