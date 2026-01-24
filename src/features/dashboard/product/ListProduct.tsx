@@ -309,14 +309,23 @@ const ListProduct: React.FC = () => {
   };
 
   useEffect(() => {
-    if (!searchInput.query.trim()) {
-      handleFetchProducts();
-    }
-  }, [searchInput.query, handleFetchProducts]);
+    if (debouncedQuery) return;
 
-  useEffect(() => {
-    handleFilterProductsAdvanced();
-  }, [debouncedQuery, sort, currentPage, handleFilterProductsAdvanced]);
+    if (sort || searchInput.query.trim()) {
+      handleFilterProductsAdvanced();
+      return;
+    }
+
+    handleFetchProducts();
+  }, [
+    debouncedQuery,
+    sort,
+    currentPage,
+    itemsPerPage,
+    searchInput.query,
+    handleFetchProducts,
+    handleFilterProductsAdvanced,
+  ]);
 
   useEffect(() => {
     if (!debouncedQuery) {
