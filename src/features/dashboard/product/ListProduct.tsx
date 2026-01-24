@@ -54,7 +54,7 @@ const ListProduct: React.FC = () => {
   const [page, setPage] = useState<number>(0);
   const [hasNextPage, setHasNextPage] = useState<boolean>(false);
   const [hasPrevPage, setHasPrevPage] = useState<boolean>(false);
-  const [changeStatus, setChangeStatus] = useState<boolean>(true);
+  const [changeStatus, setChangeStatus] = useState<boolean>(false);
   const [selectionToolbar, setSelectionToolbar] = useState<boolean>(false);
   const [searchInput, setSearchInput] = useState({
     query: "",
