@@ -39,11 +39,10 @@ const Checkout = () => {
             <li
               key={index}
               onClick={() => setActiveTab(index)}
-              className={`group relative p-3 cursor-pointer transition-colors duration-300 ${
-                activeTab === index
-                  ? "border-b-[#5C67F7]"
-                  : "hover:border-b-[#5C67F7]"
-              }`}
+              className={`group relative p-3 cursor-pointer transition-colors duration-300 ${activeTab === index
+                ? "border-b-[#5C67F7]"
+                : "hover:border-b-[#5C67F7]"
+                }`}
             >
               <ButtonWithEmoji
                 emoji={tab.icon}

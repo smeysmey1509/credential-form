@@ -133,19 +133,19 @@ const ListProduct: React.FC = () => {
 
         const formattedDate = createdAt
           ? createdAt.toLocaleString("en-US", {
-              day: "2-digit",
-              month: "short",
-              year: "numeric",
-              hour: "2-digit",
-              minute: "2-digit",
-              hour12: true,
-            })
+            day: "2-digit",
+            month: "short",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: true,
+          })
           : "—";
 
         const imageUrl =
           typeof p.primaryImageIndex === "number" &&
-          Array.isArray(p.images) &&
-          p.images[p.primaryImageIndex]
+            Array.isArray(p.images) &&
+            p.images[p.primaryImageIndex]
             ? p.images[p.primaryImageIndex]
             : p.images?.[0] || "";
 
@@ -661,11 +661,10 @@ const ListProduct: React.FC = () => {
               <li key={page}>
                 <button
                   onClick={() => setCurrentPage(page)}
-                  className={`w-12 flex items-center justify-center px-3 h-8 leading-tight border ${
-                    currentPage === page
-                      ? "text-blue-600 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 dark:bg-[#19191C] dark:text-white"
-                      : "text-gray-500 bg-white hover:bg-gray-100 hover:text-gray-700 dark:bg-[#19191C] dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white cursor-pointer"
-                  } border-gray-300 dark:border-gray-700`}
+                  className={`w-12 flex items-center justify-center px-3 h-8 leading-tight border ${currentPage === page
+                    ? "text-blue-600 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 dark:bg-[#19191C] dark:text-white"
+                    : "text-gray-500 bg-white hover:bg-gray-100 hover:text-gray-700 dark:bg-[#19191C] dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white cursor-pointer"
+                    } border-gray-300 dark:border-gray-700`}
                 >
                   {page}
                 </button>
