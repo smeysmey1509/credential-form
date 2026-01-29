@@ -326,8 +326,7 @@ const Cart = () => {
                   </span>
                 )
               ) : estimatedDeliveryTime ? (
-                `Delivered in ${estimatedDeliveryTime} ${
-                  estimatedDeliveryTime === 1 ? "day" : "days"
+                `Delivered in ${estimatedDeliveryTime} ${estimatedDeliveryTime === 1 ? "day" : "days"
                 }`
               ) : (
                 "Delivery estimate pending"
