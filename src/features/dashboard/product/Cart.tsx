@@ -312,11 +312,13 @@ const Cart = () => {
           <div className="flex items-center gap-1 font-medium text-[#6e829f] dark:text-[#cbd5f5] font-sans text-[0.75rem]">
             <BsFillExclamationCircleFill />
             <span>
-              {deliveryMethod === "Express"
-                ? `Delivered By ${estimatedDeliveryTime} Days`
-                : deliveryMethod === "Pickup"
-                  ? `Your Pickup Code: ${pickUpCode}`
-                  : `Delivered Within ${estimatedDeliveryTime} Days`}
+              {deliveryMethod === "Pickup"
+                ? `Your Pickup Code: ${pickUpCode}`
+                : estimatedDeliveryTime
+                  ? `Delivered in ${estimatedDeliveryTime} ${
+                      estimatedDeliveryTime === 1 ? "day" : "days"
+                    }`
+                  : "Delivery estimate pending"}
             </span>
           </div>
 
