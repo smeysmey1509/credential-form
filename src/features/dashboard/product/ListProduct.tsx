@@ -540,6 +540,10 @@ const ListProduct: React.FC = () => {
   };
 
   const handleDeleteProduct = async (productId: string) => {
+    const shouldDelete = window.confirm(
+      "Are you sure you want to delete this product?"
+    );
+    if (!shouldDelete) return;
     try {
       const deleted = await ProductService.deleteProduct(productId);
       if (deleted) {
@@ -564,6 +568,11 @@ const ListProduct: React.FC = () => {
   const handleDeleteMultipleProducts = async () => {
     try {
       if (selectedProductIds.length === 0) return;
+
+      const shouldDelete = window.confirm(
+        "Are you sure you want to delete the selected products?"
+      );
+      if (!shouldDelete) return;
 
       const response = await ProductService.multiDeleteProduct(
         selectedProductIds
