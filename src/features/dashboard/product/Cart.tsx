@@ -138,7 +138,7 @@ const Cart = () => {
       setPickUpCode(response?.data?.delivery?.code || null);
       setEstimatedDeliveryTime(response?.data?.delivery?.estimatedDays || null);
       setTotal(response?.data?.summary?.total);
-      setFormattedSummary(response?.data?.formatted || null);
+      setFormattedSummary(response?.data?.summary?.formatted || null);
       setCart(cartItems);
     } catch (err) {
       console.error("Error fetching cart:", err);
