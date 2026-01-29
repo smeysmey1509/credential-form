@@ -23,6 +23,14 @@ const Cart = () => {
   const [serviceTax, setServiceTax] = useState<number>(0);
   const [deliveryFee, setDeliveryFee] = useState<number>(0);
   const [total, setTotal] = useState<number>(0);
+  const [formattedSummary, setFormattedSummary] = useState<{
+    currency?: string;
+    subTotal?: string;
+    discount?: string;
+    deliveryFee?: string;
+    serviceTax?: string;
+    total?: string;
+  } | null>(null);
   const [pickUpCode, setPickUpCode] = useState<string | null>(null);
   const [appliedCode, setAppliedCode] = useState<string>("");
   const [estimatedDeliveryTime, setEstimatedDeliveryTime] = useState<
@@ -129,7 +137,8 @@ const Cart = () => {
       setDeliveryMethod(response?.data?.delivery?.method || "");
       setPickUpCode(response?.data?.delivery?.code || null);
       setEstimatedDeliveryTime(response?.data?.delivery?.estimatedDays || null);
-      setTotal(response?.data?.summary?.total)
+      setTotal(response?.data?.summary?.total);
+      setFormattedSummary(response?.data?.formatted || null);
       setCart(cartItems);
     } catch (err) {
       console.error("Error fetching cart:", err);
@@ -347,7 +356,7 @@ const Cart = () => {
                 transition={{ duration: 0.25, ease: "easeOut" }}
                 className="text-[#000] dark:text-white font-semibold font-sans text-[16px]"
               >
-                ${calSubTotal ?? "00"}
+                {formattedSummary?.subTotal ?? `$${calSubTotal ?? "00"}`}
               </motion.span>
             </AnimatePresence>
           </div>
@@ -366,10 +375,10 @@ const Cart = () => {
                 className="font-medium text-[#38D0A2] font-sans text-[0.875rem]"
               >
                 {discountType === "percentage"
-                  ? `${discount}% - $${discountAmount}`
+                  ? `${discount}% - ${formattedSummary?.discount ?? `$${discountAmount}`}`
                   : discountType === "fixed"
-                    ? `$${discount ?? "0"}`
-                    : `$${discount ?? "0"}`}
+                    ? formattedSummary?.discount ?? `$${discount ?? "0"}`
+                    : formattedSummary?.discount ?? `$${discount ?? "0"}`}
               </motion.span>
             </AnimatePresence>
           </div>
@@ -387,7 +396,7 @@ const Cart = () => {
                 transition={{ duration: 0.25, ease: "easeOut" }}
                 className="text-[#FB4242] font-semibold font-sans text-[16px]"
               >
-                - ${deliveryFee ?? "00"}
+                - {formattedSummary?.deliveryFee ?? `$${deliveryFee ?? "00"}`}
               </motion.span>
             </AnimatePresence>
           </div>
@@ -405,7 +414,7 @@ const Cart = () => {
                 transition={{ duration: 0.25, ease: "easeOut" }}
                 className="font-medium text-[#000] dark:text-white font-sans text-[0.875rem]"
               >
-                - ${serviceTax ?? "00"}
+                - {formattedSummary?.serviceTax ?? `$${serviceTax ?? "00"}`}
               </motion.span>
             </AnimatePresence>
           </div>
@@ -423,7 +432,7 @@ const Cart = () => {
                 transition={{ duration: 0.25, ease: "easeOut" }}
                 className="text-[#000] dark:text-white font-semibold font-sans text-[16px]"
               >
-                ${total ?? "00"}
+                {formattedSummary?.total ?? `$${total ?? "00"}`}
               </motion.span>
             </AnimatePresence>
           </div>
