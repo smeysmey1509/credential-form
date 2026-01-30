@@ -127,7 +127,7 @@ const Checkout = () => {
               <PersonalDetail
                 label="Personal Details"
                 emoji={<BsPerson />}
-                onClick={() => alert(123)}
+                onClick={() => setActiveTab(1)}
               />
             </div>
           </motion.div>
@@ -172,13 +172,13 @@ const Checkout = () => {
               <PersonalDetail
                 label="Back To Shipping"
                 emoji={<MdOutlineLocalShipping />}
-                onClick={() => alert(123)}
+                onClick={() => setActiveTab(0)}
                 classname="flex-row-reverse border-none hover:border-black !bg-[#EFF1FE] dark:!bg-[#1f2937] !text-[#5C67F7] hover:!bg-[#5C67F7] hover:!text-[#fff]"
               />
               <PersonalDetail
                 label="Continue To Payment"
                 emoji={<MdOutlinePayment />}
-                onClick={() => alert(123)}
+                onClick={() => setActiveTab(2)}
               />
             </div>
           </motion.div>
@@ -279,13 +279,13 @@ const Checkout = () => {
               <PersonalDetail
                 label="Back To Personal Info"
                 emoji={<MdOutlineLocalShipping />}
-                onClick={() => alert(123)}
+                onClick={() => setActiveTab(1)}
                 classname="flex-row-reverse border-none hover:border-black !bg-[#EFF1FE] dark:!bg-[#1f2937] !text-[#5C67F7] hover:!bg-[#5C67F7] hover:!text-[#fff]"
               />
               <PersonalDetail
                 label="Continue Payment"
                 emoji={<MdOutlinePayment />}
-                onClick={() => alert(123)}
+                onClick={() => setActiveTab(3)}
               />
             </div>
           </motion.div>
