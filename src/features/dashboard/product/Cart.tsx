@@ -10,6 +10,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { toAbs, getPrimaryUrl } from "../../../utils/image";
 import { FaRegHeart, FaRegTrashAlt } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import { formatCurrency } from "../../../utils/currency";
 
 const Cart = () => {
   const navigator = useNavigate();
@@ -23,14 +24,6 @@ const Cart = () => {
   const [serviceTax, setServiceTax] = useState<number>(0);
   const [deliveryFee, setDeliveryFee] = useState<number>(0);
   const [total, setTotal] = useState<number>(0);
-  const [formattedSummary, setFormattedSummary] = useState<{
-    currency?: string;
-    subTotal?: string;
-    discount?: string;
-    deliveryFee?: string;
-    serviceTax?: string;
-    total?: string;
-  } | null>(null);
   const [pickUpCode, setPickUpCode] = useState<string | null>(null);
   const [appliedCode, setAppliedCode] = useState<string>("");
   const [estimatedDeliveryTime, setEstimatedDeliveryTime] = useState<
@@ -137,8 +130,7 @@ const Cart = () => {
       setDeliveryMethod(response?.data?.delivery?.method || "");
       setPickUpCode(response?.data?.delivery?.code || null);
       setEstimatedDeliveryTime(response?.data?.delivery?.estimatedDays || null);
-      setTotal(response?.data?.summary?.total);
-      setFormattedSummary(response?.data?.formatted || null);
+      setTotal(response?.data?.summary?.total)
       setCart(cartItems);
     } catch (err) {
       console.error("Error fetching cart:", err);
@@ -321,25 +313,11 @@ const Cart = () => {
           <div className="flex items-center gap-1 font-medium text-[#6e829f] dark:text-[#cbd5f5] font-sans text-[0.75rem]">
             <BsFillExclamationCircleFill />
             <span>
-              {deliveryMethod === "Pickup" ? (
-                pickUpCode ? (
-                  `Your Pickup Code: ${pickUpCode}`
-                ) : (
-                  <span className="inline-flex items-center gap-1">
-                    Pickup code loading
-                    <span className="inline-flex gap-[2px]">
-                      <span className="animate-pulse">.</span>
-                      <span className="animate-pulse [animation-delay:150ms]">.</span>
-                      <span className="animate-pulse [animation-delay:300ms]">.</span>
-                    </span>
-                  </span>
-                )
-              ) : estimatedDeliveryTime ? (
-                `Delivered in ${estimatedDeliveryTime} ${estimatedDeliveryTime === 1 ? "day" : "days"
-                }`
-              ) : (
-                "Delivery estimate pending"
-              )}
+              {deliveryMethod === "Express"
+                ? `Delivered By ${estimatedDeliveryTime} Days`
+                : deliveryMethod === "Pickup"
+                  ? `Your Pickup Code: ${pickUpCode}`
+                  : `Delivered Within ${estimatedDeliveryTime} Days`}
             </span>
           </div>
 
@@ -347,94 +325,62 @@ const Cart = () => {
             <span className="font-medium text-[#6e829f] dark:text-[#cbd5f5] font-sans text-[0.75rem]">
               Sub Total
             </span>
-            <AnimatePresence mode="wait">
-              <motion.span
-                key={calSubTotal}
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                transition={{ duration: 0.25, ease: "easeOut" }}
-                className="text-[#000] dark:text-white font-semibold font-sans text-[16px]"
-              >
-                {formattedSummary?.subTotal ?? `$${calSubTotal ?? "00"}`}
-              </motion.span>
-            </AnimatePresence>
+            <span
+              key={calSubTotal}
+
+              className="text-[#000] dark:text-white font-semibold font-sans text-[16px]"
+            >
+              {formatCurrency(calSubTotal) ?? "00"}
+            </span>
           </div>
 
           <div className="w-full h-auto flex items-center justify-between mt-4">
             <span className="font-medium text-[#6e829f] dark:text-[#cbd5f5] font-sans text-[0.75rem]">
               Discount
             </span>
-            <AnimatePresence mode="wait">
-              <motion.span
-                key={discountAmount}
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                transition={{ duration: 0.25, ease: "easeOut" }}
-                className="font-medium text-[#38D0A2] font-sans text-[0.875rem]"
-              >
-                {discountType === "percentage"
-                  ? `${discount}% - ${formattedSummary?.discount ?? `$${discountAmount}`}`
-                  : discountType === "fixed"
-                    ? formattedSummary?.discount ?? `$${discount ?? "0"}`
-                    : formattedSummary?.discount ?? `$${discount ?? "0"}`}
-              </motion.span>
-            </AnimatePresence>
+            <span
+              key={discountAmount}
+              className="font-medium text-[#38D0A2] font-sans text-[0.875rem]"
+            >
+              {discountType === "percentage"
+                ? `${discount}% (-${formatCurrency(discountAmount)})`
+                : `-${formatCurrency(discountAmount || discount)}`}
+            </span>
           </div>
 
           <div className="w-full h-auto flex items-center justify-between mt-4">
             <span className="font-medium text-[#6e829f] dark:text-[#cbd5f5] font-sans text-[0.75rem]">
               Delivery Charge
             </span>
-            <AnimatePresence mode="wait">
-              <motion.span
-                key={deliveryFee}
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                transition={{ duration: 0.25, ease: "easeOut" }}
-                className="text-[#FB4242] font-semibold font-sans text-[16px]"
-              >
-                - {formattedSummary?.deliveryFee ?? `$${deliveryFee ?? "00"}`}
-              </motion.span>
-            </AnimatePresence>
+            <span
+              className="text-[#FB4242] font-semibold font-sans text-[16px]"
+            >
+              {deliveryFee > 0 ? formatCurrency(deliveryFee) : "$0.00"}
+            </span>
           </div>
 
           <div className="w-full h-auto flex items-center justify-between mt-4">
             <span className="font-medium text-[#6e829f] dark:text-[#cbd5f5] font-sans text-[0.75rem]">
               Service Tax (10%)
             </span>
-            <AnimatePresence mode="wait">
-              <motion.span
-                key={serviceTax}
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                transition={{ duration: 0.25, ease: "easeOut" }}
-                className="font-medium text-[#000] dark:text-white font-sans text-[0.875rem]"
-              >
-                - {formattedSummary?.serviceTax ?? `$${serviceTax ?? "00"}`}
-              </motion.span>
-            </AnimatePresence>
+            <span
+              key={serviceTax}
+              className="font-medium text-[#000] dark:text-white font-sans text-[0.875rem]"
+            >
+              {formatCurrency(serviceTax) ?? "00"}
+            </span>
           </div>
 
           <div className="w-full h-auto flex items-center justify-between mt-4">
             <span className="font-medium text-[#212B37] dark:text-white font-sans text-[1rem]">
               Total :
             </span>
-            <AnimatePresence mode="wait">
-              <motion.span
-                key={total}
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                transition={{ duration: 0.25, ease: "easeOut" }}
-                className="text-[#000] dark:text-white font-semibold font-sans text-[16px]"
-              >
-                {formattedSummary?.total ?? `$${total ?? "00"}`}
-              </motion.span>
-            </AnimatePresence>
+            <span
+              key={total}
+              className="text-[#000] dark:text-white font-semibold font-sans text-[16px]"
+            >
+              {formatCurrency(total)}
+            </span>
           </div>
 
           <div className="flex flex-col">
@@ -451,7 +397,7 @@ const Cart = () => {
           </div>
         </div>
       </div>
-    </div>
+    </div >
   );
 };
 
