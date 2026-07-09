@@ -1,5 +1,5 @@
 import "./App.css";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import { lazy, Suspense, useEffect } from "react";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import Cart from "./features/dashboard/product/Cart";
@@ -74,9 +74,12 @@ function App() {
         </div>
       }
     >
-      <Routes>``
+      <Routes>
         <Route
-          index
+          path="/"
+          element={<Navigate to="/login" replace />}
+        />
+        <Route
           path="/login"
           element={
             <PublicRoute>

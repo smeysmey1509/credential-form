@@ -10,9 +10,10 @@ import { AuthService } from "../../../services/common/AuthService/AuthService";
 interface HeaderProps {
   isSidebarOpen: boolean;
   toggleSidebar: () => void;
+  loading?: boolean;
 }
 
-const Header = ({ isSidebarOpen, toggleSidebar }: HeaderProps) => {
+const Header = ({ isSidebarOpen, toggleSidebar, loading = false }: HeaderProps) => {
   const [showNotifications, setShowNotifications] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
   const notificationRef = useRef<HTMLDivElement>(null);
@@ -117,170 +118,188 @@ const Header = ({ isSidebarOpen, toggleSidebar }: HeaderProps) => {
             </span>
           </button>
 
-          <div className="relative hidden h-[35px] w-full max-w-[320px] items-center md:flex">
-            <IoSearchOutline className="pointer-events-none absolute left-3 text-[15px] text-[#61748f]" />
-            <input
-              type="text"
-              placeholder="Search anything here ..."
-              className="h-full w-full rounded-[5px] border border-[#eff2ff] bg-white pl-9 pr-3 text-sm text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-[#8f3ffc]/40 focus:ring-2 focus:ring-[#8f3ffc]/10 dark:border-white/10 dark:bg-white/5 dark:text-white dark:placeholder:text-slate-500"
-            />
-          </div>
+          {loading ? (
+            /* Search skeleton */
+            <div className="hidden h-[35px] w-full max-w-[280px] rounded-[5px] bg-slate-200/70 dark:bg-slate-800 animate-pulse md:block" />
+          ) : (
+            <div className="relative hidden h-[35px] w-full max-w-[320px] items-center md:flex">
+              <IoSearchOutline className="pointer-events-none absolute left-3 text-[15px] text-[#61748f]" />
+              <input
+                type="text"
+                placeholder="Search anything here ..."
+                className="h-full w-full rounded-[5px] border border-[#eff2ff] bg-white pl-9 pr-3 text-sm text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-[#8f3ffc]/40 focus:ring-2 focus:ring-[#8f3ffc]/10 dark:border-white/10 dark:bg-white/5 dark:text-white dark:placeholder:text-slate-500"
+              />
+            </div>
+          )}
         </div>
 
         <div className="flex items-center">
-          {/* Globe/Language */}
-          <button
-            type="button"
-            aria-label="Language"
-            className={headerIconButtonClass}
-          >
-            <FiGlobe className="text-[21px]" />
-          </button>
+          {loading ? (
+            /* Header buttons skeleton */
+            <div className="flex items-center gap-3 pr-2">
+              <div className="h-7 w-10 rounded bg-slate-200/70 dark:bg-slate-800 animate-pulse" />
+              <div className="h-7 w-10 rounded bg-slate-200/70 dark:bg-slate-800 animate-pulse" />
+              <div className="h-7 w-10 rounded bg-slate-200/70 dark:bg-slate-800 animate-pulse" />
+              <div className="h-8 w-8 rounded-full bg-slate-200/70 dark:bg-slate-800 animate-pulse" />
+              <div className="h-7 w-10 rounded bg-slate-200/70 dark:bg-slate-800 animate-pulse" />
+            </div>
+          ) : (
+            <>
+              {/* Globe/Language */}
+              <button
+                type="button"
+                aria-label="Language"
+                className={headerIconButtonClass}
+              >
+                <FiGlobe className="text-[21px]" />
+              </button>
 
-          {/* Theme toggle */}
-          <button
-            type="button"
-            aria-label="Toggle theme"
-            className={headerIconButtonClass}
-            onClick={toggleTheme}
-          >
-            {theme === "dark" ? (
-              <MdLightMode className="text-[21px]" />
-            ) : (
-              <MdDarkMode className="text-[21px]" />
-            )}
-          </button>
+              {/* Theme toggle */}
+              <button
+                type="button"
+                aria-label="Toggle theme"
+                className={headerIconButtonClass}
+                onClick={toggleTheme}
+              >
+                {theme === "dark" ? (
+                  <MdLightMode className="text-[21px]" />
+                ) : (
+                  <MdDarkMode className="text-[21px]" />
+                )}
+              </button>
 
-          {/* Shopping cart with purple badge */}
-          <button
-            type="button"
-            aria-label="Shopping Cart"
-            className={headerIconButtonClass}
-          >
-            <FiShoppingCart className="text-[21px]" />
-            <span className="absolute right-2 top-0 flex h-4 min-w-4 items-center justify-center rounded-full bg-[#8f3ffc] px-1 text-[10px] font-semibold leading-none text-white ring-2 ring-white dark:ring-[#19191c]">
-              5
-            </span>
-          </button>
+              {/* Shopping cart with purple badge */}
+              <button
+                type="button"
+                aria-label="Shopping Cart"
+                className={headerIconButtonClass}
+              >
+                <FiShoppingCart className="text-[21px]" />
+                <span className="absolute right-2 top-0 flex h-4 min-w-4 items-center justify-center rounded-full bg-[#8f3ffc] px-1 text-[10px] font-semibold leading-none text-white ring-2 ring-white dark:ring-[#19191c]">
+                  5
+                </span>
+              </button>
 
-          {/* Notifications with pink dot */}
-          <div className="relative" ref={notificationRef}>
-            <button
-              type="button"
-              aria-label="Open notifications"
-              className={headerIconButtonClass}
-              onClick={() => setShowNotifications((current) => !current)}
-            >
-              <IoNotificationsOutline className="text-[22px]" />
-              <span className="absolute right-3 top-1 h-2 w-2 rounded-full bg-[#ff5d9f] ring-2 ring-white dark:ring-[#19191c]" />
-            </button>
+              {/* Notifications with pink dot */}
+              <div className="relative" ref={notificationRef}>
+                <button
+                  type="button"
+                  aria-label="Open notifications"
+                  className={headerIconButtonClass}
+                  onClick={() => setShowNotifications((current) => !current)}
+                >
+                  <IoNotificationsOutline className="text-[22px]" />
+                  <span className="absolute right-3 top-1 h-2 w-2 rounded-full bg-[#ff5d9f] ring-2 ring-white dark:ring-[#19191c]" />
+                </button>
 
-            {showNotifications && (
-              <div className="absolute right-0 mt-4 w-72 overflow-hidden rounded-[5px] border border-[#ecf3fb] bg-white shadow-[0_2px_4px_rgba(0,0,0,0.05)] dark:border-white/10 dark:bg-[#19191c] dark:shadow-black/30">
-                <div className="flex items-center justify-between border-b border-slate-100 px-4 py-3 dark:border-white/10">
-                  <p className="text-sm font-semibold text-slate-900 dark:text-white">
-                    Notifications
-                  </p>
-                  <span className="rounded-full bg-indigo-50 px-2 py-1 text-xs font-semibold text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-300">
-                    3 new
+                {showNotifications && (
+                  <div className="absolute right-0 mt-4 w-72 overflow-hidden rounded-[5px] border border-[#ecf3fb] bg-white shadow-[0_2px_4px_rgba(0,0,0,0.05)] dark:border-white/10 dark:bg-[#19191c] dark:shadow-black/30">
+                    <div className="flex items-center justify-between border-b border-slate-100 px-4 py-3 dark:border-white/10">
+                      <p className="text-sm font-semibold text-slate-900 dark:text-white">
+                        Notifications
+                      </p>
+                      <span className="rounded-full bg-indigo-50 px-2 py-1 text-xs font-semibold text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-300">
+                        3 new
+                      </span>
+                    </div>
+                    <div className="divide-y divide-slate-100 dark:divide-white/10">
+                      {["New order #ORD-2489", "Revenue target updated", "Low stock alert"].map(
+                        (message) => (
+                          <button
+                            type="button"
+                            key={message}
+                            className="w-full px-4 py-3 text-left text-sm text-slate-600 transition hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-white/5"
+                          >
+                            {message}
+                          </button>
+                        )
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Fullscreen icon */}
+              <button
+                type="button"
+                aria-label="Fullscreen"
+                className={responsiveHeaderIconButtonClass}
+                onClick={() => {
+                  if (!document.fullscreenElement) {
+                    document.documentElement.requestFullscreen().catch(() => {});
+                  } else if (document.exitFullscreen) {
+                    document.exitFullscreen().catch(() => {});
+                  }
+                }}
+              >
+                <FiMaximize className="text-[21px]" />
+              </button>
+
+              {/* User Avatar */}
+              <div className="relative" ref={userMenuRef}>
+                <button
+                  type="button"
+                  aria-label="User profile"
+                  aria-expanded={showUserMenu}
+                  className="relative inline-flex h-8 w-11 items-center justify-center bg-transparent text-[#61748f] transition hover:text-[#8f3ffc] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#8f3ffc]/20 dark:text-slate-300 dark:hover:text-white"
+                  onClick={() => setShowUserMenu((current) => !current)}
+                >
+                  <span className="relative flex h-7 w-7 items-center justify-center overflow-hidden rounded-full bg-[#8f3ffc]/10 text-xs font-semibold text-[#8f3ffc]">
+                    <span className="absolute">{initials || "A"}</span>
+                    <img
+                      src="/avatar.jpg"
+                      alt=""
+                      className="relative z-10 h-full w-full object-cover"
+                      onError={(event) => {
+                        event.currentTarget.style.display = "none";
+                      }}
+                    />
                   </span>
-                </div>
-                <div className="divide-y divide-slate-100 dark:divide-white/10">
-                  {["New order #ORD-2489", "Revenue target updated", "Low stock alert"].map(
-                    (message) => (
-                      <button
-                        type="button"
-                        key={message}
-                        className="w-full px-4 py-3 text-left text-sm text-slate-600 transition hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-white/5"
-                      >
-                        {message}
-                      </button>
-                    )
-                  )}
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Fullscreen icon */}
-          <button
-            type="button"
-            aria-label="Fullscreen"
-            className={responsiveHeaderIconButtonClass}
-            onClick={() => {
-              if (!document.fullscreenElement) {
-                document.documentElement.requestFullscreen().catch(() => {});
-              } else if (document.exitFullscreen) {
-                document.exitFullscreen().catch(() => {});
-              }
-            }}
-          >
-            <FiMaximize className="text-[21px]" />
-          </button>
-
-          {/* User Avatar */}
-          <div className="relative" ref={userMenuRef}>
-            <button
-              type="button"
-              aria-label="User profile"
-              aria-expanded={showUserMenu}
-              className="relative inline-flex h-8 w-11 items-center justify-center bg-transparent text-[#61748f] transition hover:text-[#8f3ffc] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#8f3ffc]/20 dark:text-slate-300 dark:hover:text-white"
-              onClick={() => setShowUserMenu((current) => !current)}
-            >
-              <span className="relative flex h-7 w-7 items-center justify-center overflow-hidden rounded-full bg-[#8f3ffc]/10 text-xs font-semibold text-[#8f3ffc]">
-                <span className="absolute">{initials || "A"}</span>
-                <img
-                  src="/avatar.jpg"
-                  alt=""
-                  className="relative z-10 h-full w-full object-cover"
-                  onError={(event) => {
-                    event.currentTarget.style.display = "none";
-                  }}
-                />
-              </span>
-            </button>
-
-            {showUserMenu && (
-              <div className="absolute right-0 mt-4 w-56 overflow-hidden rounded-[5px] border border-[#ecf3fb] bg-white shadow-[0_2px_4px_rgba(0,0,0,0.05)] dark:border-white/10 dark:bg-[#19191c]">
-                <div className="border-b border-slate-100 px-4 py-3 dark:border-white/10">
-                  <p className="text-sm font-semibold text-slate-900 dark:text-white">
-                    {userName}
-                  </p>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">
-                    UI/UX Designer
-                  </p>
-                </div>
-                <button
-                  type="button"
-                  className="w-full px-4 py-3 text-left text-sm text-slate-600 transition hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-white/5"
-                  onClick={() => {
-                    setShowUserMenu(false);
-                    navigate("/dashboard/settings");
-                  }}
-                >
-                  Profile
                 </button>
-                <button
-                  type="button"
-                  className="flex w-full items-center gap-2 px-4 py-3 text-left text-sm text-slate-600 transition hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-white/5"
-                  onClick={handleLogout}
-                >
-                  <MdOutlineLogout className="text-base" />
-                  Logout
-                </button>
-              </div>
-            )}
-          </div>
 
-          {/* Settings button */}
-          <button
-            type="button"
-            aria-label="Settings"
-            className={headerIconButtonClass}
-            onClick={() => navigate("/dashboard/settings")}
-          >
-            <FiSettings className="text-[21px]" />
-          </button>
+                {showUserMenu && (
+                  <div className="absolute right-0 mt-4 w-56 overflow-hidden rounded-[5px] border border-[#ecf3fb] bg-white shadow-[0_2px_4px_rgba(0,0,0,0.05)] dark:border-white/10 dark:bg-[#19191c]">
+                    <div className="border-b border-slate-100 px-4 py-3 dark:border-white/10">
+                      <p className="text-sm font-semibold text-slate-900 dark:text-white">
+                        {userName}
+                      </p>
+                      <p className="text-xs text-slate-500 dark:text-slate-400">
+                        UI/UX Designer
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      className="w-full px-4 py-3 text-left text-sm text-slate-600 transition hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-white/5"
+                      onClick={() => {
+                        setShowUserMenu(false);
+                        navigate("/dashboard/settings");
+                      }}
+                    >
+                      Profile
+                    </button>
+                    <button
+                      type="button"
+                      className="flex w-full items-center gap-2 px-4 py-3 text-left text-sm text-slate-600 transition hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-white/5"
+                      onClick={handleLogout}
+                    >
+                      <MdOutlineLogout className="text-base" />
+                      Logout
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              {/* Settings button */}
+              <button
+                type="button"
+                aria-label="Settings"
+                className={headerIconButtonClass}
+                onClick={() => navigate("/dashboard/settings")}
+              >
+                <FiSettings className="text-[21px]" />
+              </button>
+            </>
+          )}
         </div>
       </div>
     </header>

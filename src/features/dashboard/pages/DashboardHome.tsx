@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import type { IconType } from "react-icons";
+import { useOutletContext } from "react-router-dom";
 import {
   FiActivity,
   FiArrowDownRight,
@@ -12,6 +13,7 @@ import {
   FiTrendingUp,
   FiUsers,
 } from "react-icons/fi";
+import { motion } from "framer-motion";
 
 type StatItem = {
   title: string;
@@ -72,11 +74,10 @@ const StatCard = ({ stat }: { stat: StatItem }) => {
           <Icon className="text-xl" />
         </div>
         <span
-          className={`inline-flex items-center gap-1 rounded-full px-2 py-1 text-xs font-bold ${
-            stat.positive
-              ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-300"
-              : "bg-rose-50 text-rose-700 dark:bg-rose-500/10 dark:text-rose-300"
-          }`}
+          className={`inline-flex items-center gap-1 rounded-full px-2 py-1 text-xs font-bold ${stat.positive
+            ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-300"
+            : "bg-rose-50 text-rose-700 dark:bg-rose-500/10 dark:text-rose-300"
+            }`}
         >
           <TrendIcon className="text-sm" />
           {stat.change}
@@ -135,6 +136,9 @@ const DashboardCard = ({
 );
 
 const DashboardHome = () => {
+  const context = useOutletContext<{ loading?: boolean }>();
+  const loading = context?.loading ?? false;
+
   const stats: StatItem[] = [
     {
       title: "Total Sales",
@@ -228,7 +232,7 @@ const DashboardHome = () => {
       category: "Smartphones",
       sales: "$32.4k",
       share: "86%",
-      color: "bg-blue-500",
+      color: "bg-[#0E73EF]",
     },
     {
       name: "AirPods Pro",
@@ -277,9 +281,174 @@ const DashboardHome = () => {
     },
   ];
 
+  // Framer Motion entry stagger config
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 15 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { type: "spring" as const, stiffness: 100, damping: 15 },
+    },
+  };
+
+  if (loading) {
+    return (
+      <div className="space-y-6 animate-pulse">
+        {/* Welcome Skeleton */}
+        <div className="flex flex-col gap-4 rounded-lg border border-slate-200/80 bg-white px-5 py-6 shadow-sm dark:border-white/10 dark:bg-[#19191c]">
+          <div className="h-3 w-16 bg-slate-200 dark:bg-slate-800 rounded" />
+          <div className="h-7 w-56 bg-slate-200 dark:bg-slate-800 rounded mt-2" />
+          <div className="h-4 w-96 bg-slate-200 dark:bg-slate-800 rounded mt-2 max-w-full" />
+        </div>
+
+        {/* 4 Stat Cards Skeletons */}
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          {[0, 1, 2, 3].map((i) => (
+            <div key={i} className="rounded-lg border border-slate-200/80 bg-white p-5 dark:border-white/10 dark:bg-[#19191c] space-y-4">
+              <div className="flex justify-between items-center">
+                <div className="h-11 w-11 rounded-lg bg-slate-200 dark:bg-slate-800" />
+                <div className="h-5 w-12 bg-slate-200 dark:bg-slate-800 rounded-full" />
+              </div>
+              <div className="space-y-2.5 mt-4">
+                <div className="h-3 w-20 bg-slate-200 dark:bg-slate-800 rounded" />
+                <div className="h-6 w-32 bg-slate-200 dark:bg-slate-800 rounded" />
+                <div className="h-3 w-40 bg-slate-200 dark:bg-slate-800 rounded max-w-full" />
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Chart + Product Skeletons */}
+        <div className="grid gap-6 xl:grid-cols-[minmax(0,1.55fr)_minmax(320px,0.8fr)]">
+          {/* Chart card skeleton */}
+          <div className="rounded-lg border border-slate-200/80 bg-white dark:border-white/10 dark:bg-[#19191c] overflow-hidden">
+            <div className="px-5 py-4 border-b border-slate-100 dark:border-white/10 flex justify-between">
+              <div className="space-y-2">
+                <div className="h-4 w-32 bg-slate-200 dark:bg-slate-800 rounded" />
+                <div className="h-3.5 w-48 bg-slate-200 dark:bg-slate-800 rounded" />
+              </div>
+              <div className="h-8 w-8 bg-slate-200 dark:bg-slate-800 rounded" />
+            </div>
+            <div className="p-5 flex items-end justify-between gap-4 h-72 pt-14">
+              {[40, 60, 48, 75, 68, 85, 70].map((h, i) => (
+                <div key={i} className="flex-1 flex flex-col items-center gap-3 h-full justify-end">
+                  <div className="w-full max-w-8 bg-slate-200 dark:bg-slate-800 rounded-t-lg" style={{ height: `${h}%` }} />
+                  <div className="h-3 w-8 bg-slate-200 dark:bg-slate-800 rounded" />
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Top products skeleton */}
+          <div className="rounded-lg border border-slate-200/80 bg-white dark:border-white/10 dark:bg-[#19191c] overflow-hidden">
+            <div className="px-5 py-4 border-b border-slate-100 dark:border-white/10 flex justify-between">
+              <div className="space-y-2">
+                <div className="h-4 w-28 bg-slate-200 dark:bg-slate-800 rounded" />
+                <div className="h-3.5 w-36 bg-slate-200 dark:bg-slate-800 rounded" />
+              </div>
+              <div className="h-8 w-8 bg-slate-200 dark:bg-slate-800 rounded" />
+            </div>
+            <div className="p-5 space-y-6">
+              {[0, 1, 2, 3].map((i) => (
+                <div key={i} className="space-y-2.5">
+                  <div className="flex justify-between items-center">
+                    <div className="space-y-1.5">
+                      <div className="h-3.5 w-32 bg-slate-200 dark:bg-slate-800 rounded" />
+                      <div className="h-3 w-20 bg-slate-200 dark:bg-slate-800 rounded" />
+                    </div>
+                    <div className="h-3.5 w-10 bg-slate-200 dark:bg-slate-800 rounded" />
+                  </div>
+                  <div className="h-2 w-full bg-slate-200 dark:bg-slate-800 rounded-full" />
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Table + Activity Skeletons */}
+        <div className="grid gap-6 xl:grid-cols-[minmax(0,1.2fr)_minmax(320px,0.8fr)]">
+          {/* Recent Orders table skeleton */}
+          <div className="rounded-lg border border-slate-200/80 bg-white dark:border-white/10 dark:bg-[#19191c] overflow-hidden">
+            <div className="px-5 py-4 border-b border-slate-100 dark:border-white/10 flex justify-between">
+              <div className="space-y-2">
+                <div className="h-4 w-32 bg-slate-200 dark:bg-slate-800 rounded" />
+                <div className="h-3.5 w-44 bg-slate-200 dark:bg-slate-800 rounded" />
+              </div>
+              <div className="h-8 w-8 bg-slate-200 dark:bg-slate-800 rounded" />
+            </div>
+            <div className="p-5 overflow-x-auto">
+              <div className="w-full min-w-[600px] space-y-4">
+                <div className="grid grid-cols-5 pb-3 border-b border-slate-100 dark:border-white/10">
+                  <div className="h-3 w-16 bg-slate-200 dark:bg-slate-800 rounded" />
+                  <div className="h-3 w-20 bg-slate-200 dark:bg-slate-800 rounded" />
+                  <div className="h-3 w-14 bg-slate-200 dark:bg-slate-800 rounded" />
+                  <div className="h-3 w-16 bg-slate-200 dark:bg-slate-800 rounded" />
+                  <div className="h-3 w-12 bg-slate-200 dark:bg-slate-800 rounded" />
+                </div>
+                {[0, 1, 2, 3, 4].map((i) => (
+                  <div key={i} className="grid grid-cols-5 py-3 border-b border-slate-100 dark:border-white/10 last:border-0 items-center">
+                    <div className="h-3.5 w-20 bg-slate-200 dark:bg-slate-800 rounded" />
+                    <div className="h-3.5 w-24 bg-slate-200 dark:bg-slate-800 rounded" />
+                    <div className="h-5 w-16 bg-slate-200 dark:bg-slate-800 rounded-full" />
+                    <div className="h-3.5 w-16 bg-slate-200 dark:bg-slate-800 rounded" />
+                    <div className="h-3.5 w-24 bg-slate-200 dark:bg-slate-800 rounded" />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Activity transactions skeleton */}
+          <div className="rounded-lg border border-slate-200/80 bg-white dark:border-white/10 dark:bg-[#19191c] overflow-hidden">
+            <div className="px-5 py-4 border-b border-slate-100 dark:border-white/10 flex justify-between">
+              <div className="space-y-2">
+                <div className="h-4 w-40 bg-slate-200 dark:bg-slate-800 rounded" />
+                <div className="h-3.5 w-32 bg-slate-200 dark:bg-slate-800 rounded" />
+              </div>
+              <div className="h-8 w-8 bg-slate-200 dark:bg-slate-800 rounded" />
+            </div>
+            <div className="p-5 space-y-5">
+              {[0, 1, 2].map((i) => (
+                <div key={i} className="flex justify-between items-start gap-4">
+                  <div className="flex gap-3">
+                    <div className="h-10 w-10 bg-slate-200 dark:bg-slate-800 rounded-lg shrink-0" />
+                    <div className="space-y-2">
+                      <div className="h-3.5 w-28 bg-slate-200 dark:bg-slate-800 rounded" />
+                      <div className="h-3 w-40 bg-slate-200 dark:bg-slate-800 rounded max-w-full" />
+                    </div>
+                  </div>
+                  <div className="h-3.5 w-12 bg-slate-200 dark:bg-slate-800 rounded shrink-0" />
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col gap-4 rounded-lg border border-slate-200/80 bg-white px-5 py-5 shadow-sm shadow-slate-950/[0.03] dark:border-white/10 dark:bg-[#19191c] sm:flex-row sm:items-center sm:justify-between">
+    <motion.div
+      className="space-y-6"
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+    >
+      {/* Welcome Message Card */}
+      <motion.div
+        className="flex flex-col gap-4 rounded-lg border border-slate-200/80 bg-white px-5 py-5 shadow-sm shadow-slate-950/[0.03] dark:border-white/10 dark:bg-[#19191c] sm:flex-row sm:items-center sm:justify-between"
+        variants={itemVariants}
+      >
         <div>
           <p className="text-sm font-bold uppercase tracking-[0.14em] text-indigo-600 dark:text-indigo-300">
             Dashboard
@@ -295,33 +464,41 @@ const DashboardHome = () => {
         <div className="flex items-center gap-3">
           <button
             type="button"
-            className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-bold text-slate-700 transition hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-600 dark:border-white/10 dark:text-slate-300 dark:hover:bg-white/10 dark:hover:text-white"
+            className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-bold text-slate-700 transition hover:border-[#0E73EF] hover:bg-blue-50 dark:hover:bg-blue-950/20 hover:text-[#0E73EF] dark:border-white/10 dark:text-slate-300"
           >
             Export
           </button>
           <button
             type="button"
-            className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-bold text-white shadow-lg shadow-indigo-600/20 transition hover:bg-indigo-500"
+            className="rounded-lg bg-[#0E73EF] px-4 py-2 text-sm font-bold text-white shadow-lg shadow-blue-500/20 transition hover:bg-blue-600"
           >
             Add Report
           </button>
         </div>
-      </div>
+      </motion.div>
 
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      {/* Stats Cards */}
+      <motion.div
+        className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4"
+        variants={itemVariants}
+      >
         {stats.map((stat) => (
           <StatCard key={stat.title} stat={stat} />
         ))}
-      </div>
+      </motion.div>
 
-      <div className="grid gap-6 xl:grid-cols-[minmax(0,1.55fr)_minmax(320px,0.8fr)]">
+      {/* Charts widgets row */}
+      <motion.div
+        className="grid gap-6 xl:grid-cols-[minmax(0,1.55fr)_minmax(320px,0.8fr)]"
+        variants={itemVariants}
+      >
         <DashboardCard
           title="Sales Overview"
           subtitle="Weekly performance by sales and orders"
           action={
             <div className="hidden items-center gap-4 text-xs font-bold text-slate-500 dark:text-slate-400 sm:flex">
               <span className="flex items-center gap-2">
-                <span className="h-2.5 w-2.5 rounded-full bg-indigo-500" />
+                <span className="h-2.5 w-2.5 rounded-full bg-[#0E73EF]" />
                 Sales
               </span>
               <span className="flex items-center gap-2">
@@ -348,7 +525,7 @@ const DashboardHome = () => {
                 >
                   <div className="flex min-h-0 w-full flex-1 items-end justify-center gap-1.5">
                     <div
-                      className="w-full max-w-8 rounded-t-lg bg-gradient-to-t from-indigo-600 to-blue-400 shadow-lg shadow-indigo-500/10 transition duration-200 hover:opacity-80"
+                      className="w-full max-w-8 rounded-t-lg bg-gradient-to-t from-[#0E73EF] to-blue-400 shadow-lg shadow-indigo-500/10 transition duration-200 hover:opacity-80"
                       style={{ height: `${point.sales}%` }}
                     />
                     <div
@@ -395,9 +572,13 @@ const DashboardHome = () => {
             ))}
           </div>
         </DashboardCard>
-      </div>
+      </motion.div>
 
-      <div className="grid gap-6 xl:grid-cols-[minmax(0,1.2fr)_minmax(320px,0.8fr)]">
+      {/* Table & Transaction row */}
+      <motion.div
+        className="grid gap-6 xl:grid-cols-[minmax(0,1.2fr)_minmax(320px,0.8fr)]"
+        variants={itemVariants}
+      >
         <DashboardCard
           title="Recent Orders"
           subtitle="Latest customer purchases"
@@ -481,8 +662,8 @@ const DashboardHome = () => {
             })}
           </div>
         </DashboardCard>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 };
 

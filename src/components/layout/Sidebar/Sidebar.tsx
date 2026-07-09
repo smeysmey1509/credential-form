@@ -24,6 +24,7 @@ import {
 interface SidebarProps {
   isSidebarOpen: boolean;
   onClose?: () => void;
+  loading?: boolean;
 }
 
 type NavigationItem = {
@@ -154,7 +155,7 @@ const navigationGroups: NavigationGroup[] = [
   },
 ];
 
-const Sidebar = ({ isSidebarOpen, onClose }: SidebarProps) => {
+const Sidebar = ({ isSidebarOpen, onClose, loading = false }: SidebarProps) => {
   const location = useLocation();
   const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({});
   const [isDesktopViewport, setIsDesktopViewport] = useState(() => {
@@ -221,19 +222,22 @@ const Sidebar = ({ isSidebarOpen, onClose }: SidebarProps) => {
 
   return (
     <aside
-      className={`fixed inset-y-0 left-0 z-40 flex flex-col overflow-hidden border-r border-white/[0.06] bg-[#111c2d] text-slate-300 shadow-2xl transition-[transform,width] duration-300 ease-in-out will-change-transform ${isSidebarOpen ? "w-72 translate-x-0" : "w-72 -translate-x-full lg:w-20 lg:translate-x-0"
-        }`}
+      className={`fixed inset-y-0 left-0 z-40 flex flex-col overflow-hidden border-r border-white/[0.06] bg-[#111c2d] text-slate-300 shadow-2xl transition-[transform,width] duration-300 ease-in-out will-change-transform ${
+        isSidebarOpen ? "w-72 translate-x-0" : "w-72 -translate-x-full lg:w-20 lg:translate-x-0"
+      }`}
     >
       <div
-        className={`flex h-[68px] items-center border-b border-white/[0.06] transition-all duration-300 ${showCollapsedSidebar ? "justify-center px-0" : "justify-between px-6"
-          }`}
+        className={`flex h-[68px] items-center border-b border-white/[0.06] transition-all duration-300 ${
+          showCollapsedSidebar ? "justify-center px-0" : "justify-between px-6"
+        }`}
       >
         <NavLink
           to="/dashboard"
-          className={`flex min-w-0 items-center ${showCollapsedSidebar
+          className={`flex min-w-0 items-center ${
+            showCollapsedSidebar
               ? "h-10 w-10 justify-center overflow-hidden rounded-xl"
               : ""
-            }`}
+          }`}
           onClick={handleItemClick}
         >
           <img
@@ -258,10 +262,59 @@ const Sidebar = ({ isSidebarOpen, onClose }: SidebarProps) => {
       </div>
 
       <nav
-        className={`flex-1 overflow-y-auto no-scrollbar ${showCollapsedSidebar ? "px-0 py-4" : "px-4 py-5"
-          }`}
+        className={`flex-1 overflow-y-auto no-scrollbar ${
+          showCollapsedSidebar ? "px-0 py-4" : "px-4 py-5"
+        }`}
       >
-        {!showCollapsedSidebar ? (
+        {loading ? (
+          /* Sidebar Skeletons exactly matching collapsed / expanded layouts */
+          showCollapsedSidebar ? (
+            <div className="space-y-6 flex flex-col items-center animate-pulse">
+              <div className="h-2 w-2 rounded-full bg-slate-700/60 my-2" />
+              <div className="h-10 w-10 rounded-lg bg-slate-700/50" />
+              <div className="h-2 w-2 rounded-full bg-slate-700/60 my-2" />
+              <div className="h-10 w-10 rounded-lg bg-slate-700/50" />
+              <div className="h-10 w-10 rounded-lg bg-slate-700/50" />
+              <div className="h-10 w-10 rounded-lg bg-slate-700/50" />
+            </div>
+          ) : (
+            <div className="space-y-6 animate-pulse px-2">
+              <div>
+                <div className="h-3 w-10 bg-slate-700/60 rounded mb-3" />
+                <div className="flex items-center gap-3.5 px-3 py-2">
+                  <div className="h-5 w-5 rounded-md bg-slate-700/50" />
+                  <div className="h-3.5 w-24 bg-slate-700/50 rounded" />
+                </div>
+              </div>
+              <div>
+                <div className="h-3 w-16 bg-slate-700/60 rounded mb-3" />
+                <div className="flex items-center justify-between gap-3.5 px-3 py-2">
+                  <div className="flex items-center gap-3.5">
+                    <div className="h-5 w-5 rounded-md bg-slate-700/50" />
+                    <div className="h-3.5 w-28 bg-slate-700/50 rounded" />
+                  </div>
+                  <div className="h-3.5 w-3.5 bg-slate-700/50 rounded-full" />
+                </div>
+                <div className="pl-9 mt-2.5 space-y-3.5">
+                  <div className="h-3 w-24 bg-slate-700/40 rounded" />
+                  <div className="h-3 w-16 bg-slate-700/40 rounded" />
+                  <div className="h-3 w-20 bg-slate-700/40 rounded" />
+                </div>
+              </div>
+              <div>
+                <div className="h-3 w-14 bg-slate-700/60 rounded mb-3" />
+                <div className="flex items-center gap-3.5 px-3 py-2">
+                  <div className="h-5 w-5 rounded-md bg-slate-700/50" />
+                  <div className="h-3.5 w-24 bg-slate-700/50 rounded" />
+                </div>
+                <div className="flex items-center gap-3.5 px-3 py-2">
+                  <div className="h-5 w-5 rounded-md bg-slate-700/50" />
+                  <div className="h-3.5 w-20 bg-slate-700/50 rounded" />
+                </div>
+              </div>
+            </div>
+          )
+        ) : !showCollapsedSidebar ? (
           navigationGroups.map((group) => (
             <div key={group.title} className="mb-7 last:mb-0">
               <p className="mb-3 px-3 text-[11px] font-semibold uppercase tracking-[0.15em] text-[#61748f] opacity-85">
@@ -279,32 +332,36 @@ const Sidebar = ({ isSidebarOpen, onClose }: SidebarProps) => {
                       <div key={item.label}>
                         <button
                           type="button"
-                          className={`group flex w-full min-w-0 items-center gap-3.5 rounded-md px-3 py-2.5 text-[14px] font-medium transition-colors duration-200 ${active
-                            ? "text-white bg-transparent"
-                            : "text-slate-400 hover:text-white bg-transparent"
-                            }`}
+                          className={`group flex w-full min-w-0 items-center gap-3.5 rounded-md px-3 py-2.5 text-[14px] font-medium transition-colors duration-200 ${
+                            active
+                              ? "text-white bg-transparent"
+                              : "text-slate-400 hover:text-white bg-transparent"
+                          }`}
                           onClick={() => toggleMenu(item)}
                         >
                           {Icon && (
                             <Icon
-                              className={`shrink-0 text-lg transition-colors duration-200 ${active ? "text-white" : "text-slate-400 group-hover:text-white"
-                                }`}
+                              className={`shrink-0 text-lg transition-colors duration-200 ${
+                                active ? "text-white" : "text-slate-400 group-hover:text-white"
+                              }`}
                             />
                           )}
                           <span className="min-w-0 flex-1 truncate text-left">
                             {item.label}
                           </span>
                           <FiChevronDown
-                            className={`shrink-0 text-sm text-slate-400 transition-transform duration-200 ${isExpanded ? "rotate-180" : ""
-                              }`}
+                            className={`shrink-0 text-sm text-slate-400 transition-transform duration-200 ${
+                              isExpanded ? "rotate-180" : ""
+                            }`}
                           />
                         </button>
 
                         <div
-                          className={`grid transition-all duration-300 ${isExpanded
-                            ? "grid-rows-[1fr] opacity-100"
-                            : "grid-rows-[0fr] opacity-0"
-                            }`}
+                          className={`grid transition-all duration-300 ${
+                            isExpanded
+                              ? "grid-rows-[1fr] opacity-100"
+                              : "grid-rows-[0fr] opacity-0"
+                          }`}
                         >
                           <div className="overflow-hidden">
                             <div className="mt-1 space-y-1 pb-1 pl-6 sm:pl-10">
@@ -318,24 +375,27 @@ const Sidebar = ({ isSidebarOpen, onClose }: SidebarProps) => {
                                     to={child.path}
                                     end={child.end}
                                     onClick={handleItemClick}
-                                    className={`group flex min-w-0 items-center gap-2.5 rounded-md px-2.5 py-2 text-[13px] font-medium transition-colors duration-200 sm:gap-3 sm:px-3 sm:text-[13.5px] ${childActive
-                                      ? "text-white bg-transparent"
-                                      : "text-slate-400 hover:text-white bg-transparent"
-                                      }`}
+                                    className={`group flex min-w-0 items-center gap-2.5 rounded-md px-2.5 py-2 text-[13px] font-medium transition-colors duration-200 sm:gap-3 sm:px-3 sm:text-[13.5px] ${
+                                      childActive
+                                        ? "text-white bg-transparent"
+                                        : "text-slate-400 hover:text-white bg-transparent"
+                                    }`}
                                   >
                                     {ChildIcon ? (
                                       <ChildIcon
-                                        className={`shrink-0 text-[15px] transition-colors ${childActive
-                                          ? "text-indigo-300"
-                                          : "text-slate-500 group-hover:text-slate-300"
-                                          }`}
+                                        className={`shrink-0 text-[15px] transition-colors ${
+                                          childActive
+                                            ? "text-indigo-300"
+                                            : "text-slate-500 group-hover:text-slate-300"
+                                        }`}
                                       />
                                     ) : (
                                       <span
-                                        className={`h-px w-2 shrink-0 transition-colors ${childActive
-                                          ? "bg-indigo-400"
-                                          : "bg-slate-600 group-hover:bg-slate-400"
-                                          }`}
+                                        className={`h-px w-2 shrink-0 transition-colors ${
+                                          childActive
+                                            ? "bg-indigo-400"
+                                            : "bg-slate-600 group-hover:bg-slate-400"
+                                        }`}
                                       />
                                     )}
                                     <span className="min-w-0 flex-1 truncate">
@@ -357,15 +417,17 @@ const Sidebar = ({ isSidebarOpen, onClose }: SidebarProps) => {
                       to={item.path}
                       end={item.end}
                       onClick={handleItemClick}
-                      className={`group flex items-center gap-3.5 px-3 py-2.5 text-[14px] font-medium transition-colors duration-200 ${active
-                        ? "text-white bg-transparent"
-                        : "text-slate-400 hover:text-white bg-transparent"
-                        }`}
+                      className={`group flex items-center gap-3.5 px-3 py-2.5 text-[14px] font-medium transition-colors duration-200 ${
+                        active
+                          ? "text-white bg-transparent"
+                          : "text-slate-400 hover:text-white bg-transparent"
+                      }`}
                     >
                       {Icon && (
                         <Icon
-                          className={`text-lg transition-colors duration-200 ${active ? "text-white" : "text-slate-400 group-hover:text-white"
-                            }`}
+                          className={`text-lg transition-colors duration-200 ${
+                            active ? "text-white" : "text-slate-400 group-hover:text-white"
+                          }`}
                         />
                       )}
                       <span>{item.label}</span>
@@ -399,10 +461,11 @@ const Sidebar = ({ isSidebarOpen, onClose }: SidebarProps) => {
                         aria-label={item.label}
                         title={item.label}
                         onClick={handleItemClick}
-                        className={`group relative flex h-10 w-10 items-center justify-center rounded-lg transition-colors duration-200 ${active
+                        className={`group relative flex h-10 w-10 items-center justify-center rounded-lg transition-colors duration-200 ${
+                          active
                             ? "bg-white/10 text-white"
                             : "text-slate-400 hover:bg-white/10 hover:text-white"
-                          }`}
+                        }`}
                       >
                         <Icon className="text-lg" />
                         <span className="pointer-events-none absolute left-full top-1/2 z-50 ml-3 -translate-y-1/2 whitespace-nowrap rounded-md bg-slate-950 px-2.5 py-1.5 text-xs font-medium text-white opacity-0 shadow-xl transition-opacity duration-150 group-hover:opacity-100">

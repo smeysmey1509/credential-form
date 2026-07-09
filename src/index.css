@@ -4,7 +4,7 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 html {
-    transition: background-color 5s ease, color 5s ease;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 body {
