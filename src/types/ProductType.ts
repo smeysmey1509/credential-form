@@ -70,7 +70,7 @@ export interface Product {
   currency?: string;
   stock?: number;
   category?: CategoryType;
-  seller?: Seller;
+  seller?: Seller | string;
   status?: PublishStatus;
   tag?: string[];
   productType?: string;

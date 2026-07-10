@@ -3,17 +3,14 @@ import SearchBox from "../../../components/common/SearchBox/SearchBox";
 import Filter from "../../../components/common/SelectionFilter/Filter";
 import { IoArrowForward } from "react-icons/io5";
 import WishlistItem from "../../../components/common/WishlistItem/WishlistItem";
-import NumberPagination from "../../../components/common/Pagination/NumberPagination";
 import { Product } from "../../../types/ProductType";
-import type { Wishlist } from "../../../types/WishlistType";
+import type { WishlistItem as WishlistItemType } from "../../../types/WishlistType";
 import WishlistService from "../../../services/common/WishlistService/WishlistService";
 import DetailPagination from "../../../components/common/Pagination/DetailPagination";
-import CartService from "../../../services/common/CartService/CartService";
 import { useToast } from "../../../context/ToasterContext";
-import { title } from "process";
 
 const Wishlist = () => {
-  const [product, setProduct] = useState<Partial<Product>[]>([]);
+  const [product, setProduct] = useState<Product[]>([]);
   const [pagination, setPagination] = useState({
     totalItem: 0,
     totalPage: 1,
@@ -31,33 +28,34 @@ const Wishlist = () => {
 
   const handleFetchWishlist = async (page?: number) => {
     try {
-      const responseWishlist = await WishlistService?.getWishlist(page, limit);
+      const responseWishlist = await WishlistService.getWishlist(page, limit);
       const wishlistProduct = responseWishlist?.data?.items?.map(
-        (item: any) => item?.product
-      );
+        (item: WishlistItemType) => item.product
+      ) || [];
       setProduct(wishlistProduct);
 
       setPagination({
-        totalItem: responseWishlist?.data?.totalItems,
-        totalPage: responseWishlist?.data?.totalPages,
-        currentPage: responseWishlist?.data?.currentPage,
-        hasNextPage: responseWishlist?.data?.hasNextPage,
-        hasPrevPage: responseWishlist?.data?.hasPrevPage,
+        totalItem: responseWishlist.data.totalItems ?? 0,
+        totalPage: responseWishlist.data.totalPages ?? 0,
+        currentPage: responseWishlist.data.currentPage ?? page ?? 1,
+        hasNextPage: responseWishlist.data.hasNextPage ?? false,
+        hasPrevPage: responseWishlist.data.hasPrevPage ?? false,
       });
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
+      console.error("Failed to load wishlist:", error);
     }
   };
 
   const handleAddToCart = async (id: string, name: string) => {
     try {
-      await CartService?.addToCart(id);
+      await WishlistService.moveToCart(id);
       showToast({
         title: "Success",
-        description: `${name} add to cart successfully.`,
+        description: `${name} moved to cart successfully.`,
         type: "success",
       });
-    } catch (err) {
+      handleFetchWishlist(pagination.currentPage);
+    } catch {
       showToast({
         title: "Failed",
         description: `${name} add to cart failed.`,
@@ -75,7 +73,7 @@ const Wishlist = () => {
         type: "warning",
       });
       handleFetchWishlist(pagination?.currentPage);
-    }catch(err) {
+    } catch {
       showToast({
         title: "Delete Failed",
         description: `${name} removed failed.`,
@@ -118,11 +116,14 @@ const Wishlist = () => {
         </div>
       </div>
       <div className="grid h-fit w-full grid-cols-1 gap-6 lg:grid-cols-2">
-        {product?.map((item: any) => (
+        {product.map((item) => (
           <WishlistItem
+            key={item?._id}
             product={item}
-            addToCart={() => handleAddToCart(item?._id, item?.name)}
-            deleteWishlist={() => handleRemoveWishlist(item?._id, item?.name)}
+            addToCart={() => item._id && handleAddToCart(item._id, item.name)}
+            deleteWishlist={() =>
+              item._id && handleRemoveWishlist(item._id, item.name)
+            }
           />
         ))}
       </div>

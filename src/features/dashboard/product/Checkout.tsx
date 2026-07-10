@@ -1,28 +1,96 @@
-import React, { useState } from "react";
-import ButtonWithEmoji from "../../../components/Button/ButtonWithEmoji/ButtonWithEmoji";
+import { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 import {
+  MdOutlineCheckCircleOutline,
   MdOutlineLocalShipping,
   MdPayment,
-  MdOutlineCheckCircleOutline,
-  MdOutlinePayment,
 } from "react-icons/md";
-import { IoCartOutline } from "react-icons/io5";
 import { BsPerson } from "react-icons/bs";
-import { motion } from "framer-motion";
-import ShippingCard from "../../../components/common/ShippingCard/ShippingCard";
-import ShipAddress from "../../../components/common/ShipAddress/ShipAddress";
-import PersonalDetail from "../../../components/Button/PersonalDetail/PersonalDetail";
+import { IoCartOutline } from "react-icons/io5";
 import FormInput from "../../../components/common/FormField/FormField";
-import CheckBox from "../../../components/common/CheckBox/CheckBox";
-import CheckBoxRedius from "../../../components/common/CheckBoxRedius/CheckBoxRedius";
-import CreditCard from "../../../components/common/CreditCard/CreditCard";
-import SummaryCard from "../../../components/common/SummaryCard/SummaryCard";
+import CartService, {
+  CART_UPDATED_EVENT,
+} from "../../../services/common/CartService/CartService";
+import CheckoutService from "../../../services/common/CheckoutService/CheckoutService";
+import DeliveryService from "../../../services/common/DeliveryService/deliveryService";
+import { getApiErrorMessage } from "../../../services/api/errors";
+import type { ICart } from "../../../types/CartType";
+import type { DeliveryType } from "../../../types/DeliveryType";
+import type {
+  CheckoutResponse,
+  PaymentMethod,
+} from "../../../types/OrderType";
+import { formatCurrency } from "../../../utils/currency";
+import { getPrimaryUrl } from "../../../utils/image";
+import { getCookie } from "../../../utils/cookie";
+
+type CheckoutForm = {
+  fullName: string;
+  email: string;
+  phone: string;
+  line1: string;
+  line2: string;
+  city: string;
+  state: string;
+  postalCode: string;
+  country: string;
+  notes: string;
+};
+
+const paymentOptions: Array<{
+  value: PaymentMethod;
+  label: string;
+  description: string;
+}> = [
+  {
+    value: "VISA_MASTER",
+    label: "Credit / debit card",
+    description: "Continue with the card checkout created by the payment gateway.",
+  },
+  {
+    value: "CASH_ON_DELIVERY",
+    label: "Cash on delivery",
+    description: "Pay when your order is delivered.",
+  },
+  {
+    value: "BANK_TRANSFER",
+    label: "Bank transfer",
+    description: "Receive transfer instructions with your payment.",
+  },
+  {
+    value: "NORMAL_PAYMENT",
+    label: "Normal payment",
+    description: "Use the standard payment flow configured by the API.",
+  },
+];
+
+const emptyForm: CheckoutForm = {
+  fullName: "",
+  email: "",
+  phone: "",
+  line1: "",
+  line2: "",
+  city: "",
+  state: "",
+  postalCode: "",
+  country: "",
+  notes: "",
+};
 
 const Checkout = () => {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState(0);
-  const [selectedMethod, setSelectedMethod] = useState<string>("UPS");
-  const [selectedAddress, setSelectedAddress] = useState<string>("home");
-  const [selectedPayment, setSelectedPayment] = useState<string>("card");
+  const [cart, setCart] = useState<ICart | null>(null);
+  const [deliveryMethods, setDeliveryMethods] = useState<DeliveryType[]>([]);
+  const [selectedMethod, setSelectedMethod] = useState("");
+  const [selectedPayment, setSelectedPayment] =
+    useState<PaymentMethod>("VISA_MASTER");
+  const [form, setForm] = useState<CheckoutForm>(emptyForm);
+  const [result, setResult] = useState<CheckoutResponse | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
 
   const tabs = [
     { label: "Shipping", icon: <MdOutlineLocalShipping /> },
@@ -31,383 +99,494 @@ const Checkout = () => {
     { label: "Complete Order", icon: <MdOutlineCheckCircleOutline /> },
   ];
 
+  const updateField = (field: keyof CheckoutForm, value: string) => {
+    setForm((current) => ({ ...current, [field]: value }));
+  };
+
+  const refreshCart = async () => {
+    const response = await CartService.getCart();
+    setCart(response.data);
+    return response.data;
+  };
+
+  useEffect(() => {
+    const rawUser = getCookie("user");
+    if (rawUser) {
+      try {
+        const user = JSON.parse(rawUser) as {
+          name?: string;
+          email?: string;
+        };
+        setForm((current) => ({
+          ...current,
+          fullName: user.name || current.fullName,
+          email: user.email || current.email,
+        }));
+      } catch {
+        // The form remains editable when the cached user value is invalid.
+      }
+    }
+
+    Promise.all([refreshCart(), DeliveryService.getDeliveryMethods()])
+      .then(([cartData, methods]) => {
+        const activeMethods = methods.filter((method) => method.isActive);
+        setDeliveryMethods(activeMethods);
+        setSelectedMethod(
+          cartData.delivery?.method || activeMethods[0]?.method || ""
+        );
+      })
+      .catch((requestError) => setError(getApiErrorMessage(requestError)))
+      .finally(() => setLoading(false));
+  }, []);
+
+  const selectedDelivery = useMemo(
+    () =>
+      deliveryMethods.find(
+        (method) => method.method.toLowerCase() === selectedMethod.toLowerCase()
+      ),
+    [deliveryMethods, selectedMethod]
+  );
+
+  const selectDelivery = async (method: DeliveryType) => {
+    setSelectedMethod(method.method);
+    setError("");
+    try {
+      await CartService.selectDeliveryMethod(method.method);
+      await refreshCart();
+    } catch (requestError) {
+      setError(getApiErrorMessage(requestError));
+    }
+  };
+
+  const continueFromShipping = () => {
+    if (!selectedMethod || !form.line1.trim() || !form.country.trim()) {
+      setError("Choose a delivery method and enter your address and country.");
+      return;
+    }
+    setError("");
+    setActiveTab(1);
+  };
+
+  const continueFromContact = () => {
+    if (!form.fullName.trim() || !form.email.trim() || !form.phone.trim()) {
+      setError("Full name, email, and phone are required.");
+      return;
+    }
+    setError("");
+    setActiveTab(2);
+  };
+
+  const submitOrder = async () => {
+    if (!cart?.items.length) {
+      setError("Your cart is empty.");
+      return;
+    }
+
+    setSubmitting(true);
+    setError("");
+    try {
+      const response = await CheckoutService.checkout({
+        deliveryMethod: selectedMethod,
+        contact: {
+          fullName: form.fullName.trim(),
+          email: form.email.trim(),
+          phone: form.phone.trim(),
+        },
+        shippingAddress: {
+          fullName: form.fullName.trim(),
+          email: form.email.trim(),
+          phone: form.phone.trim(),
+          line1: form.line1.trim(),
+          line2: form.line2.trim() || undefined,
+          city: form.city.trim() || undefined,
+          state: form.state.trim() || undefined,
+          postalCode: form.postalCode.trim() || undefined,
+          country: form.country.trim(),
+        },
+        paymentMethod: selectedPayment,
+        currency: "USD",
+        notes: form.notes.trim() || undefined,
+      });
+      setResult(response.data);
+      setCart((current) =>
+        current
+          ? {
+              ...current,
+              items: [],
+              summary: {
+                subTotal: 0,
+                discount: 0,
+                deliveryFee: 0,
+                serviceTax: 0,
+                total: 0,
+              },
+            }
+          : current
+      );
+      window.dispatchEvent(new Event(CART_UPDATED_EVENT));
+      setActiveTab(3);
+    } catch (requestError) {
+      setError(getApiErrorMessage(requestError, "Checkout failed."));
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="rounded-lg bg-white p-8 text-center text-sm text-slate-500 shadow dark:bg-[#19191C] dark:text-slate-300">
+        Loading your checkout…
+      </div>
+    );
+  }
+
   return (
     <div className="flex h-fit w-full flex-col justify-between gap-4 xl:flex-row">
-      <div className="flex h-fit w-full flex-col rounded bg-white p-[1rem] shadow-[0px_6px_16px_2px_rgba(0,0,0,0.05)] dark:bg-[#19191C] xl:basis-9/12">
-        <ul className="flex h-fit w-full overflow-x-auto rounded-t border border-b-0 border-dashed border-[#ecf3fb] bg-[#F9F9FA] dark:border-[#2d3748] dark:bg-[#1f2937] sm:justify-around">
+      <div className="flex h-fit w-full flex-col rounded-lg bg-white p-4 shadow dark:bg-[#19191C] xl:basis-9/12">
+        <ul className="flex w-full overflow-x-auto rounded-t border border-b-0 border-dashed border-[#ecf3fb] bg-[#F9F9FA] dark:border-[#2d3748] dark:bg-[#1f2937] sm:justify-around">
           {tabs.map((tab, index) => (
-            <li
-              key={index}
-              onClick={() => setActiveTab(index)}
-              className={`group relative min-w-max cursor-pointer p-3 transition-colors duration-300 ${activeTab === index
-                ? "border-b-[#5C67F7]"
-                : "hover:border-b-[#5C67F7]"
-                }`}
-            >
-              <ButtonWithEmoji
-                emoji={tab.icon}
-                label={tab.label}
-                btnClass={`!bg-transparent text-[13px] font-sans font-semibold transition-colors duration-300 
-                  ${activeTab === index
-                    ? "!text-[#5C67F7]"
-                    : "!text-[#212b37] dark:!text-[#e5e7eb] group-hover:!text-[#5C67F7]"
-                  }`}
-              />
-              <span
-                className={`absolute left-1/2 bottom-0 h-[2px] bg-[#5C67F7] transform -translate-x-1/2 transition-all duration-300 ease-in-out
-                ${activeTab === index ? "w-full opacity-300" : "w-0 opacity-0"}
-                `}
-              />
+            <li key={tab.label}>
+              <button
+                type="button"
+                onClick={() => index <= activeTab && setActiveTab(index)}
+                disabled={index > activeTab}
+                className={`flex min-w-max items-center gap-2 border-b-2 p-3 text-[13px] font-semibold transition ${
+                  activeTab === index
+                    ? "border-[#5C67F7] text-[#5C67F7]"
+                    : "border-transparent text-[#212b37] dark:text-slate-300"
+                } disabled:cursor-not-allowed disabled:opacity-50`}
+              >
+                {tab.icon}
+                {tab.label}
+              </button>
             </li>
           ))}
         </ul>
+
+        {error && (
+          <div className="mt-4 rounded-lg border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700 dark:border-rose-900/50 dark:bg-rose-950/30 dark:text-rose-300">
+            {error}
+          </div>
+        )}
+
         {activeTab === 0 && (
-          <motion.div
-            key={activeTab}
-            initial={{ opacity: 0, scale: 1 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 1 }}
-            transition={{ duration: 0.3, ease: "easeOut" }}
-            className="w-full h-fit flex flex-col items-center border border-[#ecf3fb] dark:border-[#2d3748] border-dashed"
+          <motion.section
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="border border-dashed border-[#ecf3fb] p-4 dark:border-[#2d3748]"
           >
-            <div className="w-full p-3">
-              <p className="text-[#6e829f] dark:text-[#cbd5f5] text-[1.25rem] opacity-50 font-semibold font-sans">
-                01
-              </p>
-              <div className="grid h-fit w-full grid-cols-1 gap-4 md:grid-cols-2">
-                <p className="text-[0.9375rem] font-semibold font-sans text-[#212b37] dark:text-white md:col-span-2">
-                  Shipping Methods :
-                </p>
-                <div>
-                  <ShippingCard
-                    shipImg="https://sprukomarket.com/products/html/bootstrap/xintra/dist/assets/images/ecommerce/png/21.png"
-                    shipMethod="UPS"
-                    shipDate="Delivered By 11,May 2024"
-                    shipPrice={9.99}
-                    name="shipping-method"
-                    checked={selectedMethod === "UPS"}
-                    onChange={() => setSelectedMethod("UPS")}
-                  />
-                </div>
-                <div>
-                  <ShippingCard
-                    shipImg="https://sprukomarket.com/products/html/bootstrap/xintra/dist/assets/images/ecommerce/png/22.png"
-                    shipMethod="USPS"
-                    shipDate="Delivered By 22,Nov 2022"
-                    shipPrice={10.49}
-                    name="shipping-method"
-                    checked={selectedMethod === "USPS"}
-                    onChange={() => setSelectedMethod("USPS")}
-                  />
-                </div>
-              </div>
-              <div className="mt-3 grid h-fit w-full grid-cols-1 gap-4 md:grid-cols-2">
-                <p className="text-[0.9375rem] font-semibold font-sans text-[#212b37] dark:text-white md:col-span-2">
-                  Shipping Address :
-                </p>
-                <div>
-                  <ShipAddress
-                    shipLabel="My Home Address"
-                    name="shipping-address"
-                    checked={selectedAddress === "home"}
-                    onChange={() => setSelectedAddress("home")}
-                  />
-                </div>
-                <div>
-                  <ShipAddress
-                    shipLabel="Work Place Address"
-                    name="shipping-address"
-                    checked={selectedAddress === "address"}
-                    onChange={() => setSelectedAddress("address")}
-                  />
-                </div>
-              </div>
+            <h2 className="font-semibold text-[#212b37] dark:text-white">
+              Shipping method
+            </h2>
+            <div className="mt-4 grid gap-3 md:grid-cols-2">
+              {deliveryMethods.map((method) => (
+                <label
+                  key={method._id || method.method}
+                  className={`flex cursor-pointer items-center justify-between rounded-lg border p-4 transition ${
+                    selectedMethod.toLowerCase() === method.method.toLowerCase()
+                      ? "border-[#5C67F7] bg-[#5C67F7]/5"
+                      : "border-slate-200 dark:border-slate-700"
+                  }`}
+                >
+                  <div>
+                    <p className="font-semibold text-slate-900 dark:text-white">
+                      {method.method}
+                    </p>
+                    <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                      Estimated {method.estimatedDays} day(s)
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <span className="font-semibold text-slate-900 dark:text-white">
+                      {formatCurrency(method.baseFee)}
+                    </span>
+                    <input
+                      type="radio"
+                      name="delivery-method"
+                      checked={
+                        selectedMethod.toLowerCase() === method.method.toLowerCase()
+                      }
+                      onChange={() => selectDelivery(method)}
+                    />
+                  </div>
+                </label>
+              ))}
             </div>
-            <div className="w-full p-3 flex justify-end items-end border border-[#ecf3fb] dark:border-[#2d3748] border-b-0 border-r-0 border-l-0 border-dashed">
-              <PersonalDetail
-                label="Personal Details"
-                emoji={<BsPerson />}
-                onClick={() => setActiveTab(1)}
+            {!deliveryMethods.length && (
+              <p className="mt-4 text-sm text-amber-600">
+                No active delivery methods are available.
+              </p>
+            )}
+
+            <h2 className="mt-6 font-semibold text-[#212b37] dark:text-white">
+              Shipping address
+            </h2>
+            <div className="mt-3 grid gap-4 md:grid-cols-2">
+              <div className="md:col-span-2">
+                <FormInput
+                  label="Address line 1"
+                  value={form.line1}
+                  onChange={(event) => updateField("line1", event.target.value)}
+                  required
+                />
+              </div>
+              <div className="md:col-span-2">
+                <FormInput
+                  label="Address line 2"
+                  value={form.line2}
+                  onChange={(event) => updateField("line2", event.target.value)}
+                />
+              </div>
+              <FormInput
+                label="City"
+                value={form.city}
+                onChange={(event) => updateField("city", event.target.value)}
+              />
+              <FormInput
+                label="State / Province"
+                value={form.state}
+                onChange={(event) => updateField("state", event.target.value)}
+              />
+              <FormInput
+                label="Postal code"
+                value={form.postalCode}
+                onChange={(event) => updateField("postalCode", event.target.value)}
+              />
+              <FormInput
+                label="Country"
+                value={form.country}
+                onChange={(event) => updateField("country", event.target.value)}
+                required
               />
             </div>
-          </motion.div>
+            <div className="mt-5 flex justify-end">
+              <button
+                type="button"
+                onClick={continueFromShipping}
+                className="rounded-lg bg-[#5C67F7] px-4 py-2 text-sm font-semibold text-white"
+              >
+                Continue to personal details
+              </button>
+            </div>
+          </motion.section>
         )}
+
         {activeTab === 1 && (
-          <motion.div
-            key={activeTab}
-            initial={{ opacity: 0, scale: 1 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 1 }}
-            transition={{ duration: 0.3, ease: "easeOut" }}
-            className="w-full h-fit flex flex-col items-center border border-[#ecf3fb] dark:border-[#2d3748] border-dashed"
+          <motion.section
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="border border-dashed border-[#ecf3fb] p-4 dark:border-[#2d3748]"
           >
-            <div className="w-full p-3">
-              <p className="text-[#6e829f] dark:text-[#cbd5f5] text-[1.25rem] opacity-50 font-semibold font-sans">
-                02
-              </p>
-              <div className="grid h-fit w-full grid-cols-1 gap-4 md:grid-cols-2">
-                <p className="text-[0.9375rem] font-semibold font-sans text-[#212b37] dark:text-white md:col-span-2">
-                  Personal Details :
-                </p>
-                <div className="grid grid-cols-1 gap-4 md:col-span-2 md:grid-cols-2">
-                  <div className="">
-                    <FormInput label="First Name" placeholder="First Name" />
-                  </div>
-                  <div className="">
-                    <FormInput label="Last Name" placeholder="Last Name" />
-                  </div>
-                  <div className="md:col-span-2">
-                    <FormInput
-                      label="Email"
-                      placeholder="smeyhem01@gmail.com"
-                    />
-                  </div>
-                  <div className="md:col-span-2">
-                    <FormInput label="Phone no" placeholder="061 87 50 89" />
-                  </div>
-                </div>
+            <h2 className="font-semibold text-[#212b37] dark:text-white">
+              Personal details
+            </h2>
+            <div className="mt-3 grid gap-4 md:grid-cols-2">
+              <FormInput
+                label="Full name"
+                value={form.fullName}
+                onChange={(event) => updateField("fullName", event.target.value)}
+                required
+              />
+              <FormInput
+                label="Phone"
+                value={form.phone}
+                onChange={(event) => updateField("phone", event.target.value)}
+                required
+              />
+              <div className="md:col-span-2">
+                <FormInput
+                  label="Email"
+                  value={form.email}
+                  onChange={(event) => updateField("email", event.target.value)}
+                  required
+                />
+              </div>
+              <div className="md:col-span-2">
+                <FormInput
+                  label="Order notes"
+                  value={form.notes}
+                  onChange={(event) => updateField("notes", event.target.value)}
+                />
               </div>
             </div>
-            <div className="flex w-full flex-col gap-3 border border-b-0 border-l-0 border-r-0 border-dashed border-[#ecf3fb] p-3 dark:border-[#2d3748] sm:flex-row sm:items-center sm:justify-between">
-              <PersonalDetail
-                label="Back To Shipping"
-                emoji={<MdOutlineLocalShipping />}
+            <div className="mt-5 flex justify-between gap-3">
+              <button
+                type="button"
                 onClick={() => setActiveTab(0)}
-                classname="flex-row-reverse border-none hover:border-black !bg-[#EFF1FE] dark:!bg-[#1f2937] !text-[#5C67F7] hover:!bg-[#5C67F7] hover:!text-[#fff]"
-              />
-              <PersonalDetail
-                label="Continue To Payment"
-                emoji={<MdOutlinePayment />}
-                onClick={() => setActiveTab(2)}
-              />
+                className="rounded-lg bg-slate-100 px-4 py-2 text-sm font-semibold text-slate-700 dark:bg-slate-800 dark:text-white"
+              >
+                Back
+              </button>
+              <button
+                type="button"
+                onClick={continueFromContact}
+                className="rounded-lg bg-[#5C67F7] px-4 py-2 text-sm font-semibold text-white"
+              >
+                Continue to payment
+              </button>
             </div>
-          </motion.div>
+          </motion.section>
         )}
+
         {activeTab === 2 && (
-          <motion.div
-            key={activeTab}
-            initial={{ opacity: 0, scale: 1 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 1 }}
-            transition={{ duration: 0.3, ease: "easeOut" }}
-            className="w-full h-fit flex flex-col items-center border border-[#ecf3fb] dark:border-[#2d3748] border-dashed"
+          <motion.section
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="border border-dashed border-[#ecf3fb] p-4 dark:border-[#2d3748]"
           >
-            <div className="w-full p-3">
-              <p className="text-[#6e829f] dark:text-[#cbd5f5] text-[1.25rem] opacity-50 font-semibold font-sans">
-                03
-              </p>
-              <div className="w-full h-fit flex flex-col gap-4">
-                <p className="col-span-2 row-start-1 row-end-2 text-[0.9375rem] font-semibold font-sans text-[#212b37] dark:text-white">
-                  Payment Details :
-                </p>
-                <div className="flex w-full flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
-                  <CheckBoxRedius
-                    label="Credit/Debit Card"
-                    name="payment-select"
-                    checked={selectedPayment === "card"}
-                    onChange={() => setSelectedPayment("card")}
-                  />
-                  <CheckBoxRedius
-                    label="C.O.D(Cash On Delivery)"
-                    name="payment-select"
-                    checked={selectedPayment === "cod"}
-                    onChange={() => setSelectedPayment("cod")}
-                  />
-                  <CheckBoxRedius
-                    label="UPI Payment"
-                    name="payment-select"
-                    checked={selectedPayment === "upi"}
-                    onChange={() => setSelectedPayment("upi")}
-                  />
-                </div>
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-                  <div className="sm:col-span-3">
-                    <FormInput
-                      label="Card Number"
-                      placeholder="1234 5678 9123"
+            <h2 className="font-semibold text-[#212b37] dark:text-white">
+              Payment method
+            </h2>
+            <div className="mt-4 grid gap-3 md:grid-cols-2">
+              {paymentOptions.map((option) => (
+                <label
+                  key={option.value}
+                  className={`cursor-pointer rounded-lg border p-4 ${
+                    selectedPayment === option.value
+                      ? "border-[#5C67F7] bg-[#5C67F7]/5"
+                      : "border-slate-200 dark:border-slate-700"
+                  }`}
+                >
+                  <div className="flex items-start gap-3">
+                    <input
+                      type="radio"
+                      name="payment-method"
+                      checked={selectedPayment === option.value}
+                      onChange={() => setSelectedPayment(option.value)}
                     />
+                    <div>
+                      <p className="font-semibold text-slate-900 dark:text-white">
+                        {option.label}
+                      </p>
+                      <p className="mt-1 text-xs leading-5 text-slate-500 dark:text-slate-400">
+                        {option.description}
+                      </p>
+                    </div>
                   </div>
-                  <div className="sm:col-span-3">
-                    <FormInput
-                      label="Name On Card"
-                      placeholder="HEM PORNLEURAKSMEY"
-                    />
-                  </div>
-                  <div>
-                    <FormInput label="Expiration Date" placeholder="08/24" />
-                  </div>
-                  <div>
-                    <FormInput label="CVV" placeholder="123" />
-                  </div>
-                  <div>
-                    <FormInput
-                      label="OTP"
-                      placeholder="123456"
-                      helperText="*Do not share O.T.P with anyone"
-                      helperTextClass="text-[#fB4242] font-semibold"
-                    />
-                  </div>
-                  <div className="w-full">
-                    <CheckBox
-                      label="Save This Card"
-                      classname="checked:!bg-[#23CE9E] checked:!border-none"
-                    />
-                  </div>
-                </div>
-              </div>
-              <div className="mt-3 grid h-fit w-full grid-cols-1 gap-4 md:grid-cols-2">
-                <p className="text-[0.9375rem] font-semibold font-sans text-[#212b37] dark:text-white md:col-span-2">
-                  Saved Card :
-                </p>
-                <div>
-                  <CreditCard
-                    creditImg="https://sprukomarket.com/products/html/bootstrap/xintra/dist/assets/images/ecommerce/png/26.png"
-                    creditLabel="XXXX-XXXX-XXXX-XXXX"
-                    creditChecked={true}
-                  />
-                </div>
-                <div>
-                  <CreditCard
-                    creditImg="https://sprukomarket.com/products/html/bootstrap/xintra/dist/assets/images/ecommerce/png/27.png"
-                    creditLabel="XXXX-XXXX-XXXX-XXXX"
-                    creditChecked={true}
-                  />
-                </div>
-              </div>
+                </label>
+              ))}
             </div>
-            <div className="flex w-full flex-col gap-3 border border-b-0 border-l-0 border-r-0 border-dashed border-[#ecf3fb] p-3 dark:border-[#2d3748] sm:flex-row sm:items-center sm:justify-between">
-              <PersonalDetail
-                label="Back To Personal Info"
-                emoji={<MdOutlineLocalShipping />}
+            <p className="mt-4 text-xs text-slate-500 dark:text-slate-400">
+              Payment credentials are handled by the configured gateway and are
+              not collected by this form.
+            </p>
+            <div className="mt-5 flex justify-between gap-3">
+              <button
+                type="button"
                 onClick={() => setActiveTab(1)}
-                classname="flex-row-reverse border-none hover:border-black !bg-[#EFF1FE] dark:!bg-[#1f2937] !text-[#5C67F7] hover:!bg-[#5C67F7] hover:!text-[#fff]"
-              />
-              <PersonalDetail
-                label="Continue Payment"
-                emoji={<MdOutlinePayment />}
-                onClick={() => setActiveTab(3)}
-              />
+                className="rounded-lg bg-slate-100 px-4 py-2 text-sm font-semibold text-slate-700 dark:bg-slate-800 dark:text-white"
+              >
+                Back
+              </button>
+              <button
+                type="button"
+                onClick={submitOrder}
+                disabled={submitting || !cart?.items.length}
+                className="rounded-lg bg-[#5C67F7] px-4 py-2 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {submitting ? "Creating order…" : "Place order"}
+              </button>
             </div>
-          </motion.div>
+          </motion.section>
         )}
-        {activeTab === 3 && (
-          <motion.div
-            key={activeTab}
-            initial={{ opacity: 0, scale: 1 }}
+
+        {activeTab === 3 && result && (
+          <motion.section
+            initial={{ opacity: 0, scale: 0.98 }}
             animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 1 }}
-            transition={{ duration: 0.3, ease: "easeOut" }}
-            className="w-full h-fit flex flex-col items-center border border-[#ecf3fb] dark:border-[#2d3748] border-dashed"
+            className="flex flex-col items-center border border-dashed border-[#ecf3fb] p-8 text-center dark:border-[#2d3748]"
           >
-            <div className="flex flex-col justify-center items-center p-3 my-3">
-              <div className="mb-4">
-                <h5 className="text-[#21Ce9e] text-[1.25rem] font-semibold font-sans">
-                  Payment Successful...
-                </h5>
-              </div>
-              <div className="mb-4">
-                <img
-                  src="https://sprukomarket.com/products/html/bootstrap/xintra/dist/assets/images/ecommerce/png/24.png"
-                  alt=""
-                  className="h-[160px] w-[160px] sm:h-[200px] sm:w-[200px]"
-                />
-              </div>
-              <div className="mb-4">
-                <p className="mb-1 text-[#212B37] dark:text-white text-[14px] font-medium font-sans">
-                  You can track your order with Order Id <b>SPK#1FR</b> from{" "}
-                  <a href="" className="underline text-[#e354D4]">
-                    Trank Order
-                  </a>
-                </p>
-                <p className="mb-1 text-center text-[#6E829F] dark:text-[#cbd5f5] text-[13px] font-normal font-sans">
-                  Thanks for supporting us.
-                </p>
-              </div>
-              <div className="mb-4">
-                <ButtonWithEmoji
-                  label="Continue Shopping"
-                  emoji={<IoCartOutline />}
-                  btnClass="!text-[13.7px] !font-semibold flex-row-reverse"
-                />
-              </div>
+            <MdOutlineCheckCircleOutline className="text-7xl text-emerald-500" />
+            <h2 className="mt-4 text-xl font-semibold text-emerald-600">
+              Order created successfully
+            </h2>
+            <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
+              Order <strong>#{result.order._id}</strong> is awaiting payment.
+            </p>
+            <p className="mt-1 text-xs text-slate-500">
+              Payment reference: {result.payment.transactionId}
+            </p>
+            <div className="mt-6 flex flex-wrap justify-center gap-3">
+              <button
+                type="button"
+                onClick={() =>
+                  navigate(`/dashboard/product/orderdetails/${result.order._id}`)
+                }
+                className="rounded-lg bg-[#5C67F7] px-4 py-2 text-sm font-semibold text-white"
+              >
+                View order
+              </button>
+              <button
+                type="button"
+                onClick={() => navigate("/dashboard/product/products")}
+                className="flex items-center gap-2 rounded-lg bg-slate-100 px-4 py-2 text-sm font-semibold text-slate-700 dark:bg-slate-800 dark:text-white"
+              >
+                <IoCartOutline /> Continue shopping
+              </button>
             </div>
-          </motion.div>
+          </motion.section>
         )}
       </div>
-      <div className="flex h-fit w-full flex-col rounded bg-white shadow-[0px_6px_16px_2px_rgba(0,0,0,0.05)] dark:bg-[#19191C] xl:basis-3/12">
-        <div className="flex gap-[0.25rem] p-3 items-center">
-          <div className="text-[#212B37] dark:text-white text-[15.2px] font-medium font-sans">
-            Order Summary
-          </div>
-          <span className="flex justify-center items-center text-center text-[#5C67F7] text-[11px] font-medium font-sans bg-[rgba(92,103,247,0.1)] py-[0.25rem] px-[0.45rem] rounded-[50rem]">
-            01
-          </span>
+
+      <aside className="h-fit w-full rounded-lg bg-white shadow dark:bg-[#19191C] xl:basis-3/12">
+        <div className="border-b border-slate-100 p-4 dark:border-slate-800">
+          <h2 className="font-semibold text-[#212B37] dark:text-white">
+            Order summary
+          </h2>
+          {selectedDelivery && (
+            <p className="mt-1 text-xs text-slate-500">
+              {selectedDelivery.method} · {selectedDelivery.estimatedDays} day(s)
+            </p>
+          )}
         </div>
-        <div className="p-0">
-          <ul className="mb-0 border-0 p-0 list-none flex flex-col">
-            <li className="p-3 border border-[#ecf3fb] dark:border-[#2d3748] border-t-0 border-r-0 border-l-0">
-              <SummaryCard />
+        <ul className="max-h-80 divide-y divide-slate-100 overflow-y-auto dark:divide-slate-800">
+          {cart?.items.map((item) => (
+            <li key={item._id || item.product._id} className="flex gap-3 p-4">
+              <img
+                src={getPrimaryUrl(
+                  item.product.images || [],
+                  item.product.primaryImageIndex
+                )}
+                alt={item.product.name}
+                className="h-12 w-12 rounded bg-slate-50 object-contain dark:bg-slate-800"
+              />
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-sm font-semibold text-slate-900 dark:text-white">
+                  {item.product.name}
+                </p>
+                <p className="mt-1 text-xs text-slate-500">
+                  {item.quantity} × {formatCurrency(item.product.price || 0)}
+                </p>
+              </div>
             </li>
-            <li className="p-3 border border-[#ecf3fb] dark:border-[#2d3748] border-t-0 border-r-0 border-l-0 border-dashed">
-              <SummaryCard />
-            </li>
-          </ul>
-          <div className="p-3 border border-[#ecf3fb] dark:border-[#2d3748] border-t-0 border-r-0 border-l-0 border-dashed">
-            <div className="w-full h-fit flex justify-between items-center gap-3">
-              <p className="text-[#5C67F7] text-[12px] py-[0.25rem] px-[0.45rem] rounded bg-[rgba(92,103,247,0.1)] font-semibold font-sans">
-                Subtotal :
-              </p>
-              <p className="text-[#21Ce9E] text-[12px] py-[0.25rem] px-[0.45rem] rounded font-medium font-sans">
-                COUPON APPLIED
-              </p>
-            </div>
+          ))}
+          {!cart?.items.length && (
+            <li className="p-4 text-sm text-slate-500">Your cart is empty.</li>
+          )}
+        </ul>
+        <div className="space-y-3 border-t border-slate-100 p-4 text-sm dark:border-slate-800">
+          <div className="flex justify-between text-slate-500">
+            <span>Subtotal</span>
+            <span>{formatCurrency(cart?.summary.subTotal || 0)}</span>
           </div>
-          <div className="p-3 border border-[#ecf3fb] dark:border-[#2d3748] border-t-0 border-r-0 border-l-0 border-dashed">
-            <div className="w-full h-fit flex justify-between items-center gap-3 mb-3">
-              <p className="text-[#6e829f] dark:text-[#cbd5f5] text-[13px] font-normal font-sans">
-                Total
-              </p>
-              <p className="text-[#212B37] dark:text-white text-[14px] font-bold font-sans">
-                $189
-              </p>
-            </div>
-            <div className="w-full h-fit flex justify-between items-center gap-3 mb-3">
-              <p className="text-[#6e829f] dark:text-[#cbd5f5] text-[13px] font-normal font-sans">
-                Discount
-              </p>
-              <p className="text-[#21Ce9E] text-[14px] font-bold font-sans">
-                10% - $31.8
-              </p>
-            </div>
-            <div className="w-full h-fit flex justify-between items-center gap-3 mb-3">
-              <p className="text-[#6e829f] dark:text-[#cbd5f5] text-[13px] font-normal font-sans">
-                Delivery Charge
-              </p>
-              <p className="text-[#Fb4242] text-[14px] font-bold font-sans">
-                - $29
-              </p>
-            </div>
-            <div className="w-full h-fit flex justify-between items-center gap-3">
-              <p className="text-[#6e829f] dark:text-[#cbd5f5] text-[13px] font-normal font-sans">
-                Service Tax (18%)
-              </p>
-              <p className="text-[#212B37] dark:text-white text-[14px] font-bold font-sans">
-                - $45
-              </p>
-            </div>
+          <div className="flex justify-between text-emerald-600">
+            <span>Discount</span>
+            <span>-{formatCurrency(cart?.summary.discount || 0)}</span>
           </div>
-          <div className="p-3">
-            <div className="w-full h-fit flex justify-between items-center gap-3">
-              <p className="text-[#212B37] dark:text-white text-[15px] font-normal font-sans">
-                Total :
-              </p>
-              <p className="text-[#212B37] dark:text-white text-[16px] font-bold font-sans">
-                $189
-              </p>
-            </div>
+          <div className="flex justify-between text-slate-500">
+            <span>Delivery</span>
+            <span>{formatCurrency(cart?.summary.deliveryFee || 0)}</span>
+          </div>
+          <div className="flex justify-between text-slate-500">
+            <span>Service tax</span>
+            <span>{formatCurrency(cart?.summary.serviceTax || 0)}</span>
+          </div>
+          <div className="flex justify-between border-t border-slate-100 pt-3 text-base font-bold text-slate-900 dark:border-slate-800 dark:text-white">
+            <span>Total</span>
+            <span>{formatCurrency(cart?.summary.total || 0)}</span>
           </div>
         </div>
-      </div>
+      </aside>
     </div>
   );
 };

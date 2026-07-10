@@ -55,7 +55,7 @@ const ProductDetails = () => {
       container.scrollLeft = card.offsetLeft;
       setIndex(middleStart);
     }
-  }, []);
+  }, [middleStart]);
 
   const scrollTo = (newIndex: number) => {
     if (!sliderRef.current) return;
@@ -67,12 +67,12 @@ const ProductDetails = () => {
   };
 
   const handleNext = () => {
-    let newIndex = index + 1;
+    const newIndex = index + 1;
     scrollTo(newIndex);
   };
 
   const handlePrev = () => {
-    let newIndex = index - 1;
+    const newIndex = index - 1;
     scrollTo(newIndex);
   };
 
@@ -103,14 +103,14 @@ const ProductDetails = () => {
       const listColor = [
         ...new Set(
           responseProduct?.data?.variants
-            ?.map((v: any) => v?.attributes?.color)
+            ?.map((variant) => variant.attributes?.color)
             ?.filter((c: string | undefined): c is string => Boolean(c))
         ),
       ];
       const listStorage = [
         ...new Set(
           responseProduct?.data?.variants
-            ?.map((v: any) => v?.attributes?.storage)
+            ?.map((variant) => variant.attributes?.storage)
             ?.filter((c: string | undefined): c is string => Boolean(c))
         ),
       ];
@@ -149,27 +149,28 @@ const ProductDetails = () => {
       const responseProductRelationship =
         await ProductService?.recommendationsProduct(id);
 
+      const recommendationData = responseProductRelationship?.data;
+      const relatedProductsData =
+        recommendationData?.relatedProducts || recommendationData?.products || [];
       const featuredProductsData =
-        (responseProductRelationship?.data as any)?.featuredProducts || [];
-      const releatedProductsData =
-        (responseProductRelationship?.data as any)?.relatedProducts || [];
+        recommendationData?.featuredProducts || relatedProductsData.slice(0, 5);
 
       // ✅ map backend response into FeatureItem shape
-      const mappedFeaturedProducts = featuredProductsData.map((item: any) => ({
+      const mappedFeaturedProducts = featuredProductsData.map((item) => ({
         productImg: item.primaryImage || item.images?.[0],
         productName: item.name,
         ratingProduct: item.ratingAvg,
         ratingCountProduct: item.ratingCount,
-        productCost: item.cost,
+        productCost: item.price,
         compareAtPrice: item.compareAtPrice,
-        addToCart: () => handleAddToCart(item._id),
+        addToCart: () => item._id && handleAddToCart(item._id),
       }));
 
-      const mappedRelatedProducts = releatedProductsData?.map((item: any) => ({
+      const mappedRelatedProducts = relatedProductsData.map((item) => ({
         _id: item._id,
         name: item.name,
         brand: item.brand,
-        cost: item.cost,
+        price: item.price,
         compareAtPrice: item.compareAtPrice,
         ratingAvg: item.ratingAvg,
         ratingCount: item.ratingCount,
@@ -223,7 +224,7 @@ const ProductDetails = () => {
             productName={product?.name}
             ratingAvg={product?.ratingAvg}
             ratingCount={product?.ratingCount}
-            cost={product?.cost}
+            price={product?.price ?? Number(product?.cost || 0)}
             compareAtPrice={product?.compareAtPrice}
             description={product?.description}
             storageList={storagesList}
@@ -250,7 +251,11 @@ const ProductDetails = () => {
           />
         </div>
         <div className="rounded bg-white shadow-[0px_6px_16px_2px_rgba(0,0,0,0.05)] dark:bg-[#19191C] xl:col-span-3 xl:row-start-3">
-          <Review />
+          <Review
+            productId={id}
+            ratingAvg={product.ratingAvg}
+            ratingCount={product.ratingCount}
+          />
         </div>
       </div>
       <h5 className="text-[#212b37] dark:text-white font-sans font-semibold text-[20px] mt-4">

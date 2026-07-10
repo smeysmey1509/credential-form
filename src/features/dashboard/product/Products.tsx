@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import CategorySelect from "../../../components/common/CategorySelect/CategorySelect";
 import PriceRange from "../../../components/common/PriceRange/PriceRange";
 import { Product } from "../../../types/ProductType";
@@ -7,7 +7,6 @@ import CartService from "../../../services/common/CartService/CartService";
 import ProductCard from "../../../components/common/Card/ProductCard";
 import CategoryService from "../../../services/common/Category/CategoryService";
 import { CategoryStats } from "../../../types/Category";
-import { useNavigate } from "react-router-dom";
 import SelectionFilter from "../../../components/common/SelectionFilter/SelectionFilter";
 import BrandService from "../../../services/common/BrandService/BrandService";
 import { BrandStats } from "../../../types/BrandType";
@@ -15,7 +14,7 @@ import { discountData, sizeData } from "../../../dummyData/dummyData";
 import Pagination from "../../../components/common/Pagination/Pagination";
 import { useToast } from "../../../context/ToasterContext";
 import WishlistService from "../../../services/common/WishlistService/WishlistService";
-import { AxiosError } from "axios";
+import { getApiErrorMessage } from "../../../services/api/errors";
 
 type SortKey = "" | "price_asc" | "price_desc";
 
@@ -103,10 +102,9 @@ const Products = () => {
           limit: perPage,
         });
 
-        // Backend response conforms to getPaginationMeta
-        const data = response?.data as any;
+        const data = response.data;
         if (data) {
-          setProducts((data.products as Product[]) || []);
+          setProducts(data.products || []);
           setTotal(data.total || 0);
           setTotalPages(data.totalPages || 1);
         }
@@ -155,10 +153,9 @@ const Products = () => {
         type: "success",
       });
     } catch (err) {
-      const error = err as AxiosError<{ code?: string; error?: string }>;
       showToast({
-        title: error?.response?.data?.code,
-        description: error?.response?.data?.error,
+        title: "Wishlist update failed",
+        description: getApiErrorMessage(err),
         type: "danger",
       });
     }
@@ -249,14 +246,14 @@ const Products = () => {
               data={categories}
               selected={selectedCategories}
               onChange={(selected) => {
-                setSelectedCategories(selected);
+                setSelectedCategories(selected.slice(-1));
                 setPage(1);
               }}
               accessors={{
                 id: (x) => x._id || "",
                 label: (x) => x.categoryName,
                 count: (x) => x.productCount,
-                disabled: (x) => x.productCount === 0,
+                disabled: () => false,
               }}
             />
             <PriceRange
@@ -272,14 +269,14 @@ const Products = () => {
               data={brand}
               selected={selectedBrands}
               onChange={(selected) => {
-                setSelectedBrands(selected);
+                setSelectedBrands(selected.slice(-1));
                 setPage(1);
               }}
               accessors={{
                 id: (x) => x._id || "",
                 label: (x) => x.name || "",
                 count: (x) => x.productCount || 0,
-                disabled: (x) => false,
+                disabled: () => false,
               }}
             />
             <CategorySelect

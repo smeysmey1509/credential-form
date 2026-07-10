@@ -3,8 +3,8 @@ import Header from "../../components/layout/Header/Header";
 import Sidebar from "../../components/layout/Sidebar/Sidebar";
 import Content from "../../components/layout/Content/Content";
 import Footer from "../../components/layout/Footer/Footer";
-import axiosClient from "../../services/api/axiosClient";
 import { motion } from "framer-motion";
+import UserService from "../../services/common/UserService/UserService";
 
 const Layout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(() => {
@@ -19,7 +19,7 @@ const Layout = () => {
   useEffect(() => {
     const fetchDashboard = async () => {
       try {
-        await axiosClient.get("/profile");
+        await UserService.getProfile();
       } catch (err) {
         console.error("Error fetching dashboard data:", err);
       } finally {

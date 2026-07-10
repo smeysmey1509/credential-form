@@ -5,6 +5,7 @@ import { setCookie } from "../../utils/cookie";
 import { AuthService } from "../../services/common/AuthService/AuthService";
 import { motion } from "framer-motion";
 import { FiUser, FiLock, FiEye, FiEyeOff, FiAlertCircle } from "react-icons/fi";
+import { getApiErrorMessage } from "../../services/api/errors";
 
 const LoginForm = () => {
     const [name, setName] = useState("");
@@ -48,13 +49,10 @@ const LoginForm = () => {
                     navigate("/dashboard");
                 }, 800);
             }
-        } catch (err: any) {
+        } catch (err: unknown) {
             setIsLoading(false);
             console.error(err);
-            setErrorMsg(
-                err?.response?.data?.message || 
-                "Login failed. Please check your credentials."
-            );
+            setErrorMsg(getApiErrorMessage(err, "Login failed. Please check your credentials."));
         }
     };
 

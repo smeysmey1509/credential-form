@@ -19,6 +19,7 @@ import { FormImage } from "../../../types/ProductType";
 import { useToast } from "../../../context/ToasterContext";
 import CategoryService from "../../../services/common/Category/CategoryService";
 import BrandService from "../../../services/common/BrandService/BrandService";
+import { getApiErrorMessage } from "../../../services/api/errors";
 
 const CreateProduct = () => {
   const [name, setName] = useState<string>("");
@@ -108,14 +109,13 @@ const CreateProduct = () => {
       const formData = new FormData();
       formData.append("name", name);
       formData.append("description", description);
-      formData.append("price", actualPrice.toString());
+      formData.append("price", String(actualPrice || Number(cost)));
       formData.append("stock", stock.toString());
       formData.append("category", selectedCategoryId);
       formData.append("status", status);
       formData.append("discount", discount);
       formData.append("publishDate", publishDate);
       formData.append("publishTime", publishTime);
-      formData.append("cost", cost);
       formData.append("brand", selectedBrandId);
       formData.append("currency", currency);
       formData.append("actualPrice", actualPrice.toString());
@@ -123,7 +123,6 @@ const CreateProduct = () => {
       formData.append("weight", weight);
       formData.append("feature", feature);
       formData.append("productType", productType);
-      formData.append("seller", "685ab59e33f273e409dc3eac");
 
       tag.forEach((t) => formData.append("tag", t));
 
@@ -163,7 +162,7 @@ const CreateProduct = () => {
     } catch (error) {
       showToast({
         title: "Create Failed",
-        description: "Your item was created failed.",
+        description: getApiErrorMessage(error, "Product creation failed."),
         type: "danger",
       });
       console.error("Error creating product:", error);

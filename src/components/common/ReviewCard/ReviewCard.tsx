@@ -1,71 +1,39 @@
-import React from "react";
-import TagBage from "../TagBage/TagBage";
 import Rate from "../Rate/Rate";
-import ButtonWithEmoji from "../../Button/ButtonWithEmoji/ButtonWithEmoji";
-import { AiOutlineDislike, AiOutlineLike } from "react-icons/ai";
+import type { ProductReview } from "../../../types/ReviewType";
 
-const ReviewCard = () => {
+const ReviewCard = ({ review }: { review: ProductReview }) => {
+  const userName =
+    typeof review.user === "object" ? review.user.name || "Customer" : "Customer";
+
   return (
-    <div className="w-full h-fit flex flex-col gap-4">
-      <div className="flex justify-center items-center">
-        <div className="flex flex-auto items-center gap-2">
-          <span className="w-[30px] h-[30px]">
-            <img
-              src="https://sprukomarket.com/products/html/bootstrap/xintra/dist/assets/images/faces/1.jpg"
-              alt=""
-              className="w-full h-full rounded-[50%]"
-            />
-          </span>
-          <p className="flex flex-auto items-center gap-2 text-[#212B37] dark:text-white text-[14px] font-sans font-semibold">
-            Phillip John <Rate rating={1} ratingCount={1.2} max={1} />
+    <article className="rounded-lg border border-slate-100 p-4 dark:border-slate-800">
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <p className="font-semibold text-slate-900 dark:text-white">
+            {userName}
           </p>
+          <Rate rating={review.rating} />
         </div>
-        <div className="flex items-center">
-          <TagBage label="Verified Purchase" classname="!bg-[#21CE9E]" />
-        </div>
+        {review.isVerifiedPurchase && (
+          <span className="rounded-full bg-emerald-50 px-2 py-1 text-xs font-semibold text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-300">
+            Verified purchase
+          </span>
+        )}
       </div>
-      <div className="flex-auto items-center">
-        <p className="text-[#212B37] dark:text-white text-[13px] font-sans font-semibold">
-          Powerful Performance, Stunning Display!
+      {review.title && (
+        <h3 className="mt-3 text-sm font-semibold text-slate-900 dark:text-white">
+          {review.title}
+        </h3>
+      )}
+      <p className="mt-1 text-sm leading-6 text-slate-600 dark:text-slate-300">
+        {review.body || review.comment || "No written review."}
+      </p>
+      {review.createdAt && (
+        <p className="mt-3 text-xs text-slate-400">
+          {new Date(review.createdAt).toLocaleDateString()}
         </p>
-        <p className="text-[#212B37] dark:text-[#cbd5f5] text-[11px] font-sans font-normal">
-          The TechPro X15 Elite - 2024 Edition is a powerhouse! The 4K UHD
-          touchscreen display is stunning.vgwrggerrb grgrgerg{" "}
-        </p>
-      </div>
-      <div className="flex flex-auto justify-between items-center">
-        <div className="w-full flex items-center gap-1">
-          <a href="">
-            <img
-              src="https://sprukomarket.com/products/html/bootstrap/xintra/dist/assets/images/ecommerce/png/34.png"
-              alt=""
-              className="w-[50px] h-[50px] bg-[rgba(92,103,247,0.1)] rounded"
-            />
-          </a>
-          <a href="">
-            <img
-              src="https://sprukomarket.com/products/html/bootstrap/xintra/dist/assets/images/ecommerce/png/33.png"
-              alt=""
-              className="w-[50px] h-[50px] bg-[rgba(92,103,247,0.1)] rounded"
-            />
-          </a>
-        </div>
-        <div className="w-full flex justify-end items-center gap-2">
-          <ButtonWithEmoji
-            label="Report abuse"
-            btnClass="!min-w-fit !bg-[#F9F9FA] dark:!bg-[#1f2937] hover:!bg-[#F2F2F3] dark:hover:!bg-[#111827] !text-[#212b37] dark:!text-[#e5e7eb] !text-[12px] !font-sans !font-medium"
-          />
-          <ButtonWithEmoji
-            emoji={<AiOutlineLike />}
-            btnClass="!min-w-fit !bg-[#EFF1FE] !text-[12px] !text-[#5C67F7] hover:!bg-[#5C67F7] hover:!text-[#fff] !p-2"
-          />
-          <ButtonWithEmoji
-            emoji={<AiOutlineDislike />}
-            btnClass="!min-w-fit !bg-[#EFF1FE] !text-[12px] !text-[#5C67F7] hover:!bg-[#5C67F7] hover:!text-[#fff] !p-2"
-          />
-        </div>
-      </div>
-    </div>
+      )}
+    </article>
   );
 };
 

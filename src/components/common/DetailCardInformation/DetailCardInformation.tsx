@@ -18,7 +18,7 @@ interface DetailCardInformationProp {
   productName?: string;
   ratingAvg?: number;
   ratingCount?: number;
-  cost?: string;
+  price?: number;
   compareAtPrice?: number;
   discountPercent?: number;
   description?: string;
@@ -32,7 +32,7 @@ const DetailCardInformation: React.FC<DetailCardInformationProp> = ({
   productName,
   ratingAvg,
   ratingCount,
-  cost,
+  price,
   compareAtPrice,
   discountPercent,
   description,
@@ -51,7 +51,7 @@ const DetailCardInformation: React.FC<DetailCardInformationProp> = ({
       <Rate rating={ratingAvg} ratingCount={ratingCount} />
       <div className="flex items-center gap-3">
         <p className="text-[#212B37] dark:text-white text-[32px] font-sans font-bold">
-          ${cost}
+          ${price ?? 0}
         </p>
         <div className="flex flex-col justify-center">
           <p className="text-[#6e829f] dark:text-[#cbd5f5] text-[12px] font-sans font-semibold line-through">

@@ -2,34 +2,30 @@ import axiosClient from "../../api/axiosClient";
 import { PromoCodeType } from "../../../types/PromoCode";
 
 const PromoCodeService = {
-  // Get all promo codes
-  getAll: () => axiosClient.get<PromoCodeType[]>("/promo"),
+  getAll: () => axiosClient.get<PromoCodeType[]>("/promocode"),
 
-  // Create a new promo code
   create: (promo: Omit<PromoCodeType, "_id">) =>
-    axiosClient.post<PromoCodeType>("/promo", promo),
+    axiosClient.post<{ message: string; promo: PromoCodeType }>(
+      "/promocode/create",
+      promo
+    ),
 
-  // Apply a promo code to the cart
   apply: (code: string) =>
     axiosClient.post<{
+      success: boolean;
       message: string;
-      usageCount: number;
       promo: {
         code: string;
-        discountType: string;
-        discountValue: number;
-        discountAmount: number;
-      };
-      cart: {
-        discount: number;
-        subTotal: number;
-        total: number;
-        serviceTax?: number;
-        deliveryFee?: number;
+        type: "percentage" | "fixed";
+        value: number;
+        amount: number;
+        usageCount: number;
+        maxUsesPerUser: number;
+        expiresAt: string;
       };
     }>("/cart/apply-promo", { code }),
 
-    removePromoCode: () => axiosClient.post("/cart/remove-promocode"),
+  removePromoCode: () => axiosClient.post("/cart/remove-promocode"),
 };
 
 export default PromoCodeService;

@@ -5,6 +5,7 @@ import { setCookie } from "../../utils/cookie";
 import { AuthService } from "../../services/common/AuthService/AuthService";
 import { motion } from "framer-motion";
 import { FiUser, FiMail, FiLock, FiEye, FiEyeOff, FiAlertCircle } from "react-icons/fi";
+import { getApiErrorMessage } from "../../services/api/errors";
 
 export const RegisterForm = () => {
     const [name, setName] = useState<string>("");
@@ -50,13 +51,10 @@ export const RegisterForm = () => {
                     navigate("/dashboard/product");
                 }, 800);
             }
-        } catch (err: any) {
+        } catch (err: unknown) {
             setIsLoading(false);
             console.error(err);
-            setErrorMsg(
-                err?.response?.data?.message || 
-                "Registration failed. Please check your information."
-            );
+            setErrorMsg(getApiErrorMessage(err, "Registration failed. Please check your information."));
         }
     };
 

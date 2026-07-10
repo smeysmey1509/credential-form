@@ -158,12 +158,12 @@ const ListProduct: React.FC = () => {
             image: toAbs(imageUrl) || DEFAULT_IMG,
           },
           category: p.category?.categoryName || "—",
-          price: p.cost,
+          price: p.price ?? Number(p.cost || 0),
           stock: p.stock,
           status: p.status || "—",
           seller: {
-            name: p.seller?.name || "Unknown Seller",
-            image: p.seller?._id
+            name: typeof p.seller === "object" ? p.seller?.name || "Unknown Seller" : "Unknown Seller",
+            image: typeof p.seller === "object" && p.seller?._id
               ? `https://api.dicebear.com/9.x/thumbs/svg?seed=${p.seller.name}`
               : "https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png",
           },

@@ -1,21 +1,24 @@
 import { axiosProductGatewayClient } from "../../api/axiosClient";
-import { CategoryStats } from "../../../types/Category";
+import type { CategoryStats, CategoryType } from "../../../types/Category";
 
 const CategoryService = {
   getAllCategories: () =>
     axiosProductGatewayClient.get<CategoryStats>("/categories"),
 
   getCategoryById: (id: string) =>
-    axiosProductGatewayClient.get<CategoryStats>(`/category/${id}`),
+    axiosProductGatewayClient.get<CategoryType>(`/categories/${id}`),
 
-  createCategory: (data: Partial<CategoryStats>) =>
-    axiosProductGatewayClient.post<CategoryStats>("/category", data),
+  createCategory: (data: Partial<CategoryType>) =>
+    axiosProductGatewayClient.post<{ msg: string; category: CategoryType }>(
+      "/categories",
+      data
+    ),
 
-  updateCategory: (id: string, data: Partial<CategoryStats>) =>
-    axiosProductGatewayClient.put<CategoryStats>(`/category/${id}`, data),
+  updateCategory: (id: string, data: Partial<CategoryType>) =>
+    axiosProductGatewayClient.patch<CategoryType>(`/categories/${id}`, data),
 
   deleteCategory: (id: string) =>
-    axiosProductGatewayClient.delete<{ message: string }>(`/category/${id}`),
+    axiosProductGatewayClient.delete<{ msg: string }>(`/categories/${id}`),
 };
 
 export default CategoryService;

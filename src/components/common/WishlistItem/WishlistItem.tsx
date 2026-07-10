@@ -5,6 +5,7 @@ import { FaRegBookmark } from "react-icons/fa";
 import Rate from "../Rate/Rate";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import { Product } from "../../../types/ProductType";
+import { DEFAULT_IMG, getPrimaryUrl } from "../../../utils/image";
 
 interface WishlistItemProp {
   product?: Partial<Product>;
@@ -19,15 +20,16 @@ const WishlistItem: React.FC<WishlistItemProp> = ({
   saveForLater,
   deleteWishlist,
 }) => {
-  const [stock, setStock] = useState<boolean>(true);
+  const [stock] = useState<boolean>((product?.stock ?? 0) > 0);
   return (
     <div className="w-full h-fit flex gap-2 p-4 bg-white dark:bg-[#19191C] shadow-[0px_6px_16px_2px_rgba(0,0,0,0.05)] rounded-lg">
       <div className="w-fit h-fit">
         <div className="w-[110px] h-[100px] bg-[#EFF1FE] dark:bg-[#1f2937] rounded">
-          <a href="">
+          <a href="#">
             <img
-              src="https://sprukomarket.com/products/html/bootstrap/xintra/dist/assets/images/ecommerce/png/29.png"
-              alt=""
+              src={getPrimaryUrl(product?.images || [], product?.primaryImageIndex) || DEFAULT_IMG}
+              alt={product?.name || "Product"}
+              className="h-full w-full object-contain"
             />
           </a>
         </div>
@@ -36,14 +38,14 @@ const WishlistItem: React.FC<WishlistItemProp> = ({
         <div className="w-full h-fit flex justify-between">
           <div className="w-full h-fit flex flex-col">
             <h6 className="text-[0.875rem] font-medium text-[#0A0A0A] dark:text-white font-sans">
-              <a href="">{product?.name ?? "Product"}</a>
+              <span>{product?.name ?? "Product"}</span>
             </h6>
             <span className="text-[#21CE9E] text-[13px] font-normal font-sans">
               {stock ? "In Stock" : "Out Of Stock"}
             </span>
             <div className="flex items-baseline gap-2">
               <h6 className="font-sans text-[22px] text-[#212B37] dark:text-white font-semibold">
-                ${product?.cost ?? 0}
+                ${product?.price ?? Number(product?.cost || 0)}
               </h6>
               <p className="font-bold text-[#6e829f] dark:text-[#cbd5f5] text-[0.8125rem] font-sans line-through">
                 ${product?.compareAtPrice ?? 0}

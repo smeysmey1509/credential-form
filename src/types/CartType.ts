@@ -15,6 +15,14 @@ export interface CartSummary {
   deliveryFee: number;
   serviceTax: number;
   total: number;
+  taxRate?: number;
+  promoCode?: string | null;
+  promo?: {
+    code: string;
+    type?: "percentage" | "fixed";
+    value?: number;
+    amount?: number;
+  } | null;
 }
 
 export interface ICart {
@@ -22,8 +30,8 @@ export interface ICart {
   user?: string;
   items: CartItem[];
   summary: CartSummary;
-  delivery?: DeliveryType;
-  promoCode?: PromoCodeType;
+  delivery?: DeliveryType | null;
+  promoCode?: PromoCodeType | null;
   createdAt?: string;
   updatedAt?: string;
   __v?: number;

@@ -1,7 +1,7 @@
 import { Product } from "./ProductType";
 
 export interface WishlistItem {
-  product: Product[];
+  product: Product;
   _id?: string;
   addedAt?: string;
 }

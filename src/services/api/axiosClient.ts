@@ -2,7 +2,7 @@ import axios, {
   type AxiosInstance,
   type InternalAxiosRequestConfig,
 } from "axios";
-import { getCookie, setCookie } from "../../utils/cookie";
+import { deleteCookie, getCookie, setCookie } from "../../utils/cookie";
 import {
   API_KEY,
   API_URL,
@@ -26,6 +26,7 @@ export const axiosProductGatewayClient = axios.create({
 });
 
 const authPaths = ["/login", "/register", "/refresh", "/logout"];
+let refreshRequest: Promise<string> | null = null;
 
 const isAuthPath = (url?: string) => {
   if (!url) {
@@ -61,50 +62,58 @@ axiosProductGatewayClient.interceptors.request.use(addAuthHeaders, (error) =>
 
 const addTokenRefresh = (client: AxiosInstance) => {
   client.interceptors.response.use(
-  (response) => response,
-  async (error) => {
-    const originalRequest = error.config;
-    const status = error.response?.status;
+    (response) => response,
+    async (error) => {
+      const originalRequest = error.config;
+      const status = error.response?.status;
 
-    // If token expired and we haven't already retried this request
-    if (
-      (status === 401 || status === 403) &&
-      originalRequest &&
-      !originalRequest._retry &&
-      !isAuthPath(originalRequest.url)
-    ) {
-      originalRequest._retry = true;
+      if (
+        status === 401 &&
+        originalRequest &&
+        !originalRequest._retry &&
+        !isAuthPath(originalRequest.url)
+      ) {
+        originalRequest._retry = true;
 
-      try {
-        // Try to get a new access token
-        const res = await axios.post(
-          `${API_URL}/refresh`,
-          undefined,
-          { withCredentials: true }
-        );
+        try {
+          refreshRequest ??= axios
+            .post<{ accessToken: string; user?: unknown }>(
+              `${API_URL}/refresh`,
+              undefined,
+              { withCredentials: true }
+            )
+            .then((response) => {
+              const { accessToken, user } = response.data;
+              setCookie("accessToken", accessToken, 1);
+              if (user) {
+                setCookie("user", JSON.stringify(user), 1);
+              }
+              return accessToken;
+            })
+            .finally(() => {
+              refreshRequest = null;
+            });
 
-        const newAccessToken = res.data.accessToken;
-        setCookie("accessToken", newAccessToken, 1);
-        if (res.data.user) {
-          setCookie("user", JSON.stringify(res.data.user), 1);
+          const newAccessToken = await refreshRequest;
+          originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+          return client(originalRequest);
+        } catch (refreshError) {
+          deleteCookie("accessToken");
+          deleteCookie("user");
+          if (window.location.pathname !== "/login") {
+            window.location.assign("/login");
+          }
+          return Promise.reject(refreshError);
         }
-
-        // Add new token to header and retry original request
-        originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
-        return client(originalRequest);
-      } catch (refreshErr) {
-        console.error("Refresh failed:", refreshErr);
-        // Optional: redirect to login if refresh fails
-        window.location.href = "/login";
       }
-    }
 
-    return Promise.reject(error);
-  }
+      return Promise.reject(error);
+    }
   );
 };
 
 addTokenRefresh(axiosClient);
+addTokenRefresh(axiosClientWorker);
 addTokenRefresh(axiosProductGatewayClient);
 
 export default axiosClient;

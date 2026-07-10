@@ -127,8 +127,8 @@ const EditProducts = () => {
       setProductId(product?.productId || "");
       setName(product.name || "");
       setDescription(product.description || "");
-      setCost(product.cost || "");
-      setActualPrice(product?.actualPrice || 0);
+      setCost(String(product.price ?? product.cost ?? ""));
+      setActualPrice(product?.price ?? product?.actualPrice ?? 0);
       setDealerPrice(product?.dealerPrice || 0);
       setCompareAtPrice(product?.compareAtPrice || 0);
       setRating(product?.ratingCount || 0);
@@ -213,7 +213,17 @@ const EditProducts = () => {
       formData.append("category", selectedCategoryId);
       formData.append("currency", currency);
       formData.append("brand", selectedBrandId);
-      formData.append("cost", cost);
+      formData.append("description", description);
+      formData.append("price", String(Number(cost) || actualPrice));
+      formData.append("actualPrice", String(Number(cost) || actualPrice));
+      formData.append("compareAtPrice", String(compareAtPrice));
+      formData.append("stock", String(totalStock));
+      formData.append("status", status);
+      formData.append("feature", feature);
+      formData.append("productType", productType);
+      formData.append("weight", String(weight));
+      tag.forEach((item) => formData.append("tag", item));
+      images.forEach((image) => formData.append("images", image));
 
       await ProductService?.updateProduct(id, formData);
       alert("Updated Successfully.");
@@ -275,6 +285,7 @@ const EditProducts = () => {
   const handleCostChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value.replace(/[^0-9.]/g, ""); // remove non-numerics
     setCost(val);
+    setActualPrice(Number(val) || 0);
   };
 
   if (!id) {

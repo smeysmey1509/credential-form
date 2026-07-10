@@ -54,6 +54,7 @@ export type ProductFilterParams = {
 };
 
 export type ProductRecommendations = {
+  products?: Product[];
   featuredProducts?: Product[];
   relatedProducts?: Product[];
 };
@@ -167,10 +168,11 @@ const buildProductListParams = ({
   const normalizedSearch = search?.trim();
 
   if (normalizedSearch) params.search = normalizedSearch;
-  if (priceMin !== undefined) params["price[min]"] = priceMin;
-  if (priceMax !== undefined) params["price[max]"] = priceMax;
-  if (categories?.length) params.categories = categories.join(",");
-  if (brands?.length) params.brands = brands.join(",");
+  if (priceMin !== undefined) params.priceMin = priceMin;
+  if (priceMax !== undefined) params.priceMax = priceMax;
+  // The current API accepts a single ObjectId for each relation filter.
+  if (categories?.length) params.category = categories[0];
+  if (brands?.length) params.brand = brands[0];
   if (sort) params.sort = sort;
 
   return params;
@@ -189,7 +191,7 @@ const ProductGatewayService = {
   },
 
   getProductById: (id: string): Promise<AxiosResponse<Product>> =>
-    axiosProductGatewayClient.get<Product>(`/product/${id}`),
+    axiosProductGatewayClient.get<Product>(`/products/${id}`),
 
   recommendationsProduct: (
     id: string
@@ -200,7 +202,7 @@ const ProductGatewayService = {
 
   createProduct: (productData: FormData) =>
     axiosProductGatewayClient.post<Product>(
-      "/product",
+      "/products",
       productData,
       multipartConfig
     ),
@@ -209,13 +211,13 @@ const ProductGatewayService = {
     axiosProductGatewayClient.patch<
       Product | ProductVariant | Inventory | Dimensions
     >(
-      `/product/${id}`,
+      `/products/${id}`,
       updateData,
       multipartConfig
     ),
 
   deleteProduct: (id: string) =>
-    axiosProductGatewayClient.delete(`/product/delete/${id}`),
+    axiosProductGatewayClient.delete(`/products/${id}`),
 
   multiDeleteProduct: (ids: string[]) =>
     axiosProductGatewayClient.post(`/product/delete`, { ids }),
@@ -243,7 +245,7 @@ const ProductGatewayService = {
 
   sortByCategory: (categoryId: string[]) =>
     axiosProductGatewayClient.get<ProductCollection>("/products", {
-      params: { categories: categoryId.join(",") },
+      params: { category: categoryId[0] },
     }),
 
   filterProducts: async (params: ProductFilterParams) => {

@@ -6,6 +6,9 @@ import { useTheme } from "../../../hooks/useTheme";
 import { FiGlobe, FiMaximize, FiSettings, FiShoppingCart } from "react-icons/fi";
 import { deleteCookie, getCookie } from "../../../utils/cookie";
 import { AuthService } from "../../../services/common/AuthService/AuthService";
+import CartService, {
+  CART_UPDATED_EVENT,
+} from "../../../services/common/CartService/CartService";
 
 interface HeaderProps {
   isSidebarOpen: boolean;
@@ -16,27 +19,33 @@ interface HeaderProps {
 const Header = ({ isSidebarOpen, toggleSidebar, loading = false }: HeaderProps) => {
   const [showNotifications, setShowNotifications] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const [cartCount, setCartCount] = useState(0);
   const notificationRef = useRef<HTMLDivElement>(null);
   const userMenuRef = useRef<HTMLDivElement>(null);
   const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
 
-  const userName = useMemo(() => {
+  const currentUser = useMemo(() => {
     const rawUser = getCookie("user");
 
     if (!rawUser) {
-      return "Admin";
+      return { name: "Account", role: "User" };
     }
 
     try {
-      const parsedUser = JSON.parse(decodeURIComponent(rawUser)) as {
+      const parsedUser = JSON.parse(rawUser) as {
         name?: string;
+        role?: string;
       };
-      return parsedUser.name || "Admin";
+      return {
+        name: parsedUser.name || "Account",
+        role: parsedUser.role || "User",
+      };
     } catch {
-      return rawUser;
+      return { name: rawUser, role: "User" };
     }
   }, []);
+  const userName = currentUser.name;
 
   const initials = userName
     .split(" ")
@@ -49,6 +58,24 @@ const Header = ({ isSidebarOpen, toggleSidebar, loading = false }: HeaderProps) 
     "relative inline-flex h-8 w-12 items-center justify-center bg-transparent text-[#61748f] transition hover:text-[#8f3ffc] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#8f3ffc]/20 dark:text-slate-300 dark:hover:text-white";
   const responsiveHeaderIconButtonClass =
     "relative hidden h-8 w-12 items-center justify-center bg-transparent text-[#61748f] transition hover:text-[#8f3ffc] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#8f3ffc]/20 dark:text-slate-300 dark:hover:text-white sm:inline-flex";
+
+  useEffect(() => {
+    const fetchCartCount = () => {
+      CartService.getCart()
+        .then((response) => {
+          const count = response.data.items.reduce(
+            (total, item) => total + item.quantity,
+            0
+          );
+          setCartCount(count);
+        })
+        .catch(() => setCartCount(0));
+    };
+
+    fetchCartCount();
+    window.addEventListener(CART_UPDATED_EVENT, fetchCartCount);
+    return () => window.removeEventListener(CART_UPDATED_EVENT, fetchCartCount);
+  }, []);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -173,11 +200,14 @@ const Header = ({ isSidebarOpen, toggleSidebar, loading = false }: HeaderProps) 
                 type="button"
                 aria-label="Shopping Cart"
                 className={headerIconButtonClass}
+                onClick={() => navigate("/dashboard/product/cart")}
               >
                 <FiShoppingCart className="text-[21px]" />
-                <span className="absolute right-2 top-0 flex h-4 min-w-4 items-center justify-center rounded-full bg-[#8f3ffc] px-1 text-[10px] font-semibold leading-none text-white ring-2 ring-white dark:ring-[#19191c]">
-                  5
-                </span>
+                {cartCount > 0 && (
+                  <span className="absolute right-2 top-0 flex h-4 min-w-4 items-center justify-center rounded-full bg-[#8f3ffc] px-1 text-[10px] font-semibold leading-none text-white ring-2 ring-white dark:ring-[#19191c]">
+                    {cartCount > 99 ? "99+" : cartCount}
+                  </span>
+                )}
               </button>
 
               {/* Notifications with pink dot */}
@@ -264,7 +294,7 @@ const Header = ({ isSidebarOpen, toggleSidebar, loading = false }: HeaderProps) 
                         {userName}
                       </p>
                       <p className="text-xs text-slate-500 dark:text-slate-400">
-                        UI/UX Designer
+                        {currentUser.role}
                       </p>
                     </div>
                     <button

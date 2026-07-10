@@ -6,15 +6,28 @@ import PrimaryButton from "../../../components/Button/PrimaryButton/PrimaryButto
 import FormField from "../../../components/common/FormField/FormField";
 import PromoCodeService from "../../../services/common/PromoCode/PromoCode";
 import { BsFillExclamationCircleFill } from "react-icons/bs";
-import { AnimatePresence, motion } from "framer-motion";
 import { toAbs, getPrimaryUrl } from "../../../utils/image";
 import { FaRegHeart, FaRegTrashAlt } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { formatCurrency } from "../../../utils/currency";
+import WishlistService from "../../../services/common/WishlistService/WishlistService";
+import { getApiErrorMessage } from "../../../services/api/errors";
+
+type CartRow = {
+  productId: string;
+  name: string;
+  images: string[];
+  primaryImageIndex: number;
+  image: string;
+  price: number;
+  quantity: number;
+  total: number;
+  stock: number;
+};
 
 const Cart = () => {
   const navigator = useNavigate();
-  const [cart, setCart] = useState<any[] | null>(null);
+  const [cart, setCart] = useState<CartRow[] | null>(null);
   const [promoCode, setPromoCode] = useState<string>("");
   const [discountType, setDiscountType] = useState<string>("");
   const [deliveryMethod, setDeliveryMethod] = useState<string>("");
@@ -50,7 +63,7 @@ const Cart = () => {
       header: "Quantity",
       accessor: "quantity",
       width: "15%",
-      render: (value: any, row: any) => (
+      render: (value: number, row: CartRow) => (
         <QuantityInput
           value={value}
           min={1}
@@ -72,9 +85,9 @@ const Cart = () => {
     },
   ];
 
-  const handleQuantityChange = async (row: any, newQty: number) => {
-    setCart((prevCart: any) =>
-      prevCart.map((item: any) =>
+  const handleQuantityChange = async (row: CartRow, newQty: number) => {
+    setCart((prevCart) =>
+      (prevCart || []).map((item) =>
         item.productId === row.productId
           ? { ...item, quantity: newQty, total: newQty * item.price }
           : item
@@ -95,8 +108,8 @@ const Cart = () => {
       const response = await CartService.getCart();
 
       const cartItems =
-        response?.data?.items?.map((item: any) => {
-          const p = item?.product ?? {};
+        response.data.items.map((item) => {
+          const p = item.product;
           const rawImages: string[] = Array.isArray(p.images) ? p.images : [];
           const imagesAbs = rawImages.map(toAbs);
           const image = getPrimaryUrl(rawImages, p.primaryImageIndex);
@@ -105,11 +118,11 @@ const Cart = () => {
           const quantityAdded = item?.quantity || 0;
 
           return {
-            productId: p?._id,
-            name: p?.name,
+            productId: p._id || "",
+            name: p.name,
             images: imagesAbs,
-            primaryImageIndex: Number.isInteger(p?.primaryImageIndex)
-              ? p.primaryImageIndex
+            primaryImageIndex: Number.isInteger(p.primaryImageIndex)
+              ? p.primaryImageIndex ?? 0
               : 0,
             image,
             price: pricePerUnit,
@@ -126,7 +139,9 @@ const Cart = () => {
       setDeliveryFee(response?.data?.delivery?.baseFee || 0);
       setServiceTax(response?.data?.summary?.serviceTax || 0);
       setCalSubTotal(response?.data?.summary?.subTotal || 0);
-      setDiscount(response?.data?.summary?.discount || 0);
+      setDiscount(response?.data?.summary?.promo?.value || 0);
+      setDiscountAmount(response?.data?.summary?.discount || 0);
+      setDiscountType(response?.data?.summary?.promo?.type || "");
       setDeliveryMethod(response?.data?.delivery?.method || "");
       setPickUpCode(response?.data?.delivery?.code || null);
       setEstimatedDeliveryTime(response?.data?.delivery?.estimatedDays || null);
@@ -170,23 +185,18 @@ const Cart = () => {
   const handleApplyPromoCode = async (promoCode: string) => {
     try {
       const { data } = await PromoCodeService.apply(promoCode);
-      setDiscountType(data.promo?.discountType);
-      setDiscount(Number(data.promo?.discountValue) || 0);
-      setDiscountAmount(Number(data.promo?.discountAmount) || 0);
+      setDiscountType(data.promo?.type);
+      setDiscount(Number(data.promo?.value) || 0);
+      setDiscountAmount(Number(data.promo?.amount) || 0);
 
       await handleFetchCart();
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Failed to apply promo code:", error);
       setDiscountType("");
       setDiscount(0);
       setDiscountAmount(0);
 
-      const message =
-        error?.response?.data?.error ||
-        error?.message ||
-        "Something went wrong. Please try again.";
-
-      alert(message);
+      alert(getApiErrorMessage(error));
     }
   };
 
@@ -199,11 +209,17 @@ const Cart = () => {
     }
   };
 
-  const handleAddToWishlist = (row: any) => {
-    console.log("Wishlist:", row);
+  const handleAddToWishlist = async (row: CartRow) => {
+    try {
+      await WishlistService.addWishlist(row.productId);
+      await CartService.removeCartItem(row.productId);
+      await handleFetchCart();
+    } catch (error) {
+      alert(getApiErrorMessage(error, "Could not move this product to your wishlist."));
+    }
   };
 
-  const handleDeleteCart = async (row: any) => {
+  const handleDeleteCart = async (row: CartRow) => {
     try {
       await CartService.removeCartItem(row?.productId);
       await handleFetchCart();

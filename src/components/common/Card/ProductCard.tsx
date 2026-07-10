@@ -161,7 +161,7 @@ export default function ProductCard({
             ratingCount={product?.ratingCount}
           />
           <p className="font-bold text-[#5C67F7] text-[20px]">
-            ${product?.cost || "$0.00"}
+            {fmt(product?.price ?? Number(product?.cost || 0))}
           </p>
         </div>
 
